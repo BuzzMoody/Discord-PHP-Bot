@@ -97,7 +97,7 @@ class Commands {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 		$temp = json_decode(curl_exec($ch));
-		$message->channel->sendMessage("{$temp->data->temp}° (Feels {$temp->data->temp_feels_like}°) | Wind: {$temp->data->wind->speed_kilometre}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^(NNE|NE|ENE)$/', '/(ESE|SE|SSE)$/', '/^(SSW|SW|WSW)$/', '/^(WNW|NW|NNW)$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp->data->wind->direction)." | Humidity: {$temp->data->humidity}% | Rain: {$temp->data->rain_since_9am}mm");
+		$message->channel->sendMessage("{$temp->data->temp}° (Feels {$temp->data->temp_feels_like}°) | Wind: {$temp->data->wind->speed_kilometre}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp->data->wind->direction)." | Humidity: {$temp->data->humidity}% | Rain: {$temp->data->rain_since_9am}mm");
 		
 	}
 	
@@ -148,14 +148,13 @@ class Commands {
 			->setDescription("ASX : ".strtoupper($args))
 			->setColor("0x00A9FF")
 			->setTimestamp()
-			->setFooter("ASX", "http://buzz.id.au/favicon.png");
+			->setFooter("ASX", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png");
 		
 		foreach ($asx as $key => $value) {		
 			if ($key == "Name" || $key == "URL" || $value == "ETF" ) { }
 			else {	
 				$embed->addFieldValues("{$key}", "{$value}", true);
 			}
-			echo "{$key} => {$value}\n";
 		}
 		
 		$message->channel->sendEmbed($embed);
