@@ -5,7 +5,15 @@ use Carbon\Carbon;
 
 class Commands {
 	
-	public static function execute($message, $discord, $uptime) {
+	public $googleAPI;
+	
+	function __construct($googleAPI) {
+		
+		$this->googleAPI = $googleAPI;
+		
+	}
+	
+	function execute($message, $discord, $uptime) {
 		
 		$inputs = explode(" ", strtolower(trim($message->content)));
 		$command = substr($inputs[0], 1);
@@ -19,46 +27,54 @@ class Commands {
 				break;
 				
 			case (preg_match('/^(kate|t(?:ay|swizzle)(lor)?|emma|(e)?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan)\b/', $command, $babe) ? true : false):
-				self::sendBabe($babe, $message);
+				$this->sendBabe($babe, $message);
 				break;
 				
 			case (preg_match('/^(search|google|bing|find|siri)/', $command) ? true : false):
-				self::search('google', $args, $message);
+				$this->search('google', $args, $message);
 				break;
 				
 			case (preg_match('/^(image|img|photo|pic)/', $command) ? true : false):
-				self::search('image', $args, $message);
+				$this->search('image', $args, $message);
 				break;
 				
 			case (preg_match('/^(ban|kick|sb|sinbin)/', $command) ? true : false):
-				self::sinbin($args, $message, $discord);
+				$this->sinbin($args, $message, $discord);
 				break;
 			
 			case (preg_match('/^(chat(gpt?)|(open)?ai)/', $command) ? true : false):
-				self::chatGPT($args, $message);
+				$this->chatGPT($args, $message);
 				break;
 				
 			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
-				self::ASX($args, $message, $discord);
+				$this->ASX($args, $message, $discord);
 				break;
 				
 			case (preg_match('/^dalle/', $command) ? true : false):
-				self::chatGPT($args, $message, true);
+				$this->chatGPT($args, $message, true);
 				break;
 				
 			case (preg_match('/(weather|temp(erature)?)/', $command) ? true : false):
-				self::weather($message);
+				$this->weather($message);
 				break;
 				
 			case "uptime":
-				self::uptime($message, $uptime);
+				$this->uptime($message, $uptime);
+				break;
+				
+			case "test":
+				$this->test($this->googleAPI, $message, $discord);
 				break;
 		
 		}
 		
 	}
 	
-	public static function sendBabe($babe, $message) {
+	function test($googleAPI, $message, $discord) {
+		echo "Google API: ".$googleAPI."\n";
+	}
+	
+	function sendBabe($babe, $message) {
 	
 		$imgDir = "/home/buzz/img/".preg_replace(array('/e?(liz|eliz|lizabeth)\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
 		$files = scandir($imgDir);
@@ -66,11 +82,11 @@ class Commands {
 		
 	}
 	
-	public static function search($type, $args, $message) {
+	function search($type, $args, $message) {
 	
 		if (empty($args)) { return $message->reply("Maybe give me something to search for??"); }
 		
-		$search = ($type == "google") ? @file_get_contents("https://www.googleapis.com/customsearch/v1?key=AIzaSyB4zfbLF60K5ZQcu9681L6sF5n5Ll9lATY&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args)) : @file_get_contents("https://www.googleapis.com/customsearch/v1?key=AIzaSyB4zfbLF60K5ZQcu9681L6sF5n5Ll9lATY&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com");
+		$search = ($type == "google") ? @file_get_contents("https://www.googleapis.com/customsearch/v1?key={$this->googleAPI}&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args)) : @file_get_contents("https://www.googleapis.com/customsearch/v1?key={$this->googleAPI}&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com");
 		
 		$return = json_decode($search);
 		
@@ -80,7 +96,7 @@ class Commands {
 	
 	}
 	
-	public static function chatGPT($args, $message, $dalle = false) {
+	function chatGPT($args, $message, $dalle = false) {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
@@ -90,7 +106,7 @@ class Commands {
 		
 	}
 	
-	public static function weather($message) {
+	function weather($message) {
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "https://api.weather.bom.gov.au/v1/locations/r1ppvy/observations");
@@ -101,7 +117,7 @@ class Commands {
 		
 	}
 	
-	public static function uptime($message, $uptime) {
+	function uptime($message, $uptime) {
 		
 		$diff = (floor(microtime(true) * 1000) - $uptime) / 1000;
 		$days = floor($diff / 86400);
@@ -115,7 +131,7 @@ class Commands {
 		
 	}
 	
-	public static function ASX($args, $message, $discord) {
+	function ASX($args, $message, $discord) {
 		
 		if (empty($args) || strlen($args) > 4) { return $message->reply("Try !asx DMP"); }
 		
@@ -160,11 +176,11 @@ class Commands {
 		$message->channel->sendEmbed($embed);
 	}
 	
-	public static function sinbin($args, $message, $discord) {
+	function sinbin($args, $message, $discord) {
 		
 		if (empty($args)) { return $message->reply("Try !sinbin @username"); }
 		
-		if (self::isAdmin($message->author->id, $discord)) {
+		if ($this->isAdmin($message->author->id, $discord)) {
 			$argz = explode(" ", $args);
 			$sbID = str_replace(array('<','@','!','>', '&'),'', $argz[0]);
 		 	$sbGuild = $discord->guilds->get('id', '232691831090053120');
@@ -176,7 +192,7 @@ class Commands {
 		
 	}
 	
-	public static function isAdmin($userID, $discord) {
+	function isAdmin($userID, $discord) {
 		
 		$testGuild = $discord->guilds->get('id', '232691831090053120');
 		$testMember = $testGuild->members->get('id', $userID);

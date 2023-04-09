@@ -1,8 +1,8 @@
 <?php
 
 include __DIR__.'/vendor/autoload.php';
-include 'commands.php';
 include 'config.inc';
+include 'commands.php';
 
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -14,6 +14,8 @@ use Discord\Parts\Embed;
 
 $uptime = floor(microtime(true) * 1000);
 
+$commands = new Commands($googleAPI);
+
 $discord = new Discord([
     'token' => $key,
     'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
@@ -21,7 +23,7 @@ $discord = new Discord([
 	'loadAllMembers' => true,
 ]);
 
-$discord->on('ready', function (Discord $discord) use ($uptime) {
+$discord->on('ready', function (Discord $discord) use ($uptime, $commands) {
 	
     echo "Bot is ready!\n";
 	
@@ -31,12 +33,12 @@ $discord->on('ready', function (Discord $discord) use ($uptime) {
 	]);
 	$discord->updatePresence($activity);
 
-    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($uptime) {
+    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($uptime, $commands) {
 		
         echo "(".date("d/m h:i:sA").") [{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			Commands::execute($message, $discord, $uptime);
+			$commands->execute($message, $discord, $uptime);
 		}
 		
     });
