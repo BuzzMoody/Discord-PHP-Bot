@@ -26,7 +26,7 @@ class Commands {
 				$message->reply("Pong!");
 				break;
 				
-			case (preg_match('/^(kate|t(?:ay|swizzle)(lor)?|emma|(e)?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan)\b/', $command, $babe) ? true : false):
+			case (preg_match('/^(kate|t(?:ay|swizzle)(lor)?|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan)\b/', $command, $babe) ? true : false):
 				$this->sendBabe($babe, $message);
 				break;
 				
@@ -61,22 +61,14 @@ class Commands {
 			case "uptime":
 				$this->uptime($message, $uptime);
 				break;
-				
-			case "test":
-				$this->test($this->googleAPI, $message, $discord);
-				break;
 		
 		}
 		
 	}
 	
-	function test($googleAPI, $message, $discord) {
-		echo "Google API: ".$googleAPI."\n";
-	}
-	
 	function sendBabe($babe, $message) {
 	
-		$imgDir = "/home/buzz/img/".preg_replace(array('/e?(liz|eliz|lizabeth)\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
+		$imgDir = "/home/buzz/img/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
 		$files = scandir($imgDir);
 		return $message->channel->sendFile("{$imgDir}/{$files[rand(2,(count($files) - 1))]}", $babe[0].".jpg");
 		
