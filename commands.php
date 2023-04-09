@@ -6,14 +6,16 @@ use Carbon\Carbon;
 class Commands {
 	
 	public $googleAPI;
+	public $uptime;
 	
-	function __construct($googleAPI) {
+	function __construct($googleAPI, $uptime) {
 		
 		$this->googleAPI = $googleAPI;
+		$this->uptime = $uptime;
 		
 	}
 	
-	function execute($message, $discord, $uptime) {
+	function execute($message, $discorde) {
 		
 		$inputs = explode(" ", strtolower(trim($message->content)));
 		$command = substr($inputs[0], 1);
@@ -59,7 +61,7 @@ class Commands {
 				break;
 				
 			case "uptime":
-				$this->uptime($message, $uptime);
+				$this->uptime($message);
 				break;
 		
 		}
@@ -109,9 +111,9 @@ class Commands {
 		
 	}
 	
-	function uptime($message, $uptime) {
+	function uptime($message) {
 		
-		$diff = (floor(microtime(true) * 1000) - $uptime) / 1000;
+		$diff = (floor(microtime(true) * 1000) - $this->uptime) / 1000;
 		$days = floor($diff / 86400);
 		$diff -= $days * 86400;
 		$hours = floor($diff / 3600) % 24;

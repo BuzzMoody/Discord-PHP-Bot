@@ -14,7 +14,7 @@ use Discord\Parts\Embed;
 
 $uptime = floor(microtime(true) * 1000);
 
-$commands = new Commands($googleAPI);
+$commands = new Commands($googleAPI, $uptime);
 
 $discord = new Discord([
     'token' => $key,
@@ -23,7 +23,7 @@ $discord = new Discord([
 	'loadAllMembers' => true,
 ]);
 
-$discord->on('ready', function (Discord $discord) use ($uptime, $commands) {
+$discord->on('ready', function (Discord $discord) use ($commands) {
 	
     echo "Bot is ready!\n";
 	
@@ -33,12 +33,12 @@ $discord->on('ready', function (Discord $discord) use ($uptime, $commands) {
 	]);
 	$discord->updatePresence($activity);
 
-    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($uptime, $commands) {
+    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
         echo "(".date("d/m h:i:sA").") [{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			$commands->execute($message, $discord, $uptime);
+			$commands->execute($message, $discord);
 		}
 		
     });
