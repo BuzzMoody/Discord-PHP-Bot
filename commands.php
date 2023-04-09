@@ -15,7 +15,7 @@ class Commands {
 		
 	}
 	
-	function execute($message, $discorde) {
+	function execute($message, $discord) {
 		
 		$inputs = explode(" ", strtolower(trim($message->content)));
 		$command = substr($inputs[0], 1);
