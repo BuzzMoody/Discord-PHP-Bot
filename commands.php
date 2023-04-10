@@ -215,11 +215,11 @@ class Commands {
 		
 	}
 	
-	function runcli($args, $messagge) {
+	function runcli($args, $message, $discord) {
 		
 		if ($this->isAdmin($message->author->id, $discord) && !empty($args)) {
 		
-			shell_exec($args);
+			$message->channel->sendMessage(shell_exec($args));
 		
 		}
 		
