@@ -219,7 +219,7 @@ class Commands {
 		
 		if ($this->isAdmin($message->author->id, $discord) && !empty($args)) {
 		
-			$message->channel->sendMessage(shell_exec($args));
+			$message->channel->sendMessage("```\n".shell_exec($args)."\n```");
 		
 		}
 		
