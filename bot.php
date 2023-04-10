@@ -12,12 +12,10 @@ use Discord\Parts\User\Game;
 use Discord\Parts\User\Activity;
 use Discord\Parts\Embed;
 
-$uptime = floor(microtime(true) * 1000);
-
-$commands = new Commands($googleAPI, $uptime);
+$commands = new Commands($keys, floor(microtime(true) * 1000));
 
 $discord = new Discord([
-    'token' => $key,
+    'token' => $keys['discord'],
     'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
 	'logger' => new \Monolog\Logger('New logger'),
 	'loadAllMembers' => true,

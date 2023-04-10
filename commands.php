@@ -5,12 +5,12 @@ use Carbon\Carbon;
 
 class Commands {
 	
-	public $googleAPI;
+	public $keys;
 	public $uptime;
 	
-	function __construct($googleAPI, $uptime) {
+	function __construct($keys, $uptime) {
 		
-		$this->googleAPI = $googleAPI;
+		$this->keys = $keys;
 		$this->uptime = $uptime;
 		
 	}
@@ -80,7 +80,7 @@ class Commands {
 	
 		if (empty($args)) { return $message->reply("Maybe give me something to search for??"); }
 		
-		$search = ($type == "google") ? @file_get_contents("https://www.googleapis.com/customsearch/v1?key={$this->googleAPI}&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args)) : @file_get_contents("https://www.googleapis.com/customsearch/v1?key={$this->googleAPI}&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com");
+		$search = ($type == "google") ? @file_get_contents("https://www.googleapis.com/customsearch/v1?key={$this->keys['google']}&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args)) : @file_get_contents("https://www.googleapis.com/customsearch/v1?key={$this->keys['google']}&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com");
 		
 		$return = json_decode($search);
 		
@@ -94,9 +94,32 @@ class Commands {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$response = (!$dalle) ? file_get_contents("http://buzz.id.au/parsers/chatgpt.php?request=".urlencode($args)) : file_get_contents("http://buzz.id.au/parsers/img.php?request=".urlencode($args));
+		$post_fields = (!$dalle) ? array("model" => "text-davinci-003", "prompt" => $args, "temperature" => 0.3, "max_tokens" => 150, "top_p" => 1.0, "frequency_penalty" => 0.0, "presence_penalty" => 0.0) : array("prompt" => $args,	"n" => 1, "size" => "1024x1024");
+		$apiURL = (!$dalle) ? "https://api.openai.com/v1/completions" : "https://api.openai.com/v1/images/generations";
+		
+		$curl = curl_init();
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => $apiURL,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => json_encode($post_fields),
+			CURLOPT_HTTPHEADER => array(
+				'Authorization: Bearer '.$this->keys['openai'],
+				'Content-Type: application/json'
+			)
+		));
+		
+		$response = json_decode(curl_exec($curl));
+		curl_close($curl);
+		
+		$output = (!$dalle) ? trim($response->choices[0]->text) : trim($response->data[0]->url);
 
-		$message->channel->sendMessage($response);
+		$message->channel->sendMessage($output);
 		
 	}
 	
