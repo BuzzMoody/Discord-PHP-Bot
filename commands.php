@@ -28,7 +28,7 @@ class Commands {
 				$message->reply("Pong!");
 				break;
 				
-			case (preg_match('/^(kate|t(?:ay|swizzle)(lor)?|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan)\b/', $command, $babe) ? true : false):
+			case (preg_match('/^(kate|t(?:ay(lor)?|swizzle)|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan)\b/', $command, $babe) ? true : false):
 				$this->sendBabe($babe, $message);
 				break;
 				
@@ -60,6 +60,10 @@ class Commands {
 				$this->weather($message);
 				break;
 				
+			case (preg_match('/(shell|bash|cli|cmd)/', $command) ? true : false):
+				$this->runcli($args, $message, $discord);
+				break;
+				
 			case "uptime":
 				$this->uptime($message);
 				break;
@@ -71,8 +75,10 @@ class Commands {
 	function sendBabe($babe, $message) {
 	
 		$imgDir = "/home/buzz/img/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
-		$files = scandir($imgDir);
-		return $message->channel->sendFile("{$imgDir}/{$files[rand(2,(count($files) - 1))]}", $babe[0].".jpg");
+		$files = (is_dir($imgDir)) ? scandir($imgDir) : null;
+		if ($files) { 
+			$message->channel->sendFile("{$imgDir}/{$files[rand(2,(count($files) - 1))]}", $babe[0].".jpg");
+		}
 		
 	}
 	
@@ -205,6 +211,16 @@ class Commands {
 			$time = (count($argz) <= 1) ? 1 : $argz[1];
 			$sbMember->timeoutMember(new Carbon("{$time} minutes"))->done(function () {});
 			$message->channel->sendMessage("{$argz[0]} has been given a {$time} minute timeout");
+		}
+		
+	}
+	
+	function runcli($args, $messagge) {
+		
+		if ($this->isAdmin($message->author->id, $discord) && !empty($args)) {
+		
+			shell_exec($args);
+		
 		}
 		
 	}
