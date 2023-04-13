@@ -100,10 +100,6 @@ class Commands {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$message->channel->broadcastTyping()->done(function () {
-			// ...
-		});
-		
 		$post_fields = (!$dalle) ? array("model" => "text-davinci-003", "prompt" => $args, "temperature" => 0.3, "max_tokens" => 150, "top_p" => 1.0, "frequency_penalty" => 0.0, "presence_penalty" => 0.0) : array("prompt" => $args,	"n" => 1, "size" => "1024x1024");
 		$apiURL = (!$dalle) ? "https://api.openai.com/v1/completions" : "https://api.openai.com/v1/images/generations";
 		
