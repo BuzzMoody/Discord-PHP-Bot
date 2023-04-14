@@ -123,6 +123,8 @@ class Commands {
 		$response = json_decode(curl_exec($curl));
 		curl_close($curl);
 		
+		if (@$response->error->message) { return $message->reply($response->error->message); }
+		
 		$output = (!$dalle) ? trim($response->choices[0]->text) : trim($response->data[0]->url);
 
 		$message->channel->sendMessage($output);
