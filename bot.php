@@ -3,7 +3,6 @@
 include __DIR__.'/vendor/autoload.php';
 include 'config.inc';
 include 'commands.php';
-include 'commands.php';
 
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
