@@ -44,16 +44,16 @@ class Commands {
 				$this->sinbin($args, $message, $discord);
 				break;
 			
-			case (preg_match('/^(chat(gpt?)|(open)?ai)/', $command) ? true : false):
+			/*case (preg_match('/^(chat(gpt?)|(open)?ai)/', $command) ? true : false):
 				$this->chatGPT($args, $message);
-				break;
-				
-			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
-				$this->ASX($args, $message, $discord);
 				break;
 				
 			case (preg_match('/^dalle/', $command) ? true : false):
 				$this->chatGPT($args, $message, true);
+				break;*/
+				
+			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
+				$this->ASX($args, $message, $discord);
 				break;
 				
 			case (preg_match('/(weather|temp(erature)?)/', $command) ? true : false):
@@ -220,7 +220,7 @@ class Commands {
 	function runcli($args, $message, $discord) {
 		
 		if ($message->author->id == 232691181396426752 && !empty($args)) {		
-			$message->channel->sendMessage("```\n".shell_exec($args)."\n```");		
+			$message->channel->sendMessage("```swift\n".shell_exec($args)."\n```");		
 		}
 		
 	}
