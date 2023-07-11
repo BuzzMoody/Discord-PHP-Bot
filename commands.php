@@ -64,6 +64,10 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
+			case (preg_match('/apex/', $command) ? true : false):
+				$this->apex($message, $discord);
+				break;
+				
 			case "uptime":
 				$this->uptime($message);
 				break;
@@ -231,6 +235,15 @@ class Commands {
 		$testMember = $testGuild->members->get('id', $userID);
 		return $testMember->roles->has('232692759557832704');
 		
+	}
+	
+	function apex($message, $discord) {
+		
+		$get = file_get_contents("https://apexlegendsstatus.com/current-map/battle_royale/pubs");
+		preg_match('/<h3 .*>(.+)<\/h3>.+ ends in (.+)<\/p>/U', $get, $data);
+		preg_match_all('/<h3 .*>(.+)<\/h3>/U', $get, $next);
+	
+		$message->channel->sendMessage("Current Map: ".$data[1]." ends in ".$data[2]." | Next Map: ".$next[1][1]);
 	}
 	
 }
