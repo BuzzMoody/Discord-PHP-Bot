@@ -170,7 +170,7 @@ class Commands {
 		
 		if (@$response->error->message) { return $message->reply($response->error->message); }
 
-		$message->channel->sendMessage($response->candidates[0]->output;
+		$message->channel->sendMessage($response->candidates[0]->output);
 		
 	}
 	
