@@ -169,8 +169,10 @@ class Commands {
 		curl_close($curl);
 		
 		if (@$response->error->message) { return $message->reply($response->error->message); }
+		
+		$string = (strlen($response->candidates[0]->output) > 1995) ? substr($response->candidates[0]->output,0,1995).'…' : $response->candidates[0]->output;
 
-		$message->channel->sendMessage($response->candidates[0]->output);
+		$message->channel->sendMessage($string);
 		
 	}
 	
