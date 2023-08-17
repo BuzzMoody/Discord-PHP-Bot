@@ -135,6 +135,41 @@ class Commands {
 		
 	}
 	
+	function bard($args, $message) {
+		
+		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
+		
+		$post_fields = array(
+			"prompt" => array(
+				"text" => $args
+			)
+		);	
+		
+		$curl = curl_init();
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key='.$this->keys['bard'],
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => '',
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 0,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => 'POST',
+			CURLOPT_POSTFIELDS => json_encode($post_fields),
+			CURLOPT_HTTPHEADER => array(
+				'Content-Type: application/json'
+			),
+		));
+		
+		$response = json_decode(curl_exec($curl));
+		curl_close($curl);
+		
+		if (@$response->error->message) { return $message->reply($response->error->message); }
+
+		$message->channel->sendMessage($response->candidates[0]->output;
+		
+	}
+	
 	function weather($message) {
 		
 		$ch = curl_init();
