@@ -56,15 +56,15 @@ class Commands {
 				$this->ASX($args, $message, $discord);
 				break;
 				
-			case (preg_match('/(weather|temp(erature)?)/', $command) ? true : false):
+			case (preg_match('/^(weather|temp(erature)?)$/', $command) ? true : false):
 				$this->weather($message);
 				break;
 				
-			case (preg_match('/(shell|bash|cli|cmd)/', $command) ? true : false):
+			case (preg_match('/^(shell|bash|cli|cmd)/', $command) ? true : false):
 				$this->runcli($args, $message, $discord);
 				break;
 				
-			case (preg_match('/apex/', $command) ? true : false):
+			case "apex":
 				$this->apex($message, $discord);
 				break;
 				
