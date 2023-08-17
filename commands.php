@@ -44,6 +44,10 @@ class Commands {
 				$this->sinbin($args, $message, $discord);
 				break;
 			
+			case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
+				$this->bard($args, $message);
+				break;
+				
 			/*case (preg_match('/^(chat(gpt?)|(open)?ai)/', $command) ? true : false):
 				$this->chatGPT($args, $message);
 				break;
