@@ -28,7 +28,7 @@ class Commands {
 				$message->reply("Pong!");
 				break;
 				
-			case (preg_match('/^(kate|t(?:ay(lor)?|swizzle)|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan)\b/', $command, $babe) ? true : false):
+			case (preg_match('/^(kate|t(?:ay(lor)?|swizzle)|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)\b/', $command, $babe) ? true : false):
 				$this->sendBabe($babe, $message);
 				break;
 				
