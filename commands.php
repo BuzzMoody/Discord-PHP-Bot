@@ -170,6 +170,8 @@ class Commands {
 		
 		if (@$response->error->message) { return $message->reply($response->error->message); }
 		
+		else if (@$response->filters[0]->reason) { return $message->reply("Error Reason: ".$response->filters[0]->reason); }
+		
 		$string = (strlen($response->candidates[0]->output) > 1995) ? substr($response->candidates[0]->output,0,1995).'…' : $response->candidates[0]->output;
 
 		$message->channel->sendMessage($string);
