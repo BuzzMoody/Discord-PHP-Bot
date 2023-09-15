@@ -145,9 +145,39 @@ class Commands {
 		
 		$post_fields = array(
 			"prompt" => array(
-				"text" => $args
+			"text" => $args
+		),
+			"safetySettings" => array(
+				array(
+					"category" => "HARM_CATEGORY_VIOLENCE",
+					"threshold" => "BLOCK_NONE"
+				),
+				array(
+					"category" => "HARM_CATEGORY_DEROGATORY",
+					"threshold" => "BLOCK_NONE"
+				),
+				array(
+					"category" => "HARM_CATEGORY_TOXICITY",
+					"threshold" => "BLOCK_NONE"
+				),
+				array(
+					"category" => "HARM_CATEGORY_SEXUAL",
+					"threshold" => "BLOCK_NONE"
+				),
+				array(
+					"category" => "HARM_CATEGORY_UNSPECIFIED",
+					"threshold" => "BLOCK_NONE"
+				),
+				array(
+					"category" => "HARM_CATEGORY_MEDICAL",
+					"threshold" => "BLOCK_NONE"
+				),
+				array(
+					"category" => "HARM_CATEGORY_DANGEROUS",
+					"threshold" => "BLOCK_NONE"
+				)
 			)
-		);	
+		);
 		
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
