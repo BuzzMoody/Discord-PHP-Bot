@@ -144,6 +144,7 @@ class Commands {
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
 		$post_fields = array(
+			"maxOutputTokens" => 1500,
 			"prompt" => array(
 			"text" => $args
 		),
