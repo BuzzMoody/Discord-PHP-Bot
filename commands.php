@@ -170,7 +170,17 @@ class Commands {
 		
 		if (@$response->error->message) { return $message->reply($response->error->message); }
 		
-		else if (@$response->filters[0]->reason) { return $message->reply("Error Reason: ".$response->filters[0]->reason); }
+		else if (@$response->filters[0]->reason) { 
+		
+			if ($response->filters[0]->reason == "SAFETY") {
+				
+				return $message->reply("Error Reason: ".$response->filters[0]->reason." (".$response->safetyFeedback[0]->rating->category." -> ".$response->safetyFeedback[0]->rating->probability.")"); 
+				
+			}
+			
+			return $message->reply("Error Reason: ".$response->filters[0]->reason); 
+			
+		}
 		
 		$string = (strlen($response->candidates[0]->output) > 1995) ? substr($response->candidates[0]->output,0,1995).'…' : $response->candidates[0]->output;
 
