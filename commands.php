@@ -100,7 +100,7 @@ class Commands {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 1500 : 400;
+		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 1500 : 200;
 		
 		$post_fields = array(
 			"maxOutputTokens" => $tokens,
