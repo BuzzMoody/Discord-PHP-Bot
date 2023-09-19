@@ -45,16 +45,8 @@ class Commands {
 				break;
 			
 			case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
-				$this->bard($args, $message);
+				$this->bard($args, $message, $discord);
 				break;
-				
-			/*case (preg_match('/^(chat(gpt?)|(open)?ai)/', $command) ? true : false):
-				$this->chatGPT($args, $message);
-				break;
-				
-			case (preg_match('/^dalle/', $command) ? true : false):
-				$this->chatGPT($args, $message, true);
-				break;*/
 				
 			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
 				$this->ASX($args, $message, $discord);
@@ -104,47 +96,14 @@ class Commands {
 	
 	}
 	
-	function chatGPT($args, $message, $dalle = false) {
+	function bard($args, $message, $discord) {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$post_fields = (!$dalle) ? array("model" => "text-davinci-003", "prompt" => $args, "temperature" => 0.3, "max_tokens" => 150, "top_p" => 1.0, "frequency_penalty" => 0.0, "presence_penalty" => 0.0) : array("prompt" => $args,	"n" => 1, "size" => "1024x1024");
-		$apiURL = (!$dalle) ? "https://api.openai.com/v1/completions" : "https://api.openai.com/v1/images/generations";
-		
-		$curl = curl_init();
-		curl_setopt_array($curl, array(
-			CURLOPT_URL => $apiURL,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_ENCODING => '',
-			CURLOPT_MAXREDIRS => 10,
-			CURLOPT_TIMEOUT => 0,
-			CURLOPT_FOLLOWLOCATION => true,
-			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS => json_encode($post_fields),
-			CURLOPT_HTTPHEADER => array(
-				'Authorization: Bearer '.$this->keys['openai'],
-				'Content-Type: application/json'
-			)
-		));
-		
-		$response = json_decode(curl_exec($curl));
-		curl_close($curl);
-		
-		if (@$response->error->message) { return $message->reply($response->error->message); }
-		
-		$output = (!$dalle) ? trim($response->choices[0]->text) : trim($response->data[0]->url);
-
-		$message->channel->sendMessage($output);
-		
-	}
-	
-	function bard($args, $message) {
-		
-		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
+		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 1500 : 400;
 		
 		$post_fields = array(
-			"maxOutputTokens" => 1500,
+			"maxOutputTokens" => $tokens,
 			"prompt" => array(
 			"text" => $args
 		),
