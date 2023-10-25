@@ -67,9 +67,59 @@ class Commands {
 			case "uptime":
 				$this->uptime($message);
 				break;
+
+			case "remindme":
+				$this->remindMe($args, $message);
+				break;
 		
 		}
 		
+	}
+
+	//RemindMe function, by @bgoold
+	function remindMe($message) {
+		//split message into parts
+		$parts = explode(" ", $message);
+
+		//check for the correct number of parameters
+		if(count($parts) >= 2) {
+			//parse the duration from user message - parts 0 and 1
+			$interval = $parts[0];
+			//check that its a valid number
+			if(!is_numeric($interval) || $interval <= 0 )
+				return $message->reply("Please use a valid number of minutes, days, weeks or months.");
+			
+			//check that its a valid unit
+			$units = $parts[1];
+			if($units != "minute" && $units != "mins" && $units != "minutes" && $units != "hour" && $units != "hr" && $units != "hrs" && $units != "hours" && $units != "day" && $units != "days" && $units != "week" && $units != "weeks" && $units != "month" && $units != "months" && $units != "year" )
+				return $message->reply("Please use a valid unit of time (eg: minutes, hours or days).");
+
+			$timeSlice = array_slice($parts,0,1);
+			$time = implode(" ",$timeSlice);
+
+			//calculate reminder timestamp
+			$timestamp = strtotime("+" . $time);
+
+			//if it's more than 1 yr in the future, don't allow it
+			if($timestamp > strtotime("+1 year"))
+				return $message->reply("Reminders greater than one year in the future are not allowed.");
+
+			//store any optional message if it exists
+			$userMsg = null; //idk how to handle dynamic variables in PHP so I'm just setting this to null for safety
+			if(count($parts) > 2) {
+				$slice = array_slice($parts,2,count($parts));
+				$userMsg = implode(" ", $slice);
+			}
+
+			//TODO @Buzz: 1. store $timestamp and $userMsg in a database, include a column to denote whether a reminder has been actioned
+			// 2. have a cron job check every minute for unactioned reminders on the current minute or in the past
+			// 3. if a reminder in the result has not been actioned, update the actioned column and send a message to the chat (eg: return $message->reply("[Reminder] $userMsg");)
+			//
+			//alternatively use a timer library but that won't work if bot goes down			
+			
+		} else {
+			return $message->reply("Please specify when you would like to be reminded with the format <interval> <units> <message> (eg: 12 hours Dota time)");
+		}
 	}
 	
 	function sendBabe($babe, $message) {
