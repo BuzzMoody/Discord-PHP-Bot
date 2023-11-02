@@ -105,7 +105,7 @@ class Commands {
 		$post_fields = array(
 			"maxOutputTokens" => $tokens,
 			"prompt" => array(
-				"text" => "Limiting yourself to 3 sentences, and without using a list: ".$args
+				"text" => $args
 			),
 			"safetySettings" => array(
 				array(
