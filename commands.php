@@ -44,9 +44,9 @@ class Commands {
 				$this->sinbin($args, $message, $discord);
 				break;
 			
-			case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
-				$this->bard($args, $message, $discord);
-				break;
+			//case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
+			//	$this->bard($args, $message, $discord);
+			//	break;
 				
 			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
 				$this->ASX($args, $message, $discord);
