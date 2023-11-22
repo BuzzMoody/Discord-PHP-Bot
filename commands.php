@@ -44,9 +44,9 @@ class Commands {
 				$this->sinbin($args, $message, $discord);
 				break;
 			
-			//case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
-			//	$this->bard($args, $message, $discord);
-			//	break;
+			case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
+				$this->bard($args, $message, $discord);
+				break;
 				
 			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
 				$this->ASX($args, $message, $discord);
@@ -122,10 +122,6 @@ class Commands {
 				),
 				array(
 					"category" => "HARM_CATEGORY_SEXUAL",
-					"threshold" => "BLOCK_NONE"
-				),
-				array(
-					"category" => "HARM_CATEGORY_UNSPECIFIED",
 					"threshold" => "BLOCK_NONE"
 				),
 				array(
