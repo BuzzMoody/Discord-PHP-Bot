@@ -52,7 +52,11 @@ class Commands {
 				$this->ASX($args, $message, $discord);
 				break;
 				
-			case (preg_match('/^(weather|temp(erature)?)$/', $command) ? true : false):
+			case (preg_match('/^(temp(erature)?)$/', $command) ? true : false):
+				$this->temp($message);
+				break;
+				
+			case (preg_match('/^(weather|forecast)$/', $command) ? true : false):
 				$this->weather($message);
 				break;
 				
@@ -174,7 +178,7 @@ class Commands {
 		
 	}
 	
-	function weather($message) {
+	function temp($message) {
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "https://api.weather.bom.gov.au/v1/locations/r1ppvy/observations");
@@ -182,6 +186,32 @@ class Commands {
 		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 		$temp = json_decode(curl_exec($ch));
 		$message->channel->sendMessage("{$temp->data->temp}° (Feels {$temp->data->temp_feels_like}°) | Wind: {$temp->data->wind->speed_kilometre}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp->data->wind->direction)." | Humidity: {$temp->data->humidity}% | Rain: {$temp->data->rain_since_9am}mm");
+		
+	}
+	
+	function weather($message) {
+		
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://api.weather.bom.gov.au/v1/locations/r1ppvy/forecasts/daily");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
+		$temp = json_decode(curl_exec($ch));
+		
+		foreach ($temp->data as $daily => $info) {
+			
+			$date = new DateTime($info->date);
+			$date->setTimezone(new DateTimeZone(date_default_timezone_get()));
+			$localDate = $date->format('D jS');
+			
+			$desc = preg_replace(array('/mostly_sunny/', '/shower/', '/storm/', '/cloudy/'), array('🌤️', '🌧️', '🌩️', '☁️'), $info->icon_descriptor);
+			$fire = (!empty($info->fire_danger)) ? " (🔥 {$info->fire_danger})" : "";
+			
+			$output .= "{$localDate}: {$info->temp_max}° {$desc}{$fire}";
+			if ($daily != array_key_last($temp->data)) { $output .= "\n"; }
+			
+		}
+		
+		$message->channel->sendMessage($output);
 		
 	}
 	
