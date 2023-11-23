@@ -202,7 +202,7 @@ class Commands {
 		foreach ($temp->data as $daily => $info) {
 			
 			$date = new DateTime($info->date);
-			$date->setTimezone(new DateTimeZone(date_default_timezone_get()));
+			$date->setTimezone(new DateTimeZone("Australia/Melbourne"));
 			$localDate = $date->format('D jS');
 			
 			$desc = preg_replace(array('/mostly_sunny/', '/shower/', '/storm/', '/cloudy/'), array('🌤️', '🌧️', '🌩️', '☁️'), $info->icon_descriptor);

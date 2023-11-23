@@ -19,10 +19,7 @@ $discord = new Discord([
     'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
 	'logger' => new \Monolog\Logger('New logger'),
 	'loadAllMembers' => true,
-	'loop' => $loop,
 ]);
-
-$loop = Loop::get();
 
 $discord->on('ready', function (Discord $discord) use ($commands) {
 	
@@ -44,7 +41,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		
     });
 	
-	$this->discord->getLoop()->addPeriodicTimer(60, function () {
+	$discord->getLoop()->addPeriodicTimer(60, function () {
 		echo "60 seconds\n";
 	});
 	
