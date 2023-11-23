@@ -197,6 +197,8 @@ class Commands {
 		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 		$temp = json_decode(curl_exec($ch));
 		
+		$output = "```\n";
+		
 		foreach ($temp->data as $daily => $info) {
 			
 			$date = new DateTime($info->date);
@@ -210,6 +212,8 @@ class Commands {
 			if ($daily != array_key_last($temp->data)) { $output .= "\n"; }
 			
 		}
+		
+		$output .= "```";
 		
 		$message->channel->sendMessage($output);
 		
