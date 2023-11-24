@@ -41,7 +41,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		
     });
 	
-	$discord->getLoop()->addPeriodicTimer(60, function (Discord $discord) use ($commands) {
+	$discord->getLoop()->addPeriodicTimer(60, function () use ($commands, $discord) {
 		$commands->checkReminders($discord);
 	});
 	

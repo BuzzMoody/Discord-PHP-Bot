@@ -333,9 +333,11 @@ class Commands {
 	
 	function createReminder($args, $message, $discord) {
 		
-		print_r($args);
+		$args2 = explode(" ", $args);
 		
-		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(?:ute)?|hour|day|week|month)s?/",$args[2])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message])"); }
+		print_r($args2);
+		
+		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(?:ute)?|hour|day|week|month)s?/",$args[2])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
 		
 	}
 	
