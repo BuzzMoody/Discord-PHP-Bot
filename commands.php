@@ -319,85 +319,68 @@ class Commands {
 		$message->channel->sendMessage($data[1]." ends in ".$data[2]." | Next Map: ".$next[1][1]);
 	}
 	
-	function checkReminders($discord) {
+	// function checkReminders($discord) {
 		
-		echo "Checking reminders...\n";
+		// echo "Checking reminders...\n";
 		
-		$time = time();
-		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
-		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
+		// $time = time();
+		// $mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
+		// $result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
 		
-		if ($result->num_rows > 0) {
-			while($row = $result->fetch_assoc()) {
-				$userid = $row['userid'];
-				$messageid = $row['messageid'];
-				$guild = $discord->guilds->get('id', '232691831090053120');
-				$channel = $guild->channels->get('id', '232691831090053120');
-				$message = $channel->messages->fetch('id''1177464569078231120');
-				$message->reply("test");
-				echo "Message\n"
-				//$message->reply("Testing");
+		// if ($result->num_rows > 0) {
+			// while($row = $result->fetch_assoc()) {
 				// $userid = $row['userid'];
 				// $messageid = $row['messageid'];
 				// $guild = $discord->guilds->get('id', '232691831090053120');
 				// $channel = $guild->channels->get('id', '232691831090053120');
-				// $message = $channel->messsages->fetch($messageid, true);
-				// print_r($message);
-					// echo "I would do the reminder notification here!\n";
-					// $mes->reply("testing");
-				// });
-			}
-		}
+				// $message = $channel->messages->fetch('id''1177464569078231120');
+				// $message->reply("test");
+				// echo "Message\n"
+				// //$message->reply("Testing");
+				// // $userid = $row['userid'];
+				// // $messageid = $row['messageid'];
+				// // $guild = $discord->guilds->get('id', '232691831090053120');
+				// // $channel = $guild->channels->get('id', '232691831090053120');
+				// // $message = $channel->messsages->fetch($messageid, true);
+				// // print_r($message);
+					// // echo "I would do the reminder notification here!\n";
+					// // $mes->reply("testing");
+				// // });
+			// }
+		// }
 		
-		else {
+		// else {
 			
-			echo "No reminders.\n";
+			// echo "No reminders.\n";
 			
-		}
+		// }
 		
-	}
+	// }
 	
-	function createReminder($args, $message, $discord) {
+	// function createReminder($args, $message, $discord) {
 		
-		$args2 = explode(" ", $args);
+		// $args2 = explode(" ", $args);
 		
-		if (empty($args)) { return $message->reply("no args"); }
-		elseif (!is_numeric($args2[0])) { return $message->reply("no number"); }
-		elseif (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
+		// if (empty($args)) { return $message->reply("no args"); }
+		// elseif (!is_numeric($args2[0])) { return $message->reply("no number"); }
+		// elseif (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
 		
-		$replaced = preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1]);
+		// $replaced = preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1]);
 		
-		$userid = $message->author->id;
-		$messageid = $message->id;
-		$time = time() + (intval($args2[0]) * intval($replaced));
+		// $userid = $message->author->id;
+		// $messageid = $message->id;
+		// $time = time() + (intval($args2[0]) * intval($replaced));
 		
-		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
+		// $mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
 
-		if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid) VALUES ({$userid}, {$time}, {$messageid})")) {
-			$message->reply("Reminder created.");
-		}
-		else {
-			$message->reply("I threw more errors than I know what to do with");
-		}
+		// if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid) VALUES ({$userid}, {$time}, {$messageid})")) {
+			// $message->reply("Reminder created.");
+		// }
+		// else {
+			// $message->reply("I threw more errors than I know what to do with");
+		// }
 	
-	}
-	
-	function test($message, $discord) {
-		
-		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '274828566909157377');
-		$discord->factory(Discord\Parts\Message\Message::class, [
-			'id' => '1177464569078231120'
-		])->reply('test');
-		// $channel->messages->fetch('1177464569078231120')->done(function (Message $mes) {
-			// print_r($message);
-			// print_r($mes);
-		// })->otherwise(function ($e) { echo $e; });
-		
-		//print_r($message->channel);
-		
-		
-	}
+	// }
 	
 }
 
