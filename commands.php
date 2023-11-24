@@ -319,7 +319,9 @@ class Commands {
 		$message->channel->sendMessage($data[1]." ends in ".$data[2]." | Next Map: ".$next[1][1]);
 	}
 	
-	function checkReminders($message, $discord) {
+	function checkReminders($discord) {
+		
+		echo "Checking reminders...\n";
 		
 		// $guild = $discord->guilds->get('id', '232691831090053120');
 		// $channel = $guild->channels->get('id', '232691831090053120');
@@ -331,7 +333,9 @@ class Commands {
 	
 	function createReminder($args, $message, $discord) {
 		
-		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(?:ute)?|hour|day|week|month)s?/",$args[2])) { return $message->reply("Syntax: !remindme *int* *timeperiod* [message] (eg: !remindme 5 mins/days/months [message])"); }
+		print_r($args);
+		
+		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(?:ute)?|hour|day|week|month)s?/",$args[2])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message])"); }
 		
 	}
 	
