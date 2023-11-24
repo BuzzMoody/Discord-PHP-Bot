@@ -331,7 +331,7 @@ class Commands {
 	
 	function createReminder($args, $message, $discord) {
 		
-		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(ute)?|hour|day|week|month)s?/,$args[2])) { return $message->reply("Syntax: !remindme *int* *timeperiod* [message] (eg: !remindme 5 mins/days/months [message])"); }
+		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(?:ute)?|hour|day|week|month)s?/",$args[2])) { return $message->reply("Syntax: !remindme *int* *timeperiod* [message] (eg: !remindme 5 mins/days/months [message])"); }
 		
 	}
 	
