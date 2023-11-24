@@ -64,6 +64,10 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
+			case (preg_match('/^(remindme)/', $command) ? true : false):
+				$this->createReminder($args, $message, $discord);
+				break;
+				
 			case "apex":
 				$this->apex($message, $discord);
 				break;
@@ -197,8 +201,6 @@ class Commands {
 		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 		$temp = json_decode(curl_exec($ch));
 		
-		$output = "```\n";
-		
 		foreach ($temp->data as $daily => $info) {
 			
 			$date = new DateTime($info->date);
@@ -212,10 +214,8 @@ class Commands {
 			if ($daily != array_key_last($temp->data)) { $output .= "\n"; }
 			
 		}
-		
-		$output .= "```";
-		
-		$message->channel->sendMessage($output);
+
+		$message->channel->sendMessage("```\n{$output}\n```");
 		
 	}
 	
@@ -317,6 +317,22 @@ class Commands {
 		preg_match_all('/<h3 .*>(.+)<\/h3>/U', $get, $next);
 	
 		$message->channel->sendMessage($data[1]." ends in ".$data[2]." | Next Map: ".$next[1][1]);
+	}
+	
+	function checkReminders($message, $discord) {
+		
+		$guild = $discord->guilds->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '232691831090053120');
+		$channel->messsages->fetch('MESSAGEID')->done(function (Message $mes) use ($discord) {
+			$mes->reply("testing");
+		});
+		
+	}
+	
+	function createReminder($args, $message, $discord) {
+		
+		if (empty($args) || !is_int($args[1]) || !preg_match("/(min(ute)?|hour|day|week|month)s?/,$args[2])) { return $message->reply("Syntax: !remindme *int* *timeperiod* [message] (eg: !remindme 5 mins/days/months [message])"); }
+		
 	}
 	
 }
