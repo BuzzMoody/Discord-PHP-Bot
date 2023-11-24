@@ -337,7 +337,9 @@ class Commands {
 		
 		print_r($args2);
 		
-		if (empty($args) || !is_int($args2[0]) || !preg_match("/(min(?:ute)?|hour|day|week|month)s?/",$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
+		if (empty($args)) { return $message->reply("no args"); }
+		elseif (!is_int($args2[0])) { return $message->reply("no integer"); }
+		elseif (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
 		
 		echo "success";
 	
