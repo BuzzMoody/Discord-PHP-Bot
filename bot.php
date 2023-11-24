@@ -33,7 +33,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 
     $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
-        echo "(".date("d/m h:i:sA").") [{$message->channel->name}] {$message->author->username}: {$message->content}\n";
+        echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
 			$commands->execute($message, $discord);
@@ -41,9 +41,9 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		
     });
 	
-	$discord->getLoop()->addPeriodicTimer(60, function () use ($commands, $discord) {
-		$commands->checkReminders($discord);
-	});
+	// $discord->getLoop()->addPeriodicTimer(15, function () use ($commands, $discord) {
+		// $commands->checkReminders($discord);
+	// });
 	
 });
 

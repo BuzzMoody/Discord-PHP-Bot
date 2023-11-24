@@ -64,9 +64,9 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
-			case (preg_match('/^(remindme)/', $command) ? true : false):
-				$this->createReminder($args, $message, $discord);
-				break;
+			// case (preg_match('/^(remindme)/', $command) ? true : false):
+				// $this->createReminder($args, $message, $discord);
+				// break;
 				
 			case "apex":
 				$this->apex($message, $discord);
@@ -323,11 +323,37 @@ class Commands {
 		
 		echo "Checking reminders...\n";
 		
-		// $guild = $discord->guilds->get('id', '232691831090053120');
-		// $channel = $guild->channels->get('id', '232691831090053120');
-		// $channel->messsages->fetch('MESSAGEID')->done(function (Message $mes) use ($discord) {
-			// $mes->reply("testing");
-		// });
+		$time = time();
+		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
+		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
+		
+		if ($result->num_rows > 0) {
+			while($row = $result->fetch_assoc()) {
+				$userid = $row['userid'];
+				$messageid = $row['messageid'];
+				$guild = $discord->guilds->get('id', '232691831090053120');
+				$channel = $guild->channels->get('id', '232691831090053120');
+				$message = $channel->messages->fetch('id''1177464569078231120');
+				$message->reply("test");
+				echo "Message\n"
+				//$message->reply("Testing");
+				// $userid = $row['userid'];
+				// $messageid = $row['messageid'];
+				// $guild = $discord->guilds->get('id', '232691831090053120');
+				// $channel = $guild->channels->get('id', '232691831090053120');
+				// $message = $channel->messsages->fetch($messageid, true);
+				// print_r($message);
+					// echo "I would do the reminder notification here!\n";
+					// $mes->reply("testing");
+				// });
+			}
+		}
+		
+		else {
+			
+			echo "No reminders.\n";
+			
+		}
 		
 	}
 	
@@ -335,14 +361,42 @@ class Commands {
 		
 		$args2 = explode(" ", $args);
 		
-		print_r($args2);
-		
 		if (empty($args)) { return $message->reply("no args"); }
-		elseif (!is_num($args2[0])) { return $message->reply("no number"); }
+		elseif (!is_numeric($args2[0])) { return $message->reply("no number"); }
 		elseif (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
 		
-		echo "success";
+		$replaced = preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1]);
+		
+		$userid = $message->author->id;
+		$messageid = $message->id;
+		$time = time() + (intval($args2[0]) * intval($replaced));
+		
+		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
+
+		if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid) VALUES ({$userid}, {$time}, {$messageid})")) {
+			$message->reply("Reminder created.");
+		}
+		else {
+			$message->reply("I threw more errors than I know what to do with");
+		}
 	
+	}
+	
+	function test($message, $discord) {
+		
+		$guild = $discord->guilds->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '274828566909157377');
+		$discord->factory(Discord\Parts\Message\Message::class, [
+			'id' => '1177464569078231120'
+		])->reply('test');
+		// $channel->messages->fetch('1177464569078231120')->done(function (Message $mes) {
+			// print_r($message);
+			// print_r($mes);
+		// })->otherwise(function ($e) { echo $e; });
+		
+		//print_r($message->channel);
+		
+		
 	}
 	
 }
