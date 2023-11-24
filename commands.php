@@ -321,11 +321,11 @@ class Commands {
 	
 	function checkReminders($message, $discord) {
 		
-		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '232691831090053120');
-		$channel->messsages->fetch('MESSAGEID')->done(function (Message $mes) use ($discord) {
-			$mes->reply("testing");
-		});
+		// $guild = $discord->guilds->get('id', '232691831090053120');
+		// $channel = $guild->channels->get('id', '232691831090053120');
+		// $channel->messsages->fetch('MESSAGEID')->done(function (Message $mes) use ($discord) {
+			// $mes->reply("testing");
+		// });
 		
 	}
 	
