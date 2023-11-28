@@ -207,7 +207,7 @@ class Commands {
 			$date->setTimezone(new DateTimeZone("Australia/Melbourne"));
 			$localDate = $date->format('D jS');
 			
-			$desc = preg_replace(array('/mostly_sunny/', '/shower/', '/rain/', '/storm/', '/cloudy/', '/sunny/'), array(, '🌤️', '🌦️', '🌧️', '🌩️', '☁️', '☀️'), $info->icon_descriptor);
+			$desc = preg_replace(array('/mostly_sunny/', '/shower/', '/rain/', '/storm/', '/cloudy/', '/sunny/'), array('🌤️', '🌦️', '🌧️', '🌩️', '☁️', '☀️'), $info->icon_descriptor);
 			$fire = (!empty($info->fire_danger)) ? " (🔥 {$info->fire_danger})" : "";
 			
 			$output .= "{$localDate}: {$info->temp_max}° {$desc}{$fire}";
