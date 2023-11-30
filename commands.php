@@ -364,7 +364,7 @@ class Commands {
 		else {
 		
 			if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$userid}, {$time}, {$messageid}, {$message->channel->id})")) {
-				$message->react('😀')->done(function () {
+				$message->react('⏲️')->done(function () {
 					echo "HERE\n";
 				});
 				echo "THERE\n";
