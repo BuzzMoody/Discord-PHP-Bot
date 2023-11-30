@@ -79,10 +79,7 @@ class Commands {
 			case "reload":
 				$this->reload($message, $discord);
 				break;
-		
-			case "test":
-				$this->test($message);
-				break;
+
 		}
 		
 	}
@@ -381,10 +378,6 @@ class Commands {
 			exec("git pull https://buzz:{$this->keys['gh']}@github.com/BuzzMoody/Discord-PHP-Bot.git");
 			die();
 		}
-	}
-	
-	function test($message) {
-		return $message->reply("What?");
 	}
 	
 }
