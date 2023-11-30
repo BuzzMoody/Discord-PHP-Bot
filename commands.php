@@ -319,43 +319,33 @@ class Commands {
 		$message->channel->sendMessage($data[1]." ends in ".$data[2]." | Next Map: ".$next[1][1]);
 	}
 	
-	// function checkReminders($discord) {
+	function checkReminders($discord) {
 		
-		// echo "Checking reminders...\n";
+		echo "Checking reminders...\n";
 		
-		// $time = time();
-		// $mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
-		// $result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
+		$time = time();
+		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
+		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
 		
-		// if ($result->num_rows > 0) {
-			// while($row = $result->fetch_assoc()) {
-				// $userid = $row['userid'];
-				// $messageid = $row['messageid'];
-				// $guild = $discord->guilds->get('id', '232691831090053120');
-				// $channel = $guild->channels->get('id', '232691831090053120');
-				// $message = $channel->messages->fetch('id''1177464569078231120');
-				// $message->reply("test");
-				// echo "Message\n"
-				// //$message->reply("Testing");
-				// // $userid = $row['userid'];
-				// // $messageid = $row['messageid'];
-				// // $guild = $discord->guilds->get('id', '232691831090053120');
-				// // $channel = $guild->channels->get('id', '232691831090053120');
-				// // $message = $channel->messsages->fetch($messageid, true);
-				// // print_r($message);
-					// // echo "I would do the reminder notification here!\n";
-					// // $mes->reply("testing");
-				// // });
-			// }
-		// }
+		if ($result->num_rows > 0) {
+			while($row = $result->fetch_assoc()) {
+				$userid = $row['userid'];
+				$messageid = $row['messageid'];
+				$guild = $discord->guilds->get('id', '232691831090053120');
+				$channel = $guild->channels->get('id', '232691831090053120');
+				$channel->messages->fetch($messageid)->done(function (Message $message) {
+					print_r($message);
+				});	
+			}
+		}
 		
-		// else {
+		else {
 			
-			// echo "No reminders.\n";
+			echo "No reminders.\n";
 			
-		// }
+		}
 		
-	// }
+	}
 	
 	// function createReminder($args, $message, $discord) {
 		
