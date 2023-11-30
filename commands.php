@@ -64,9 +64,9 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
-			// case (preg_match('/^(remindme)/', $command) ? true : false):
-				// $this->createReminder($args, $message, $discord);
-				// break;
+			case (preg_match('/^(remindme)/', $command) ? true : false):
+				$this->createReminder($args, $message, $discord);
+				break;
 				
 			case "apex":
 				$this->apex($message, $discord);
