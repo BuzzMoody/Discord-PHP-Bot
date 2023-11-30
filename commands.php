@@ -75,6 +75,10 @@ class Commands {
 			case "uptime":
 				$this->uptime($message);
 				break;
+				
+			case "reload":
+				$this->reload($message, $discord);
+				break;
 		
 		}
 		
@@ -327,54 +331,53 @@ class Commands {
 		
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()) {
-				$userid = $row['userid'];
-				$messageid = $row['messageid'];
-				$time = $row['time'];
-				$channelid = $row['channelid'];
 				$guild = $discord->guilds->get('id', '232691831090053120');
-				$channel = $guild->channels->get('id', $channelid);
-				$channel->sendMessage("<@{$userid}> Here is your reminder: https://discord.com/channels/232691831090053120/{$channelid}/{$messageid}");
-				$mysqli->query("DELETE FROM reminders WHERE time = '{$time}'");
+				$channel = $guild->channels->get('id', $row['channelid']);
+				$channel->sendMessage("<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}");
+				$mysqli->query("DELETE FROM reminders WHERE time = '{$row['time']}'");
 			}
 		}
 		
+		$mysqli->close();
+		
 	}
 	
-	function createReminder($args, $message, $discord) {
-		
-		$args2 = explode(" ", $args);
+	function createReminder($args, $message, $discord) {	
 		
 		if (empty($args)) { return $message->reply("no args"); }
-		elseif (!is_numeric($args2[0]) && $args[2] > 0) { return $message->reply("no number"); }
-		elseif (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
 		
-		$replaced = preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1]);
-		
-		$userid = $message->author->id;
-		$messageid = $message->id;
-		$time = time() + (intval($args2[0]) * intval($replaced));
+		$args2 = explode(" ", $args);	
+		if (!is_numeric(intval($args2[0])) || intval($args2[0]) < 1) { return $message->reply("Must be valid positive number"); }
+		if (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
+
+		$time = time() + (intval($args2[0]) * intval(preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1])));
 		
 		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
-		
-		$result = $mysqli->query("SELECT * FROM reminders WHERE userid = '{$userid}'");
+		$result = $mysqli->query("SELECT * FROM reminders WHERE userid = '{$message->author->id}'");
 		
 		if ($result->num_rows > 4) {
 			$message->reply("You have the maximum amount of reminders set already.");
 		}
 		else {
 		
-			if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$userid}, {$time}, {$messageid}, {$message->channel->id})")) {
-				$message->react('⏲️')->done(function () {
-					echo "HERE\n";
-				});
-				echo "THERE\n";
+			if ($mysqli->query("INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$message->author->id}, {$time}, {$message->id}, {$message->channel->id})")) {
+				$message->react('⏲️');
 			}
 			else {
 				$message->reply("I threw more errors than I know what to do with");
 			}
 		
 		}
+		
+		$mysqli->close();
 	
+	}
+	
+	function reload($message, $discord) { 
+		if ($this->isAdmin($message->author->id, $discord)) {
+			exec("git pull https://buzz:{$this->keys['gh']}@github.com/BuzzMoody/Discord-PHP-Bot.git");
+			die();
+		}
 	}
 	
 }
