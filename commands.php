@@ -64,7 +64,7 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
-			case (preg_match('/^(remindme)/', $command) ? true : false):
+			case (preg_match('/^(remind(?:me|er))/', $command) ? true : false):
 				$this->createReminder($args, $message, $discord);
 				break;
 				
@@ -364,7 +364,10 @@ class Commands {
 		else {
 		
 			if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$userid}, {$time}, {$messageid}, {$message->channel->id})")) {
-				$message->react('️:timer:')->done(function() { });
+				$message->react('😀')->done(function () {
+					echo "HERE\n";
+				});
+				echo "THERE\n";
 			}
 			else {
 				$message->reply("I threw more errors than I know what to do with");
