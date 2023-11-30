@@ -321,8 +321,6 @@ class Commands {
 	
 	function checkReminders($discord) {
 		
-		echo "Checking reminders...\n";
-		
 		$time = time();
 		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
 		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
@@ -332,18 +330,12 @@ class Commands {
 				$userid = $row['userid'];
 				$messageid = $row['messageid'];
 				$time = $row['time'];
-				$channelid = (empty($row['channelid'])) ? '232691831090053120' : $row['channelid'];
+				$channelid = $row['channelid'];
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $channelid);
 				$channel->sendMessage("<@{$userid}> Here is your reminder: https://discord.com/channels/232691831090053120/{$channelid}/{$messageid}");
 				$mysqli->query("DELETE FROM reminders WHERE time = '{$time}'");
 			}
-		}
-		
-		else {
-			
-			echo "No reminders.\n";
-			
 		}
 		
 	}
@@ -363,12 +355,21 @@ class Commands {
 		$time = time() + (intval($args2[0]) * intval($replaced));
 		
 		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
-
-		if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid) VALUES ({$userid}, {$time}, {$messageid})")) {
-			$message->reply("Reminder created.");
+		
+		$result = $mysqli->query("SELECT * FROM reminders WHERE userid = '{$userid}'");
+		
+		if ($result->num_rows > 4) {
+			$message->reply("You have the maximum amount of reminders set already.");
 		}
 		else {
-			$message->reply("I threw more errors than I know what to do with");
+		
+			if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$userid}, {$time}, {$messageid}, {$message->channel->id})")) {
+				$message->reply("Reminder created.");
+			}
+			else {
+				$message->reply("I threw more errors than I know what to do with");
+			}
+		
 		}
 	
 	}
