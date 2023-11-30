@@ -335,7 +335,7 @@ class Commands {
 				$channelid = (empty($row['channelid'])) ? '232691831090053120' : $row['channelid'];
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $channelid);
-				$channel->sendMessage("@{$userid} Here is your reminder: https://discord.com/channels/232691831090053120/{$channelid}/{$messageid}");
+				$channel->sendMessage("@<{$userid}> Here is your reminder: https://discord.com/channels/232691831090053120/{$channelid}/{$messageid}");
 				$mysqli->query("DELETE FROM reminders WHERE time = '{$time}'");
 			}
 		}
