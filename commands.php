@@ -345,7 +345,7 @@ class Commands {
 		$args2 = explode(" ", $args);
 		
 		if (empty($args)) { return $message->reply("no args"); }
-		elseif (!is_numeric($args2[0])) { return $message->reply("no number"); }
+		elseif (!is_numeric($args2[0]) && $args[2] > 0) { return $message->reply("no number"); }
 		elseif (!preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) { return $message->reply("Syntax: !remindme 5 mins/hours/days [message]"); }
 		
 		$replaced = preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1]);
@@ -364,7 +364,7 @@ class Commands {
 		else {
 		
 			if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$userid}, {$time}, {$messageid}, {$message->channel->id})")) {
-				$message->reply("Reminder created.");
+				$message->react('️⏲️');
 			}
 			else {
 				$message->reply("I threw more errors than I know what to do with");
