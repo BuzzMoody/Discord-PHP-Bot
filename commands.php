@@ -364,7 +364,7 @@ class Commands {
 		else {
 		
 			if (mysqli_query($mysqli, "INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$userid}, {$time}, {$messageid}, {$message->channel->id})")) {
-				$message->react('️⏲️');
+				$message->react('️:timer:');
 			}
 			else {
 				$message->reply("I threw more errors than I know what to do with");
