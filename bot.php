@@ -28,6 +28,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	$activity = $discord->factory(Activity::class, [
 		'name' => 'RuneScape',
 		'type' => Activity::TYPE_PLAYING,
+		'state' => 'This is custom text'
 	]);
 	$discord->updatePresence($activity);
 
