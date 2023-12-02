@@ -352,11 +352,13 @@ class Commands {
 
 		$time = time() + (intval($args2[0]) * intval(preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1])));
 		
+		if ($time > (time() + 2592000*12)) { return $message->reply("Too far into the future lol."); }
+		
 		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
 		$result = $mysqli->query("SELECT * FROM reminders WHERE userid = '{$message->author->id}'");
 		
 		if ($result->num_rows > 4) {
-			$message->reply("You have the maximum amount of reminders set already.");
+			 return $message->reply("You have the maximum amount of reminders set already.");
 		}
 		else {
 		
