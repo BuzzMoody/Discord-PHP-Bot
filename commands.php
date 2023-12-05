@@ -209,7 +209,7 @@ class Commands {
 			
 			$date = new DateTime($info->date);
 			$date->setTimezone(new DateTimeZone("Australia/Melbourne"));
-			$localDate = $date->format('D jS');
+			$localDate = $date->format('D dS');
 			
 			$desc = preg_replace(array('/mostly_sunny/', '/shower/', '/rain/', '/storm/', '/cloudy/', '/sunny/'), array('🌤️', '🌦️', '🌧️', '🌩️', '☁️', '☀️'), $info->icon_descriptor);
 			$fire = (!empty($info->fire_danger)) ? " (🔥 {$info->fire_danger})" : "";
