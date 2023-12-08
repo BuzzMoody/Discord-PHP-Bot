@@ -68,6 +68,10 @@ class Commands {
 				$this->createReminder($args, $message, $discord);
 				break;
 				
+			case "radar":
+				$this->radar($message);
+				break;
+				
 			case "apex":
 				$this->apex($message, $discord);
 				break;
@@ -373,6 +377,13 @@ class Commands {
 		
 		$mysqli->close();
 	
+	}
+	
+	function radar($message) {
+		
+		file_put_contents("radar.gif", file_get_contents("ftp://anonymous:@ftp.bom.gov.au/anon/gen/radar/IDR023.gif"));
+		$message->channel->sendFile("/home/buzz/bot-php/radar.gif", "radar.gif");
+		
 	}
 	
 	function reload($message, $discord) { 
