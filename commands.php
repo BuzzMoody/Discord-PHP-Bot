@@ -69,7 +69,7 @@ class Commands {
 				break;
 				
 			case "radar":
-				$this->radar($message);
+				$this->radar($message, $discord);
 				break;
 				
 			case "apex":
@@ -386,7 +386,7 @@ class Commands {
 	
 	}
 	
-	function radar($message) {
+	function radar($message, $discord) {
 		
 		file_put_contents("radar.gif", file_get_contents("ftp://anonymous:@ftp.bom.gov.au/anon/gen/radar/IDR023.gif"));
 		$message->channel->sendFile("/home/buzz/bot-php/radar.gif", "radar.gif");
