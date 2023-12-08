@@ -388,7 +388,7 @@ class Commands {
 	
 	function radar($message, $discord) {
 		
-		file_put_contents("radar.gif", file_get_contents("http://www.bom.gov.au/radar/IDR023.gif"));
+		file_put_contents("radar.gif", file_get_contents("ftp://anonymous:@ftp.bom.gov.au/anon/gen/radar/IDR023.gif"));
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
