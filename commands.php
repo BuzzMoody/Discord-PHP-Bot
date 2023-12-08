@@ -393,7 +393,7 @@ class Commands {
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
 			->setDescription($this->getTemp())
-			->setImage("/home/buzz/bot-php/radar.gif");
+			->setImage("/home/buzz/bot-php/radar.gif")
 			->setColor("0x00A9FF")
 			->setTimestamp()
 			->setFooter("BOM", "http://www.bom.gov.au/images/touch-icon/touch-icon-76x76.png");
