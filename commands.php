@@ -388,12 +388,11 @@ class Commands {
 	
 	function radar($message, $discord) {
 		
-		file_put_contents("radar.gif", file_get_contents("ftp://anonymous:@ftp.bom.gov.au/anon/gen/radar/IDR023.gif"));
-		$message->channel->sendFile("/home/buzz/bot-php/radar.gif", "radar.gif");
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
 			->setDescription($this->getTemp())
+			->setImage("http://www.bom.gov.au/radar/IDR023.gif");
 			->setColor("0x00A9FF")
 			->setTimestamp()
 			->setFooter("BOM", "http://www.bom.gov.au/images/touch-icon/touch-icon-76x76.png");
