@@ -190,14 +190,21 @@ class Commands {
 		
 	}
 	
-	function temp($message) {
+	function getTemp() {
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "https://api.weather.bom.gov.au/v1/locations/r1ppvy/observations");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
 		$temp = json_decode(curl_exec($ch));
-		$message->channel->sendMessage("{$temp->data->temp}° (Feels {$temp->data->temp_feels_like}°) | Wind: {$temp->data->wind->speed_kilometre}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp->data->wind->direction)." | Humidity: {$temp->data->humidity}% | Rain: {$temp->data->rain_since_9am}mm");
+		return "{$temp->data->temp}° (Feels {$temp->data->temp_feels_like}°) | Wind: {$temp->data->wind->speed_kilometre}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp->data->wind->direction)." | Humidity: {$temp->data->humidity}% | Rain: {$temp->data->rain_since_9am}mm";
+
+		
+	}
+	
+	function temp($message) {
+		
+		$message->channel->sendMessage($this->getTemp());
 		
 	}
 	
@@ -383,6 +390,14 @@ class Commands {
 		
 		file_put_contents("radar.gif", file_get_contents("ftp://anonymous:@ftp.bom.gov.au/anon/gen/radar/IDR023.gif"));
 		$message->channel->sendFile("/home/buzz/bot-php/radar.gif", "radar.gif");
+		$embed = $discord->factory(Embed::class);
+		$embed->setTitle("Melbourne Weather Radar")
+			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
+			->setDescription($this->getTemp())
+			->setColor("0x00A9FF")
+			->setTimestamp()
+			->setFooter("BOM", "http://www.bom.gov.au/images/touch-icon/touch-icon-76x76.png");
+		$message->channel->sendEmbed($embed);
 		
 	}
 	
