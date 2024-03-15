@@ -168,7 +168,7 @@ class Commands {
 
 		$response = json_decode(curl_exec($curl));
 		
-		print_r($response);
+		file_put_contents('testing.txt', print_r($response, true));
 		
 		curl_close($curl);
 
