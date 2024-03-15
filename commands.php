@@ -44,8 +44,8 @@ class Commands {
 				$this->sinbin($args, $message, $discord);
 				break;
 			
-			case (preg_match('/^(bard|(open)?ai)/', $command) ? true : false):
-				$this->bard($args, $message, $discord);
+			case (preg_match('/^(bard|gemini|(open)?ai)/', $command) ? true : false):
+				$this->gemini($args, $message, $discord);
 				break;
 				
 			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
@@ -112,16 +112,17 @@ class Commands {
 	
 	}
 	
-	function bard($args, $message, $discord) {
+	function gemini($args, $message, $discord) {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 500 : 75;
+		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 500 : 100;
 		
 		$post_fields = array(
-			"maxOutputTokens" => $tokens,
-			"prompt" => array(
-				"text" => $args
+			"contents" => array(
+				"parts" => array(
+					"text" => $args
+				)
 			),
 			"safetySettings" => array(
 				array(
@@ -148,12 +149,18 @@ class Commands {
 					"category" => "HARM_CATEGORY_DANGEROUS",
 					"threshold" => "BLOCK_NONE"
 				)
+			),
+			"generationConfig" => array(
+				"temperature" => 1.0,
+				"maxOutputTokens" => $tokens,
+				"topK" => 1,
+				"topP" => 0.95
 			)
 		);
 		
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key='.$this->keys['bard'],
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key='.$this->keys['gemini'],
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -319,6 +326,7 @@ class Commands {
 	
 	function isAdmin($userID, $discord) {
 		
+		if ($userID == "232691181396426752") { return $testMember->roles->has('232692759557832704'); }
 		$testGuild = $discord->guilds->get('id', '232691831090053120');
 		$testMember = $testGuild->members->get('id', $userID);
 		return $testMember->roles->has('232692759557832704');
