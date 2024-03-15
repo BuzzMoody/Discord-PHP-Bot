@@ -117,11 +117,12 @@ class Commands {
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
 		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 400 : 200;
+		$words = ($this->isAdmin($message->author->id, $discord)) ? 200 : 50;
 		
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => $args
+					"text" => "You are a Discord chatbot so keep your responses short/under ".$words." words if possible: ".$args
 				)
 			),
 			"safetySettings" => array(
