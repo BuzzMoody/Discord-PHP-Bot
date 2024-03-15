@@ -116,7 +116,7 @@ class Commands {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 2000 : 300;
+		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 1000 : 300;
 		
 		$post_fields = array(
 			"contents" => array(
