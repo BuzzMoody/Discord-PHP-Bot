@@ -116,12 +116,12 @@ class Commands {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 1000 : 300;
+		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 400 : 200;
 		
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => $args.". Respond in under ".$tokens." characters"
+					"text" => $args
 				)
 			),
 			"safetySettings" => array(
@@ -144,7 +144,7 @@ class Commands {
 			),
 			"generationConfig" => array(
 				"temperature" => 0.9,
-				"maxOutputTokens" => 800,
+				"maxOutputTokens" => $tokens,
 				"topK" => 1,
 				"topP" => 0.95
 			)
@@ -152,7 +152,7 @@ class Commands {
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key='.$this->keys["gemini"],
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:streamGenerateContent?key='.$this->keys["gemini"],
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -186,9 +186,13 @@ class Commands {
 			
 		}
 
-		$string = (strlen($response->candidates[0]->content->parts[0]->text) > 1995) ? substr($response->candidates[0]->content->parts[0]->text,0,1995).'…' : $response->candidates[0]->content->parts[0]->text;
+		for ($x = 0; $x < count($response); $x++) {
+			$string .= @$response[$x]->candidates[0]->content->parts[0]->text;
+		}
+	
+		$output = (strlen($string) > 1995) ? substr($string,0,1995).'…' : $string;
 		
-		$message->channel->sendMessage($string);
+		$message->channel->sendMessage($output);
 		
 	}
 	
