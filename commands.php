@@ -121,7 +121,7 @@ class Commands {
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => "Describe in detail how clouds are formed"
+					"text" => $args
 				)
 			),
 			"safetySettings" => array(
@@ -152,7 +152,7 @@ class Commands {
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyBx69ONttkDR-nt-zvbqLW4CHMqZW9iWa0',
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key='.$this->keys->['gemini'],
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
