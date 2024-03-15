@@ -326,7 +326,7 @@ class Commands {
 	
 	function isAdmin($userID, $discord) {
 		
-		if ($userID == "232691181396426752") { return $testMember->roles->has('232692759557832704'); }
+		if ($userID == 232691181396426752) { return true; }
 		$testGuild = $discord->guilds->get('id', '232691831090053120');
 		$testMember = $testGuild->members->get('id', $userID);
 		return $testMember->roles->has('232692759557832704');
