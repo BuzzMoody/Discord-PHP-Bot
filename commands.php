@@ -116,12 +116,12 @@ class Commands {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
-		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 400 : 50;
+		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 2000 : 300;
 		
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => $args
+					"text" => $args.". Respond in under {$tokens} characters";
 				)
 			),
 			"safetySettings" => array(
@@ -143,8 +143,8 @@ class Commands {
 				)
 			),
 			"generationConfig" => array(
-				"temperature" => 1.0,
-				"maxOutputTokens" => $tokens,
+				"temperature" => 0.9,
+				"maxOutputTokens" => 800,
 				"topK" => 1,
 				"topP" => 0.95
 			)
