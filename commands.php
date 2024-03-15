@@ -121,7 +121,7 @@ class Commands {
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => $args.". Respond in under {$tokens} characters";
+					"text" => $args.". Respond in under ".$tokens." characters"
 				)
 			),
 			"safetySettings" => array(
