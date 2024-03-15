@@ -121,32 +121,24 @@ class Commands {
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => $args
+					"text" => "Describe in detail how clouds are formed"
 				)
 			),
 			"safetySettings" => array(
 				array(
-					"category" => "HARM_CATEGORY_VIOLENCE",
+					"category" => "HARM_CATEGORY_HATE_SPEECH",
 					"threshold" => "BLOCK_NONE"
 				),
 				array(
-					"category" => "HARM_CATEGORY_DEROGATORY",
+					"category" => "HARM_CATEGORY_SEXUALLY_EXPLICIT",
 					"threshold" => "BLOCK_NONE"
 				),
 				array(
-					"category" => "HARM_CATEGORY_TOXICITY",
+					"category" => "HARM_CATEGORY_HARASSMENT",
 					"threshold" => "BLOCK_NONE"
 				),
 				array(
-					"category" => "HARM_CATEGORY_SEXUAL",
-					"threshold" => "BLOCK_NONE"
-				),
-				array(
-					"category" => "HARM_CATEGORY_MEDICAL",
-					"threshold" => "BLOCK_NONE"
-				),
-				array(
-					"category" => "HARM_CATEGORY_DANGEROUS",
+					"category" => "HARM_CATEGORY_DANGEROUS_CONTENT",
 					"threshold" => "BLOCK_NONE"
 				)
 			),
@@ -157,10 +149,10 @@ class Commands {
 				"topP" => 0.95
 			)
 		);
-		
+
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key='.$this->keys['gemini'],
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyBx69ONttkDR-nt-zvbqLW4CHMqZW9iWa0',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -173,14 +165,15 @@ class Commands {
 				'Content-Type: application/json'
 			),
 		));
-		
+
 		$response = json_decode(curl_exec($curl));
+		
 		curl_close($curl);
-		
+
 		if (@$response->error->message) { return $message->reply($response->error->message); }
-		
+
 		else if (@$response->filters[0]->reason) { 
-		
+
 			if ($response->filters[0]->reason == "SAFETY") {
 				
 				return $message->reply("Error Reason: ".$response->filters[0]->reason." (".$response->safetyFeedback[0]->rating->category." -> ".$response->safetyFeedback[0]->rating->probability.")"); 
@@ -190,9 +183,9 @@ class Commands {
 			return $message->reply("Error Reason: ".$response->filters[0]->reason); 
 			
 		}
-		
-		$string = (strlen($response->candidates[0]->output) > 1995) ? substr($response->candidates[0]->output,0,1995).'…' : $response->candidates[0]->output;
 
+		$string = (strlen($response->candidates[0]->content->parts[0]->text) > 1995) ? substr($response->candidates[0]->content->parts[0]->text,0,1995).'…' : $response->candidates[0]->content->parts[0]->text;
+		
 		$message->channel->sendMessage($string);
 		
 	}
