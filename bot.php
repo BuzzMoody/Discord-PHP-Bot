@@ -26,9 +26,9 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
     echo "Bot is ready!\n";
 	
 	$activity = $discord->factory(Activity::class, [
-		'name' => 'RuneScape',
+		'name' => 'Raspberry Pi 5',
 		'type' => Activity::TYPE_PLAYING,
-		'state' => 'Currently flipping at the GE'
+		'state' => 'Tinkering... Testing...'
 	]);
 	$discord->updatePresence($activity);
 
