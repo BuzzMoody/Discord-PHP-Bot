@@ -64,9 +64,9 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
-			case (preg_match('/^(remind(?:me|er))/', $command) ? true : false):
-				$this->createReminder($args, $message, $discord);
-				break;
+			// case (preg_match('/^(remind(?:me|er))/', $command) ? true : false):
+				// $this->createReminder($args, $message, $discord);
+				// break;
 				
 			case "radar":
 				$this->radar($message, $discord);
@@ -90,7 +90,7 @@ class Commands {
 	
 	function sendBabe($babe, $message) {
 	
-		$imgDir = "/home/buzz/img/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
+		$imgDir = "/home/buzz/bot-php/img/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
 		$files = (is_dir($imgDir)) ? scandir($imgDir) : null;
 		if ($files) { 
 			$message->channel->sendFile("{$imgDir}/{$files[rand(2,(count($files) - 1))]}", $babe[0].".jpg");
