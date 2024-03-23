@@ -28,7 +28,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	$activity = $discord->factory(Activity::class, [
 		'name' => 'Raspberry Pi 5',
 		'type' => Activity::TYPE_PLAYING,
-		'state' => 'Tinkering... Testing...'
+		'state' => 'Tinkering... \nTesting...'
 	]);
 	$discord->updatePresence($activity);
 
