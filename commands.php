@@ -65,9 +65,9 @@ class Commands {
 				$this->runcli($args, $message, $discord);
 				break;
 				
-			// case (preg_match('/^(remind(?:me|er))/', $command) ? true : false):
-				// $this->createReminder($args, $message, $discord);
-				// break;
+			case (preg_match('/^(remind(?:me|er))/', $command) ? true : false):
+				$this->createReminder($args, $message, $discord);
+				break;
 				
 			case "radar":
 				$this->radar($message, $discord);
