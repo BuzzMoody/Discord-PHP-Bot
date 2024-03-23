@@ -18,9 +18,9 @@ class Commands {
 	function execute($message, $discord) {
 		
 		$inputs = explode(" ", trim($message->content));
-		$command = substr(strtolower($inputs[0], 1));
+		$command = substr($inputs[0], 1));
 		array_shift($inputs);
-		$args = implode(" ", $inputs);
+		$args = strtolower(implode(" ", $inputs));
 		
 		switch ($command) {
 			
@@ -412,6 +412,7 @@ class Commands {
 	
 	function reload($message, $discord) { 
 		if ($this->isAdmin($message->author->id, $discord)) {
+			exec("git stash");
 			exec("git pull https://buzz:{$this->keys['gh']}@github.com/BuzzMoody/Discord-PHP-Bot.git");
 			die();
 		}
