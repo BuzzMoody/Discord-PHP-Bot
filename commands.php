@@ -20,9 +20,9 @@ class Commands {
 		$inputs = explode(" ", trim($message->content));
 		$command = substr($inputs[0], 1);
 		array_shift($inputs);
-		$args = strtolower(implode(" ", $inputs));
+		$args = implode(" ", $inputs);
 		
-		switch ($command) {
+		switch (strtolower($command)) {
 			
 			case "ping":
 				$message->reply("Pong!");
