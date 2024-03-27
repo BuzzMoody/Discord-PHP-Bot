@@ -27,8 +27,8 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	
 	$activity = $discord->factory(Activity::class, [
 		'name' => 'Raspberry Pi 5',
-		'type' => Activity::TYPE_PLAYING,
-		'state' => 'Tinkering... \nTesting...'
+		'type' => Activity::TYPE_LISTENING,
+		'state' => $client->users->count()
 	]);
 	$discord->updatePresence($activity);
 
