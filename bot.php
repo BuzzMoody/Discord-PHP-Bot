@@ -62,6 +62,7 @@ function updateActivity($discord) {
 
 function getMemberCount($discord) {
 	$countGuild = $discord->guilds->get('id', '232691831090053120');
+	$count = 0;
 	foreach ($countGuild->members as $countMember) {
 		if ($countMember->status != NULL && $countMember->status != "offline") { @$count++; }
 	}
