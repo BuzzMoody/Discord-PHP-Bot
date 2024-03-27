@@ -45,17 +45,20 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($commands, $discord) {
 		$commands->checkReminders($discord);
-		
-		$activity = $discord->factory(Activity::class, [
-			'name' => getMemberCount($discord)." Incels",
-			'type' => Activity::TYPE_LISTENING,
-		]);
-		$discord->updatePresence($activity);
+		updateActivity($discord);	
 	});
 	
 });
 
 $discord->run();
+
+function updateActivity($discord) {
+	$activity = $discord->factory(Activity::class, [
+		'name' => getMemberCount($discord)." Incels",
+		'type' => Activity::TYPE_LISTENING,
+	]);
+	$discord->updatePresence($activity);
+}
 
 function getMemberCount($discord) {
 	$countGuild = $discord->guilds->get('id', '232691831090053120');
