@@ -303,9 +303,10 @@ class Commands {
 	
 	function sinbin($args, $message, $discord) {
 		
-		if (empty($args)) { return $message->reply("Try !sinbin @username"); }
-		
 		if ($this->isAdmin($message->author->id, $discord)) {
+			
+			if (empty($args)) { return $message->reply("Try !sinbin @username"); }
+		
 			$argz = explode(" ", $args);
 			$sbID = str_replace(array('<','@','!','>', '&'),'', $argz[0]);
 		 	$sbGuild = $discord->guilds->get('id', '232691831090053120');
@@ -313,6 +314,7 @@ class Commands {
 			$time = (count($argz) <= 1) ? 1 : $argz[1];
 			$sbMember->timeoutMember(new Carbon("{$time} minutes"))->done(function () {});
 			$message->channel->sendMessage("{$argz[0]} has been given a {$time} minute timeout");
+			
 		}
 		
 	}
