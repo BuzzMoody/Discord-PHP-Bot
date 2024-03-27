@@ -26,11 +26,12 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
     echo "Bot is ready!\n";
 	
 	$activity = $discord->factory(Activity::class, [
-		'name' => 'Raspberry Pi 5',
+		'name' => getMemberCount($discord)." Incels",
 		'type' => Activity::TYPE_LISTENING,
-		'state' => $discord->client->users->count()
 	]);
 	$discord->updatePresence($activity);
+	
+	getMemberCount($discord);
 
     $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
@@ -44,10 +45,24 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($commands, $discord) {
 		$commands->checkReminders($discord);
+		
+		$activity = $discord->factory(Activity::class, [
+			'name' => getMemberCount($discord)." Incels",
+			'type' => Activity::TYPE_LISTENING,
+		]);
+		$discord->updatePresence($activity);
 	});
 	
 });
 
 $discord->run();
+
+function getMemberCount($discord) {
+	$countGuild = $discord->guilds->get('id', '232691831090053120');
+	foreach ($countGuild->members as $countMember) {
+		if ($countMember->status != NULL) { @$count++; }
+	}
+	return $count-1;
+}
 
 ?>
