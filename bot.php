@@ -67,7 +67,7 @@ function getMemberCount($discord) {
 	foreach ($countGuild->members as $countMember) {
 		if ($countMember->status != NULL) { @$count++; }
 	}
-	file_put_contents("user-amount-".$count.".txt", print_r($countGuild, true));
+	file_put_contents("user-amount-".$count.".txt", print_r($countGuild->members, true));
 	return $count-1;
 }
 
