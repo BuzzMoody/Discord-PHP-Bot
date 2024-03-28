@@ -170,26 +170,14 @@ class Commands {
 
 		$response = json_decode(curl_exec($curl));
 		
-		file_put_contents('testing.txt', print_r($response, true));
-		
 		curl_close($curl);
 
-		if (@$response->error->message) { return $message->reply($response->error->message); }
+		if (@$response[0]->error->message) { return $message->reply($response[0]->error->message); }
 
-		else if (@$response->filters[0]->reason) { 
-
-			if ($response->filters[0]->reason == "SAFETY") {
-				
-				return $message->reply("Error Reason: ".$response->filters[0]->reason." (".$response->safetyFeedback[0]->rating->category." -> ".$response->safetyFeedback[0]->rating->probability.")"); 
-				
-			}
-			
-			return $message->reply("Error Reason: ".$response->filters[0]->reason); 
-			
-		}
+		else if (@$response[0]->blockReason) { return $message->reply( "Error Reason: ".$response[0]->blockReason); }
 
 		for ($x = 0; $x < count($response); $x++) {
-			$string .= @$response[$x]->candidates[0]->content->parts[0]->text;
+			@$string .= @$response[$x]->candidates[0]->content->parts[0]->text;
 		}
 	
 		$output = (strlen($string) > 1995) ? substr($string,0,1995).'…' : $string;
