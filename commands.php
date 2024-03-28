@@ -289,7 +289,7 @@ class Commands {
 		$message->channel->sendEmbed($embed);
 	}
 	
-	function sinbin($args, $message, $discord, $filter == false) {
+	function sinbin($args, $message, $discord, $filter = false) {
 		
 		if ($this->isAdmin($message->author->id, $discord) || $filter == true) {
 			
