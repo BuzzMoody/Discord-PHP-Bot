@@ -289,9 +289,9 @@ class Commands {
 		$message->channel->sendEmbed($embed);
 	}
 	
-	function sinbin($args, $message, $discord) {
+	function sinbin($args, $message, $discord, $filter == false) {
 		
-		if ($this->isAdmin($message->author->id, $discord)) {
+		if ($this->isAdmin($message->author->id, $discord) || $filter == true) {
 			
 			if (empty($args)) { return $message->reply("Try !sinbin @username"); }
 		
