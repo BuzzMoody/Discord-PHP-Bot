@@ -300,7 +300,7 @@ class Commands {
 		 	$sbGuild = $discord->guilds->get('id', '232691831090053120');
 			$sbMember = $sbGuild->members->get('id', strval($sbID));
 			$time = (count($argz) <= 1) ? 1 : $argz[1];
-			$reason = ($argz[2] != null) ? implode(array_slice($argz, 2)) : "";
+			$reason = ($argz[2] != null) ? implode(' ', array_slice($argz, 2)) : "";
 			$sbMember->timeoutMember(new Carbon("{$time} minutes"))->done(function () {});
 			$message->channel->sendMessage("{$argz[0]} has been given a {$time} minute timeout. {$reason}");
 			
