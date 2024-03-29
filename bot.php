@@ -38,11 +38,11 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (preg_match('/(angela white|porn)/i', @$message->content) && $message->author->id == 119735534951202816) { 
-			$commands->sinbin("119735534951202816 10 minutes No more porn 4 you", $message, $discord, TRUE);
+			$commands->sinbin("<@119735534951202816> 10 minutes No more porn 4 you", $message, $discord, TRUE);
 		}
 		
 		else if (preg_match('/cocaine/i', @$message->content) && $message->author->id == 193735519258148864) { 
-			$commands->sinbin("193735519258148864 10 minutes Don't do drugs", $message, $discord, TRUE);
+			$commands->sinbin("<@193735519258148864> 10 minutes Don't do drugs", $message, $discord, TRUE);
 		}
 		
 		else if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
