@@ -434,14 +434,14 @@ class Commands {
 
 			if ($this->checkNew($details[$i]['user'], $response[0]->match_id)) {
 				
-				$keys = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
+				$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 				$details[$i]['matchid'] = $response[0]->match_id;
 				
 				if (
 					$i == 0 || 
-					$i > 0 && @$keys[0] == 1 && $response[0]->match_id == $details[($i-1)]['matchid'] && count($details[($i-1)]) > 2 || 
-					$i > 0 && @!$keys[0] && $response[0]->match_id == $details[($i-1)]['matchid'] ||
-					$i > 0 && @!$keys[0] && $details[($i-1)]['matchid'] == null
+					$i > 0 && @$keyz[0] == 1 && $response[0]->match_id == $details[($i-1)]['matchid'] && count($details[($i-1)]) > 2 || 
+					$i > 0 && @!$keyz[0] && $response[0]->match_id == $details[($i-1)]['matchid'] ||
+					$i > 0 && @!$keyz[0] && $details[($i-1)]['matchid'] == null
 				) {
 				
 					$details[$i]['matchid'] = $response[0]->match_id;
