@@ -423,7 +423,7 @@ class Commands {
 
 			$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1";
 			
-			$content = @file_get_contents($url);
+			$content = file_get_contents($url);
 			
 			if ($content === FALSE) { return; }
 
