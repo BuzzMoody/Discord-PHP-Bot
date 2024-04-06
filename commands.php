@@ -473,7 +473,7 @@ class Commands {
 				->setColor("0x00A9FF")
 				->setTimestamp()
 				->setFooter("Powered by OpenDota");
-			$desc = "\n";
+			$desc = "\n\n";
 			for ($x = 0; $x < count($details); $x++) {
 				if (@$details[$x]['new']) {
 					$id = $x;
