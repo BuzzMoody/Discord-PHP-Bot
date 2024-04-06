@@ -478,11 +478,11 @@ class Commands {
 				if (@$details[$x]['new']) {
 					$id = $x;
 					$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
-					$embed->addFieldValues($details[$x]['user'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
+					$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n", true);
 				}
 			}
-			$embed->setDescription($desc);
-			$embed->addFieldValues("Game Information", "Start Time: {$game->start}\nLength: {$game->length}\n", false);
+			$embed->setDescription($desc."\n");
+			$embed->addFieldValues("Game Information", "Start Time: {$game['start']}\nLength: {$game['length']}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
 			$channel = $guild->channels->get('id', '274828566909157377');
