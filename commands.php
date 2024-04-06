@@ -483,7 +483,7 @@ class Commands {
 	
 	function checkNew($id, $matchID) {
 
-		$mysqli = mysqli_connect('localhost', 'buzz', 'buzzydude1', 'discord');
+		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
 		$result = $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'");
 		$mysqli->close();
 		if ($result->num_rows == 0) { return true; }
@@ -493,7 +493,7 @@ class Commands {
 
 	function updateMatch($id, $matchID) {
 		
-		$mysqli = mysqli_connect('localhost', 'buzz', 'buzzydude1', 'discord');
+		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
 		$result = $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'");
 		$mysqli->close();
 		
