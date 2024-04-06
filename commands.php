@@ -452,8 +452,8 @@ class Commands {
 					$details[$i]['win'] = ($response[0]->radiant_win == false && $details[$i]['team'] == "Radiant") ? "Lost" : "Won";
 					$details[$i]['hero'] = $this->heroes[$response[0]->hero_id];
 					$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
-					$details['start'] = $response[0]->start_time;
-					$details['length'] = gmdate("H:i:s", $response[0]->duration);
+					$details[4]['start'] = $response[0]->start_time;
+					$details[4]['length'] = gmdate("H:i:s", $response[0]->duration);
 					$games++;
 					$this->updateMatch($details[$i]['user'], $response[0]->match_id);
 					
@@ -481,7 +481,7 @@ class Commands {
 				}
 			}
 			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-			$tz->setTimestamp($details['start']);
+			$tz->setTimestamp($details[4]['start']);
 			$embed->setDescription($desc."\n");
 			$embed->addFieldValues("Game Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$details['length']}\n", false);
 			
