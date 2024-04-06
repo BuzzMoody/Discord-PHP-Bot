@@ -452,8 +452,8 @@ class Commands {
 					$details[$i]['win'] = ($response[0]->radiant_win == false && $details[$i]['team'] == "Radiant") ? "Lost" : "Won";
 					$details[$i]['hero'] = $this->heroes[$response[0]->hero_id];
 					$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
-					$details[4]['start'] = $response[0]->start_time;
-					$details[4]['length'] = gmdate("H:i:s", $response[0]->duration);
+					$start = $response[0]->start_time;
+					$length = gmdate("H:i:s", $response[0]->duration);
 					$games++;
 					$this->updateMatch($details[$i]['user'], $response[0]->match_id);
 					
@@ -473,17 +473,18 @@ class Commands {
 				->setTimestamp()
 				->setFooter("Powered by OpenDota");
 			$desc = "\n\n";
+			echo "Number of players: ".count($details);
 			for ($x = 0; $x < count($details); $x++) {
 				if (@$details[$x]['new']) {
 					$id = $x;
 					$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
-					$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
+					$embed->addFieldValues("\n\n".$details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
 				}
 			}
 			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-			$tz->setTimestamp($details[4]['start']);
+			$tz->setTimestamp($start);
 			$embed->setDescription($desc."\n");
-			$embed->addFieldValues("Game Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$details['length']}\n", false);
+			$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
 			$channel = $guild->channels->get('id', '274828566909157377');
