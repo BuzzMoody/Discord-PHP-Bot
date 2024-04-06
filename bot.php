@@ -57,7 +57,6 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	});
 	
 	$discord->getLoop()->addPeriodicTimer(60, function () use ($commands, $discord) {
-		echo "Running Dota 2 Check...\n\n";
 		$commands->checkDota($discord);
 	});
 	
