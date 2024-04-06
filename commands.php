@@ -424,7 +424,7 @@ class Commands {
 
 			$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1";
 			
-			$content = file_get_contents($url);
+			$content = @file_get_contents($url);
 			
 			if ($content === FALSE) { return; }
 
@@ -485,7 +485,7 @@ class Commands {
 			$embed->addFieldValues("Game Information", "Start Time: {$game['start']}\nLength: {$game['length']}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '274828566909157377');
+			$channel = $guild->channels->get('id', '232691831090053120');
 
 			$channel->sendEmbed($embed);
 		
