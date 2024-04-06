@@ -452,6 +452,8 @@ class Commands {
 					$details[$i]['win'] = ($response[0]->radiant_win == false && $details[$i]['team'] == "Radiant") ? "Lost" : "Won";
 					$details[$i]['hero'] = $heroes[$response[0]->hero_id];
 					$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
+					$game->start = date('Y/m/d H:i:s', $response[0]->start_time);
+					$game->duration = gmdate("H:i:s", $response[0]->duration);
 					$games++;
 					$this->updateMatch($details[$i]['user'], $response[0]->match_id);
 					
@@ -462,20 +464,29 @@ class Commands {
 		}
 		
 		if ($games > 0) {
-
-			$output = "New Dota 2 Match:\n\n";
-
+			
+			$embed = $discord->factory(Embed::class);
+			$embed->setTitle("Dota 2 Match Information")
+				->setURL("https://www.opendota.com/matches/".$details[0]['matchid'])
+				->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
+				->setColor("0x00A9FF")
+				->setTimestamp()
+				->setFooter("Powered by OpenDota");
+			$desc = "\n";
 			for ($x = 0; $x < count($details); $x++) {
 				if (@$details[$x]['new']) {
 					$id = $x;
-					$output .= "<@{$details[$x]['discord']}>: **{$details[$x]['win']}** playing as **{$details[$x]['hero']}** on {$details[$x]['team']}. KDA: {$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n\n";
+					$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
+					$embed->addFieldValues($details[$x]['user'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
 				}
 			}
+			$embed->setDescription($desc);
+			$embed->addFieldValues("Game Information", "Start Time: {$game->start}\nLength: {$game->length}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '232691831090053120');
+			$channel = $guild->channels->get('id', '274828566909157377');
 
-			$channel->sendMessage($output."Match Link: https://www.opendota.com/matches/{$details[$id]['matchid']}");
+			$channel->sendEmbed($embed);
 		
 		}
 	
