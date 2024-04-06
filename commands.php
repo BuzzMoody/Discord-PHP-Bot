@@ -452,8 +452,8 @@ class Commands {
 					$details[$i]['win'] = ($response[0]->radiant_win == false && $details[$i]['team'] == "Radiant") ? "Lost" : "Won";
 					$details[$i]['hero'] = $heroes[$response[0]->hero_id];
 					$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
-					$game->start = date('Y/m/d H:i:s', $response[0]->start_time);
-					$game->duration = gmdate("H:i:s", $response[0]->duration);
+					$details['game']['start'] = date('Y/m/d H:i:s', $response[0]->start_time);
+					$details['game']['duration'] = gmdate("H:i:s", $response[0]->duration);
 					$games++;
 					$this->updateMatch($details[$i]['user'], $response[0]->match_id);
 					
@@ -481,7 +481,7 @@ class Commands {
 				}
 			}
 			$embed->setDescription($desc);
-			$embed->addFieldValues("Game Information", "Start Time: {$game->start}\nLength: {$game->length}\n", false);
+			$embed->addFieldValues("Game Information", "Start Time: {$details['game']['start']}\nLength: {$details['game']['duration']}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
 			$channel = $guild->channels->get('id', '274828566909157377');
