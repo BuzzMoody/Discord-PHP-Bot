@@ -421,7 +421,7 @@ class Commands {
 
 		for ($i = 0; $i < count($ids); $i++) {
 
-			$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1";
+			$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1&api_key={$this->keys['od']}";
 			
 			$content = file_get_contents($url);
 			
