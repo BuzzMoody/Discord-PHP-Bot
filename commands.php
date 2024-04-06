@@ -422,8 +422,12 @@ class Commands {
 		for ($i = 0; $i < count($ids); $i++) {
 
 			$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1";
+			
+			$content = file_get_contents($url);
+			
+			if ($content === FALSE) { return; }
 
-			$response = json_decode(file_get_contents($url));
+			$response = json_decode($content);
 
 			$details[$i]['user'] = $ids[$i][1];
 			$details[$i]['matchid'] = '';
