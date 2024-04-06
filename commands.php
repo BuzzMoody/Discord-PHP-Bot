@@ -434,6 +434,8 @@ class Commands {
 
 			if ($this->checkNew($details[$i]['user'], $response[0]->match_id)) {
 				
+				echo "New game for: ".$details[$i]['user']."\n\n";
+				
 				$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 				$details[$i]['matchid'] = $response[0]->match_id;
 				
@@ -473,7 +475,7 @@ class Commands {
 				->setTimestamp()
 				->setFooter("Powered by OpenDota");
 			$desc = "\n\n";
-			echo "Number of players: ".count($details);
+			echo "Number of players: ".count($details)."\n\n";
 			for ($x = 0; $x < count($details); $x++) {
 				if (@$details[$x]['new']) {
 					$id = $x;
