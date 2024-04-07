@@ -451,7 +451,7 @@ class Commands {
 					$details[$i]['discord'] = $ids[$i][0];
 					$details[$i]['name'] = $ids[$i][2];
 					$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
-					$details[$i]['win'] = ($response[0]->radiant_win == false && $details[$i]['team'] == "Radiant") ? "Lost" : "Won";
+					$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant") ? "Won" : "Lost";
 					$details[$i]['hero'] = $this->heroes[$response[0]->hero_id];
 					$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
 					$start = $response[0]->start_time;
