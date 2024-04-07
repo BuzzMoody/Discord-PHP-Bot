@@ -488,7 +488,7 @@ class Commands {
 			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
 			$tz->setTimestamp($start);
 			$embed->setDescription($desc."\n");
-			$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$gmode}\nRanked: {$ranked}\n", false);
+			$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$mode}\nRanked: {$ranked}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
 			$channel = $guild->channels->get('id', '232691831090053120');
