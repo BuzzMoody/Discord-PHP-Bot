@@ -487,7 +487,7 @@ class Commands {
 			$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\n", false);
 			
 			$guild = $discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '274828566909157377');
+			$channel = $guild->channels->get('id', '232691831090053120');
 
 			$channel->sendEmbed($embed);
 		
