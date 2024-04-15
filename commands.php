@@ -457,6 +457,7 @@ class Commands {
 					$start = $response[0]->start_time;
 					$length = gmdate("H:i:s", $response[0]->duration);
 					$mode = $this->gamemode[$response[0]->game_mode];
+					@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
 					$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
 					$games++;
 					$this->updateMatch($details[$i]['user'], $response[0]->match_id);
@@ -472,7 +473,7 @@ class Commands {
 			
 			$embed = $discord->factory(Embed::class);
 			$embed->setTitle("Dota 2 Match Information")
-				->setURL("https://www.opendota.com/matches/".$details[0]['matchid'])
+				->setURL("https://www.opendota.com/matches/".$matchid)
 				->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
 				->setColor("0x00A9FF")
 				->setTimestamp()
