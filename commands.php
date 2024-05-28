@@ -73,6 +73,10 @@ class Commands {
 				$this->createReminder($args, $message, $discord);
 				break;
 				
+			case (preg_match('^(4k|games|afl|round)/', $command) ? true: false):
+				$this->afl($args, $message, $discord);
+				break;
+				
 			case "radar":
 				$this->radar($message, $discord);
 				break;
@@ -90,6 +94,25 @@ class Commands {
 				break;
 
 		}
+		
+	}
+	
+	function afl($round, $message, $discord) {
+		
+		$round = (empty($round) || !is_int($round) || $round < 0 || $round > 23) ? date("W") : $round;
+		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
+		$result = $mysqli->query("SELECT * FROM games WHERE round={$round}");
+		if ($result->num_rows != 0) { 
+			$out = "### Round {$round} - Games in 4K\n\n";
+			while ($row = $result->fetch_assoc()) {
+				$out .= "- **{$row['teams']}**\n - *{$row['date']} - {$row['time']}*\n";
+			}
+			$message->channel->sendMessage($out);
+		}
+		else { 
+			$message->channel->sendMessage("Round not found in DB");
+		}
+		$mysqli->close();
 		
 	}
 	
