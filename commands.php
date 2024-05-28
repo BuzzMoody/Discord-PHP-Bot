@@ -100,7 +100,7 @@ class Commands {
 	function afl($round, $message, $discord) {
 		
 		$round = intval($round);
-		$round = (empty($round) || !is_int((int)$round) || $round < 0 || $round > 23) ? date("W") : $round;
+		$round = (empty($round) || !is_int((int)$round) || $round < 0 || $round > 23) ? (date("W")-10) : $round;
 		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
 		$result = $mysqli->query("SELECT * FROM games WHERE round={$round}");
 		if ($result->num_rows != 0) { 
