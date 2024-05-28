@@ -73,7 +73,7 @@ class Commands {
 				$this->createReminder($args, $message, $discord);
 				break;
 				
-			case (preg_match('^(4k|games|afl|round)/', $command) ? true: false):
+			case (preg_match('/^(4k|games|afl|round)/', $command) ? true: false):
 				$this->afl($args, $message, $discord);
 				break;
 				
