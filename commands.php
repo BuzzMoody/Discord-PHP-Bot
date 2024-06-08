@@ -73,8 +73,12 @@ class Commands {
 				$this->createReminder($args, $message, $discord);
 				break;
 				
-			case (preg_match('/^(4k|games|afl|round)/', $command) ? true: false):
+			case (preg_match('/^(4k|games|afl|round)/', $command) ? true : false):
 				$this->afl($args, $message, $discord);
+				break;
+				
+			case (preg_match('/^(f(:?ormula)1)/', $command) ? true : false):
+				$this->f1($message, $discord);
 				break;
 				
 			case "radar":
@@ -95,6 +99,56 @@ class Commands {
 
 		}
 		
+	}
+	
+	function f1($message, $discord) {
+		
+		$nextRace = file_get_contents("https://www.formula1.com/en/racing/2024.html");
+		preg_match_all("/\"(?:@id|description|url|address|startDate|endDate)\": \"(.+)\",?/", $nextRace, $matches);
+		$next = array(
+			"URL" => $matches[1][0],
+			"name" => $matches[1][1],
+			"img" => $matches[1][2],
+			"starts" => $matches[1][3],
+			"ends" => $matches[1][4],
+			"locale" => $matches[1][5]
+		);
+		$upcoming = array(
+			"first" => $matches[1][11],
+			"firstDate" => $matches[1][15],
+			"second" => $matches[1][17],
+			"secondDate" => $matches[1][21]
+		);
+		$sessions = array();
+		$sessionsInfo = file_get_contents($next['URL']);
+		preg_match_all("/\"(?:name|startDate)\": \"(.+)\",?/", $sessionsInfo, $matches);
+		for($x=0;$x<(count($matches[1])-4);$x++) {
+			$sessions[$x] = array(
+				"name" => $matches[1][($x+2)],
+				"time" => $matches[1][($x+3)]
+			);
+			$x++;
+		}
+		
+		$embed = $discord->factory(Embed::class);
+		$embed->setAuthor("Formula 1 - Race Info", "https://www.formula1.com/etc/designs/fom-website/images/f1_logo.svg")
+			->setTitle($next["name"])
+			->setURL($next["URL"])
+			->setImage($next["img"])
+			->setColor("0x00A9FF")
+			->setDescription("The next race takes place in {$next["locale"]}.")
+		for ($x=0;$<count($sessions);$x++) {
+			$embed->addFieldValues($sessions[$x]["name"], $sessions[$x]["time"], false);
+		}
+		$embed->addFieldValues("Upcoming Races", "{$upcoming["first"]} - {$upcoming["firstDate"]}\n{$upcoming["second"]} - {$upcoming["secondDate"]}", false);
+		$message->channel->sendEmbed($embed);
+		
+	}
+	
+	function toAusTime($time) {
+		$datetime = new DateTime($time, new DateTimeZone('UTC'));
+		$datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+		return $datetime->format('Y-m-d\TH:i:sP');	
 	}
 	
 	function afl($round, $message, $discord) {
