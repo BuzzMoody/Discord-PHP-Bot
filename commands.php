@@ -137,7 +137,7 @@ class Commands {
 			->setImage($next["img"])
 			->setColor("0x00A9FF")
 			->setDescription("The next race takes place in {$next["locale"]}.")
-		for ($x=0;$<count($sessions);$x++) {
+		for ($x=0;$x<count($sessions);$x++) {
 			$embed->addFieldValues($sessions[$x]["name"], $sessions[$x]["time"], false);
 		}
 		$embed->addFieldValues("Upcoming Races", "{$upcoming["first"]} - {$upcoming["firstDate"]}\n{$upcoming["second"]} - {$upcoming["secondDate"]}", false);
