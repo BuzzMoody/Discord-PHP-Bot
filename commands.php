@@ -109,7 +109,6 @@ class Commands {
 		$next = array(
 			"URL" => $matches[1][0],
 			"name" => $matches[1][1],
-			"img" => $matches[1][2],
 			"starts" => $matches[1][3],
 			"ends" => $matches[1][4],
 			"locale" => $matches[1][5]
@@ -122,6 +121,7 @@ class Commands {
 		);
 		$sessions = array();
 		$sessionsInfo = file_get_contents($next['URL']);
+		preg_match_all("/<img data-src=\"(.+)\" alt=\"\w+ carbon\.png\" class=\"lazy\"/", $sessionsInfo, $trackmap);
 		preg_match_all("/\"(?:name|startDate|endDate)\": \"(.+)\",?/", $sessionsInfo, $matches);
 		$matches[1] = array_slice($matches[1], 2);
 		$matches[1] = array_slice($matches[1], 0, count($matches[1]) - 3);
@@ -138,7 +138,7 @@ class Commands {
 		$embed->setAuthor("Formula 1 - Race Info", "https://media.formula1.com/etc/designs/fom-website/icon192x192.png")
 			->setTitle($next["name"])
 			->setURL($next["URL"])
-			->setImage($next["img"])
+			->setImage($trackmap[1][0])
 			->setColor("0x00A9FF")
 			->setDescription("The next race takes place in {$next["locale"]}.");
 		for ($x=0;$x<count($sessions);$x++) {
