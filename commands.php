@@ -145,10 +145,10 @@ class Commands {
 			$session_datetime = new DateTime($sessions[$x]["ends"], new DateTimeZone('UTC'));
 			$session_datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 			if ($session_datetime < $current_datetime) {
-				$embed->addFieldValues("~~".strtok($sessions[$x]["name"], '-')."~~", "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~", true);
+				$embed->addFieldValues("~~".strtok($sessions[$x]["name"], '-')."~~", "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~", false);
 			}
 			else {
-				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}", true);
+				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}", false);
 
 			}
 		}
