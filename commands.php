@@ -129,6 +129,7 @@ class Commands {
 			);
 			$x++;
 		}
+		print_r($sessions);
 		
 		$embed = $discord->factory(Embed::class);
 		$embed->setAuthor("Formula 1 - Race Info", "https://www.formula1.com/etc/designs/fom-website/images/f1_logo.svg")
