@@ -77,7 +77,7 @@ class Commands {
 				$this->afl($args, $message, $discord);
 				break;
 				
-			case (preg_match('/^(f(:?ormula)1)/', $command) ? true : false):
+			case (preg_match('/^(f(ormula)?1)/', $command) ? true : false):
 				$this->f1($message, $discord);
 				break;
 				
@@ -136,7 +136,7 @@ class Commands {
 			->setURL($next["URL"])
 			->setImage($next["img"])
 			->setColor("0x00A9FF")
-			->setDescription("The next race takes place in {$next["locale"]}.")
+			->setDescription("The next race takes place in {$next["locale"]}.");
 		for ($x=0;$x<count($sessions);$x++) {
 			$embed->addFieldValues($sessions[$x]["name"], $sessions[$x]["time"], false);
 		}
