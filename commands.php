@@ -103,6 +103,7 @@ class Commands {
 	
 	function f1($message, $discord) {
 		
+		$current_datetime = new DateTime();
 		$nextRace = file_get_contents("https://www.formula1.com/en/racing/2024.html");
 		preg_match_all("/\"(?:@id|description|url|address|startDate|endDate)\": \"(.+)\",?/", $nextRace, $matches);
 		$next = array(
@@ -121,35 +122,45 @@ class Commands {
 		);
 		$sessions = array();
 		$sessionsInfo = file_get_contents($next['URL']);
-		preg_match_all("/\"(?:name|startDate)\": \"(.+)\",?/", $sessionsInfo, $matches);
-		for($x=0;$x<(count($matches[1])-4);$x++) {
+		preg_match_all("/\"(?:name|startDate|endDate)\": \"(.+)\",?/", $sessionsInfo, $matches);
+		$matches[1] = array_slice($matches[1], 2);
+		$matches[1] = array_slice($matches[1], 0, count($matches[1]) - 3);
+		$sessionChunk = array_chunk($matches[1], 3);
+		for($x=0;$x<count($sessionChunk);$x++) {
 			$sessions[$x] = array(
-				"name" => $matches[1][($x+2)],
-				"time" => $matches[1][($x+3)]
+				"name" => $sessionChunk[$x][0],
+				"starts" => $sessionChunk[$x][1],
+				"ends" => $sessionChunk[$x][2]
 			);
-			$x++;
 		}
-		print_r($sessions);
 		
 		$embed = $discord->factory(Embed::class);
-		$embed->setAuthor("Formula 1 - Race Info", "https://www.formula1.com/etc/designs/fom-website/images/f1_logo.svg")
+		$embed->setAuthor("Formula 1 - Race Info", "https://media.formula1.com/etc/designs/fom-website/icon192x192.png")
 			->setTitle($next["name"])
 			->setURL($next["URL"])
 			->setImage($next["img"])
 			->setColor("0x00A9FF")
 			->setDescription("The next race takes place in {$next["locale"]}.");
 		for ($x=0;$x<count($sessions);$x++) {
-			$embed->addFieldValues($sessions[$x]["name"], $sessions[$x]["time"], false);
+			$session_datetime = new DateTime($sessions[$x]["ends"], new DateTimeZone('UTC'));
+			$session_datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+			if ($session_datetime < $current_datetime) {
+				$embed->addFieldValues("~~".strtok($sessions[$x]["name"], '-')."~~", "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~", false);
+			}
+			else {
+				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}", false);
+
+			}
 		}
-		$embed->addFieldValues("Upcoming Races", "{$upcoming["first"]} - {$upcoming["firstDate"]}\n{$upcoming["second"]} - {$upcoming["secondDate"]}", false);
+		$embed->addFieldValues("Upcoming Races", "{$upcoming["first"]} - {$this->toAusTime($upcoming["firstDate"], 'jS F')}\n{$upcoming["second"]} - {$this->toAusTime($upcoming["secondDate"], 'jS F')}", false);
 		$message->channel->sendEmbed($embed);
 		
 	}
 	
-	function toAusTime($time) {
+	function toAusTime($time, $format = 'jS F: G:i') {
 		$datetime = new DateTime($time, new DateTimeZone('UTC'));
 		$datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
-		return $datetime->format('Y-m-d\TH:i:sP');	
+		return $datetime->format($format);	
 	}
 	
 	function afl($round, $message, $discord) {
