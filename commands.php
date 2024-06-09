@@ -138,7 +138,7 @@ class Commands {
 		$embed->setAuthor("Formula 1 - Race Info", "https://media.formula1.com/etc/designs/fom-website/icon192x192.png")
 			->setTitle($next["name"])
 			->setURL($next["URL"])
-			->setImage($trackmap[1][0])
+			//->setImage($trackmap[1][0])
 			->setColor("0x00A9FF")
 			->setDescription("The next race takes place in {$next["locale"]}.");
 		for ($x=0;$x<count($sessions);$x++) {
