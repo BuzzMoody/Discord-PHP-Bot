@@ -121,6 +121,8 @@ class Commands {
 		);
 		$sessions = array();
 		$sessionsInfo = file_get_contents($next['URL']);
+		preg_match_all("/\/en\/results\.html\/2024\/races\/(\d{4}\/\w*)\/race-result\.html\" data/", $sessionsInfo, $results);
+		$raceID = $results[1][0];
 		preg_match_all("/<script type=\"application\/ld\+json\">(.+)<\/script>/", $sessionsInfo, $matches);
 		$sessionJSON = json_decode($matches[1][0]);
 		for ($x=0;$x<count($sessionJSON->subEvent);$x++) {
@@ -142,7 +144,7 @@ class Commands {
 			$session_datetime = new DateTime($sessions[$x]["ends"], new DateTimeZone('UTC'));
 			$session_datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 			if ($session_datetime < $current_datetime) {
-				$embed->addFieldValues("~~".strtok($sessions[$x]["name"], '-')."~~", "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~", false);
+				$embed->addFieldValues("~~".strtok($sessions[$x]["name"], '-')."~~", "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~ - [Results](https://www.formula1.com/en/results.html/2024/races/{$raceID}/".strtolower(str_replace(" ", "-",strtok($sessions[$x]["name"], '-'))).".html)", false);
 			}
 			else {
 				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}", false);
