@@ -104,34 +104,31 @@ class Commands {
 	function f1($message, $discord) {
 		
 		$current_datetime = new DateTime();
-		$nextRace = file_get_contents("https://www.formula1.com/en/racing/2024.html");
-		preg_match_all("/\"(?:@id|description|url|address|startDate|endDate)\": \"(.+)\",?/", $nextRace, $matches);
+		$nextRace = file_get_contents("https://www.formula1.com/");
+		preg_match_all("/(?:@id|description|startDate|endDate|address)\":\"(.+)\"/", $nextRace, $matches);
 		$next = array(
-			"URL" => $matches[1][0],
-			"name" => $matches[1][1],
+			"URL" => $matches[1][1],
+			"name" => $matches[1][2],
 			"starts" => $matches[1][3],
 			"ends" => $matches[1][4],
 			"locale" => $matches[1][5]
 		);
 		$upcoming = array(
-			"first" => $matches[1][11],
-			"firstDate" => $matches[1][15],
-			"second" => $matches[1][17],
-			"secondDate" => $matches[1][21]
+			"first" => $matches[1][10],
+			"firstDate" => $matches[1][8],
+			"second" => $matches[1][15],
+			"secondDate" => $matches[1][13]
 		);
 		$sessions = array();
 		$sessionsInfo = file_get_contents($next['URL']);
-		preg_match_all("/<img data-src=\"(.+)\" alt=\"\w+ carbon\.png\" class=\"lazy\"/", $sessionsInfo, $trackmap);
-		preg_match_all("/\"(?:name|startDate|endDate)\": \"(.+)\",?/", $sessionsInfo, $matches);
-		$matches[1] = array_slice($matches[1], 2);
-		$matches[1] = array_slice($matches[1], 0, count($matches[1]) - 3);
-		$sessionChunk = array_chunk($matches[1], 3);
-		for($x=0;$x<count($sessionChunk);$x++) {
+		preg_match_all("/<script type=\"application\/ld\+json\">(.+)<\/script>/", $sessionsInfo, $matches);
+		$sessionJSON = json_decode($matches[1][0]);
+		for ($x=0;$x<count($sessionJSON->subEvent);$x++) {
 			$sessions[$x] = array(
-				"name" => $sessionChunk[$x][0],
-				"starts" => $sessionChunk[$x][1],
-				"ends" => $sessionChunk[$x][2]
-			);
+				"name" => $sessionJSON->subEvent[$x]->name,
+				"starts" => $sessionJSON->subEvent[$x]->startDate,
+				"ends" => $sessionJSON->subEvent[$x]->endDate
+			); 
 		}
 		
 		$embed = $discord->factory(Embed::class);
