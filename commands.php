@@ -9,6 +9,8 @@ class Commands {
 	public $uptime;
 	public $heroes;
 	public $gamemode;
+	public $commands;
+	public $patterns;
 	
 	function __construct($keys, $uptime) {
 		
@@ -16,6 +18,27 @@ class Commands {
 		$this->uptime = $uptime;
 		$this->heroes = array(1 => "Anti-Mage", 2 => "Axe", 3 => "Bane", 4 => "Bloodseeker", 5 => "Crystal Maiden", 6 => "Drow Ranger", 7 => "Earthshaker", 8 => "Juggernaut", 9 => "Mirana", 11 => "Shadow Fiend", 10 => "Morphling", 12 => "Phantom Lancer", 13 => "Puck", 14 => "Pudge", 15 => "Razor", 16 => "Sand King", 17 => "Storm Spirit", 18 => "Sven", 19 => "Tiny", 20 => "Vengeful Spirit", 21 => "Windranger", 22 => "Zeus", 23 => "Kunkka", 25 => "Lina", 31 => "Lich", 26 => "Lion", 27 => "Shadow Shaman", 28 => "Slardar", 29 => "Tidehunter", 30 => "Witch Doctor", 32 => "Riki", 33 => "Enigma", 34 => "Tinker", 35 => "Sniper", 36 => "Necrophos", 37 => "Warlock", 38 => "Beastmaster", 39 => "Queen of Pain", 40 => "Venomancer", 41 => "Faceless Void", 42 => "Skeleton King", 43 => "Death Prophet", 44 => "Phantom Assassin", 45 => "Pugna", 46 => "Templar Assassin", 47 => "Viper", 48 => "Luna", 49 => "Dragon Knight", 50 => "Dazzle", 51 => "Clockwerk", 52 => "Leshrac", 53 => "Nature's Prophet", 54 => "Lifestealer", 55 => "Dark Seer", 56 => "Clinkz", 57 => "Omniknight", 58 => "Enchantress", 59 => "Huskar", 60 => "Night Stalker", 61 => "Broodmother", 62 => "Bounty Hunter", 63 => "Weaver", 64 => "Jakiro", 65 => "Batrider", 66 => "Chen", 67 => "Spectre", 69 => "Doom", 68 => "Ancient Apparition", 70 => "Ursa", 71 => "Spirit Breaker", 72 => "Gyrocopter", 73 => "Alchemist", 74 => "Invoker", 75 => "Silencer", 76 => "Outworld Devourer", 77 => "Lycanthrope", 78 => "Brewmaster", 79 => "Shadow Demon", 80 => "Lone Druid", 81 => "Chaos Knight", 82 => "Meepo", 83 => "Treant Protector", 84 => "Ogre Magi", 85 => "Undying", 86 => "Rubick", 87 => "Disruptor", 88 => "Nyx Assassin", 89 => "Naga Siren", 90 => "Keeper of the Light", 91 => "Wisp", 92 => "Visage", 93 => "Slark", 94 => "Medusa", 95 => "Troll Warlord", 96 => "Centaur Warrunner", 97 => "Magnus", 98 => "Timbersaw", 99 => "Bristleback", 100 => "Tusk", 101 => "Skywrath Mage", 102 => "Abaddon", 103 => "Elder Titan", 104 => "Legion Commander", 106 => "Ember Spirit", 107 => "Earth Spirit", 108 => "Abyssal Underlord", 109 => "Terrorblade", 110 => "Phoenix", 105 => "Techies", 111 => "Oracle", 112 => "Winter Wyvern", 113 => "Arc Warden", 114 => "Monkey King", 119 => "Dark Willow", 120 => "Pangolier", 121 => "Grimstroke", 123 => "Hoodwink", 126 => "Void Spirit", 128 => "Snapfire", 129 => "Mars", 135 => "Dawnbreaker", 136 => "Marci", 137 => "Primal Beast", 138 => "Muerta");
 		$this->gamemode = array(0 => "Unknown", 1 => "All Pick", 2 => "Captains Mode", 3 => "Random Draft", 4 => "Single Draft", 5 => "All Random", 6 => "Intro", 7 => "Diretide", 8 => "Reverse Captains Mode", 9 => "Greeviling", 10 => "Tutorial", 11 => "Mid Only", 12 => "Least Played", 13 => "Limited Heroes", 14 => "Compendium Matchmaking", 15 => "Custom", 16 => "Captains Draft", 17 => "Balanced Draft", 18 => "Ability Draft", 19 => "Event", 20 => "All Random Death Match", 21 => "1v1 Mid", 22 => "All Draft", 23 => "Turbo", 24 => "Mutation", 25 => "Coaches Challenge");
+		$this->commands = [
+			'ping' => 'handlePing',
+			'radar' => 'radar',
+			'apex' => 'apex',
+			'uptime' => 'uptime',
+			'reload' => 'reload'
+		];
+		$this->patterns = [
+			'/^(kate|t(?:ay(lor)?|swizzle)|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)$/' => 'sendBabe',
+			'/^(search|google|bing|find|siri)/' => 'searchGoogle',
+			'/^(image|img|photo|pic)/' => 'searchImage',
+			'/^(ban|kick|sb|sinbin)/' => 'sinbin',
+			'/^(bard|gemini|(open)?ai)/' => 'gemini',
+			'/^(asx|share(s)?|stock(s)?|etf)/' => 'ASX',
+			'/^(temp(erature)?)$/' => 'temp',
+			'/^(weather|forecast)$/' => 'weather',
+			'/^(shell|bash|cli|cmd)/' => 'runcli',
+			'/^(remind(?:me|er))/' => 'createReminder',
+			'/^(4k|games|afl|round)/' => 'afl',
+			'/^(f(ormula)?1)$/' => 'f1'
+		];
 		
 	}
 	
@@ -27,78 +50,30 @@ class Commands {
 		array_shift($inputs);
 		$args = implode(" ", $inputs);
 		
-		switch ($command) {
-			
-			case "ping":
-				$message->reply("Pong!");
-				break;
-				
-			case (preg_match('/^(kate|t(?:ay(lor)?|swizzle)|emma|e?liz(abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)\b/', $command, $babe) ? true : false):
-				$this->sendBabe($babe, $message);
-				break;
-				
-			case (preg_match('/^(search|google|bing|find|siri)/', $command) ? true : false):
-				$this->search('google', $args, $message);
-				break;
-				
-			case (preg_match('/^(image|img|photo|pic)/', $command) ? true : false):
-				$this->search('image', $args, $message);
-				break;
-				
-			case (preg_match('/^(ban|kick|sb|sinbin)/', $command) ? true : false):
-				$this->sinbin($args, $message, $discord);
-				break;
-			
-			case (preg_match('/^(bard|gemini|(open)?ai)/', $command) ? true : false):
-				$this->gemini($args, $message, $discord);
-				break;
-				
-			case (preg_match('/^(asx|share(s)?|stock(s)?|etf)/', $command) ? true : false):
-				$this->ASX($args, $message, $discord);
-				break;
-				
-			case (preg_match('/^(temp(erature)?)$/', $command) ? true : false):
-				$this->temp($message);
-				break;
-				
-			case (preg_match('/^(weather|forecast)$/', $command) ? true : false):
-				$this->weather($message);
-				break;
-				
-			case (preg_match('/^(shell|bash|cli|cmd)/', $command) ? true : false):
-				$this->runcli($args, $message, $discord);
-				break;
-				
-			case (preg_match('/^(remind(?:me|er))/', $command) ? true : false):
-				$this->createReminder($args, $message, $discord);
-				break;
-				
-			case (preg_match('/^(4k|games|afl|round)/', $command) ? true : false):
-				$this->afl($args, $message, $discord);
-				break;
-				
-			case (preg_match('/^(f(ormula)?1)/', $command) ? true : false):
-				$this->f1($message, $discord);
-				break;
-				
-			case "radar":
-				$this->radar($message, $discord);
-				break;
-				
-			case "apex":
-				$this->apex($message, $discord);
-				break;
-				
-			case "uptime":
-				$this->uptime($message);
-				break;
-				
-			case "reload":
-				$this->reload($message, $discord);
-				break;
-
-		}
+		if (isset($this->commands[$command])) {
+            $this->{$this->commands[$command]}($message, $discord);
+        } else {
+            foreach ($this->patterns as $pattern => $method) {
+                if (preg_match($pattern, $command, $matches)) {
+                    array_shift($matches);
+                    $this->$method($message, $discord, $args, $matches);
+                    break;
+                }
+            }
+        }
 		
+	}
+	
+ 	function handlePing($message) {
+		$message->reply("Pong!");
+	}
+	
+	function searchGoogle($message, $discord, $args) { 
+		$this->search('google', $args, $message);
+	}
+	
+	function searchImage($message, $discord, $args) { 
+		$this->search('image', $args, $message);
 	}
 	
 	function f1($message, $discord) {
@@ -137,14 +112,13 @@ class Commands {
 		$embed->setAuthor("Formula 1 - Race Info", "https://media.formula1.com/etc/designs/fom-website/icon192x192.png")
 			->setTitle($next["name"])
 			->setURL($next["URL"])
-			//->setImage($trackmap[1][0])
 			->setColor("0x00A9FF")
 			->setDescription("The next race takes place in {$next["locale"]}.");
 		for ($x=0;$x<count($sessions);$x++) {
 			$session_datetime = new DateTime($sessions[$x]["ends"], new DateTimeZone('UTC'));
 			$session_datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 			if ($session_datetime < $current_datetime) {
-				$embed->addFieldValues("~~".strtok($sessions[$x]["name"], '-')."~~", "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~ - [Results](https://www.formula1.com/en/results.html/2024/races/{$raceID}/".strtolower(str_replace(" ", "-",strtok($sessions[$x]["name"], '-'))).".html)", false);
+				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}~~ - [Results](https://www.formula1.com/en/results.html/2024/races/{$raceID}/".substr(strtolower(str_replace(" ", "-",strtok($sessions[$x]["name"], '-'))), 0, -1).".html)", false);
 			}
 			else {
 				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'H:i')}", false);
@@ -162,7 +136,7 @@ class Commands {
 		return $datetime->format($format);	
 	}
 	
-	function afl($round, $message, $discord) {
+	function afl($message, $discord, $round) {
 		
 		$round = intval($round);
 		$round = (empty($round) || !is_int((int)$round) || $round < 0 || $round > 23) ? (date("W")-10) : $round;
@@ -182,9 +156,9 @@ class Commands {
 		
 	}
 	
-	function sendBabe($babe, $message) {
+	function sendBabe($message, $discord, $args, $babe) {
 	
-		$imgDir = "/home/buzz/bot-php/img/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
+		$imgDir = "/home/buzz/Bots/Media/Images/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $babe[0]);
 		$files = (is_dir($imgDir)) ? scandir($imgDir) : null;
 		if ($files) { 
 			$message->channel->sendFile("{$imgDir}/{$files[rand(2,(count($files) - 1))]}", $babe[0].".jpg");
@@ -206,7 +180,7 @@ class Commands {
 	
 	}
 	
-	function gemini($args, $message, $discord) {
+	function gemini($message, $discord, $args) {
 		
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
@@ -337,7 +311,7 @@ class Commands {
 		
 	}
 	
-	function ASX($args, $message, $discord) {
+	function ASX($message, $discord, $args) {
 		
 		if (empty($args) || strlen($args) > 4) { return $message->reply("Try !asx DMP"); }
 		
@@ -382,7 +356,7 @@ class Commands {
 		$message->channel->sendEmbed($embed);
 	}
 	
-	function sinbin($args, $message, $discord, $filter = false) {
+	function sinbin($message, $discord, $args, $filter = false) {
 		
 		if ($this->isAdmin($message->author->id, $discord) || $filter == true) {
 			
@@ -401,7 +375,7 @@ class Commands {
 		
 	}
 	
-	function runcli($args, $message, $discord) {
+	function runcli($message, $discord, $args) {
 		
 		if ($message->author->id == 232691181396426752 && !empty($args)) {		
 			$message->channel->sendMessage("```swift\n".shell_exec($args)."\n```");		
@@ -446,7 +420,7 @@ class Commands {
 		
 	}
 	
-	function createReminder($args, $message, $discord) {	
+	function createReminder($message, $discord, $args) {	
 		
 		if (empty($args)) { return $message->reply("no args"); }
 		
