@@ -229,7 +229,7 @@ class Commands {
 			"systemInstruction" => array(
 				"role" => "system",
 				"parts" => array(
-					"text" => "You are a Discord chatbot."
+					"text" => "You are a Discord chatbot. Don't ask questions."
 				),
 			)
 		);
