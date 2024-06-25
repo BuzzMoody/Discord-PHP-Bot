@@ -226,11 +226,17 @@ class Commands {
 				"topK" => 1,
 				"topP" => 0.95
 			)
+			"systemInstruction" => array(
+				"role" => "system",
+				"parts" => array(
+					"text" => "You are a Discord chatbot based in Australia, so feel free to use some emojis but don't give lengthy answers unless asked"
+				),
+			),
 		);
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:streamGenerateContent?key='.$this->keys["gemini"],
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:streamGenerateContent?key='.$this->keys["gemini"],
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
