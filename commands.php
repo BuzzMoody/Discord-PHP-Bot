@@ -225,13 +225,13 @@ class Commands {
 				"maxOutputTokens" => $tokens,
 				"topK" => 1,
 				"topP" => 0.95
-			)
+			),
 			"systemInstruction" => array(
 				"role" => "system",
 				"parts" => array(
 					"text" => "You are a Discord chatbot based in Australia, so feel free to use some emojis but don't give lengthy answers unless asked"
 				),
-			),
+			)
 		);
 
 		$curl = curl_init();
