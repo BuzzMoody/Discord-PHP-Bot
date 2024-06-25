@@ -199,7 +199,7 @@ class Commands {
 		$post_fields = array(
 			"contents" => array(
 				"parts" => array(
-					"text" => "You are a Discord chatbot so keep your responses short/under ".$words." words if possible: ".$args
+					"text" => $args
 				)
 			),
 			"safetySettings" => array(
