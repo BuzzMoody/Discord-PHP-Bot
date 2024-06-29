@@ -85,10 +85,10 @@ class Commands {
 			$ttl = 0;
 			for ($x=1;$x<=$dice;$x++) {
 				$val = rand(1,$sides);
-				$op .= "Dice {$x}: 	{$val}\n";
+				$op .= "🎲:	{$val}\n";
 				$ttl += $val;
 			}
-			$message->channel->sendMessage($op."\nTotal: 	{$ttl}```");
+			$message->channel->sendMessage($op."\nTotal:	{$ttl}```");
 		}
 	}
 	
