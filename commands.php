@@ -137,7 +137,7 @@ class Commands {
 				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'G:i')}~~ - [Results](https://www.formula1.com/en/results.html/2024/races/{$raceID}/".substr(strtolower(str_replace(" ", "-",strtok($sessions[$x]["name"], '-'))), 0, -1).".html)", false);
 			}
 			else {
-				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'G:i', true)}", false);
+				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'G:i', $sessions[$x]["starts"])}", false);
 
 			}
 		}
@@ -150,8 +150,10 @@ class Commands {
 		$datetime = new DateTime($time, new DateTimeZone('UTC'));
 		$datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 		if ($countdown) {
+			$starttime = new DateTime($countdown, new DateTimeZone('UTC'));
+			$starttime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 			$currTime = new DateTime();
-			$diffTime = $currTime->diff($datetime);
+			$diffTime = $currTime->diff($starttime);
 			$countTime = "";
 			if ($diffTime->days > 0) { $countTime .= "{$diffTime->days} days, "; }
 			if ($diffTime->h > 0) { $countTime .= "{$diffTime->h} hrs, "; }
