@@ -37,7 +37,8 @@ class Commands {
 			'/^(shell|bash|cli|cmd)/' => 'runcli',
 			'/^(remind(?:me|er))/' => 'createReminder',
 			'/^(4k|games|afl|round)/' => 'afl',
-			'/^(f(ormula)?1)$/' => 'f1'
+			'/^(f(ormula)?1)$/' => 'f1',
+			'/^(roll|dice)/' => 'dice'
 		];
 		
 	}
@@ -74,6 +75,21 @@ class Commands {
 	
 	function searchImage($message, $discord, $args) { 
 		$this->search('image', $args, $message);
+	}
+	
+	function dice($message, $discord, $args) {
+		if (preg_match('/(\d{1,2})(d(\d{1,2}))?$/', $args, $die)) {
+			$dice = ($die[1] < 11 && $die[1] > 0) ? $die[1] : rand(1,10);
+			$sides = ($die[3] < 21 && $die[3] > 0) ? $die[3] : rand(1,20);
+			$op = "```\nRolling {$dice} {$sides}-sided dice:\n\n";
+			$ttl = 0;
+			for ($x=1;$x<=$dice;$x++) {
+				$val = rand(1,$sides);
+				$op .= "Dice {$x}: 	{$val}\n";
+				$ttl += $val;
+			}
+			$message->channel->sendMessage($op."\nTotal: 	{$ttl}```");
+		}
 	}
 	
 	function f1($message, $discord) {
