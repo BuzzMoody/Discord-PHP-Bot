@@ -328,7 +328,7 @@ class Commands {
 			"humidity" 	=> $obs->obs->temp->rel_hum_percent,
 			"wind" 		=> round(($obs->obs->wind->speed_10m_mps*3.6), 1),
 			"gusts" 	=> round(($obs->obs->wind->gust_speed_10m_mps*3.6), 1),
-			"direction" => $obs->obs->wind->dirn_10m_ord,
+			"direction"	=> $obs->obs->wind->dirn_10m_ord,
 			"rain"		=> $obs->obs->precip->since_0900lct_total_mm,
 			"vis" 		=> round(($obs->obs->visibility->horiz_m/1000), 1),
 		);
