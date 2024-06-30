@@ -304,17 +304,19 @@ class Commands {
 		$place = array(
 			"type"		=> $results->candidates[0]->type
 		);
-		$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$results->candidates[0]->id}?filter=nearby_type:bom_stn"));
+		$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$results->candidates[0]->id}?filter=nearby_type:bom_stn"));	
+		if (empty($location->place->location_hierarchy->nearest->id)) { return $message->channel->sendMessage("No weather for location"); }	
 		$place += array (
 			"name" 		=> $results->candidates[0]->name,
+			"filename"	=> str_replace(' ', '-', $results->candidates[0]->name),
 			"district" 	=> $location->place->location_hierarchy->public_district->description,
 			"state" 	=> $location->place->location_hierarchy->region[1]->description,
 			"postcode" 	=> $results->candidates[0]->postcode->name,
 			"id" 		=> $location->place->location_hierarchy->nearest->id,
 		);
-		if (strpos($location->place->location_hierarchy->nearest->name, "NTC AWS")) {
+		if (preg_match("/(NTC AWS|PYLON|JETTY)/", $location->place->location_hierarchy->nearest->name)) {
 			foreach ($location->place->location_hierarchy->nearby as $stations) {
-				if (!strpos($stations->name, "NTC AWS")) {
+				if (!preg_match("/(NTC AWS|PYLON|JETTY)/", $stations->name)) {
 					$place["id"] = $stations->id;
 					break;
 				}
@@ -322,9 +324,11 @@ class Commands {
 		}
 		$obs = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/observations/latest/{$place['id']}/atm/surf_air?include_qc_results=false"));
 		$temp = array(
+			"stn"		=> $obs->stn->identity->bom_stn_name,
 			"temp" 		=> $obs->obs->temp->dry_bulb_1min_cel,
-			"wetBulb"	=> $obs->obs->temp->wet_bulb_1min_avg_cel,
 			"feels" 	=> $obs->obs->temp->apparent_1min_cel,
+			"max" 		=> $obs->obs->temp->dry_bulb_max_cel,
+			"min" 		=> $obs->obs->temp->dry_bulb_min_cel,
 			"humidity" 	=> $obs->obs->temp->rel_hum_percent,
 			"wind" 		=> round(($obs->obs->wind->speed_10m_mps*3.6), 1),
 			"gusts" 	=> round(($obs->obs->wind->gust_speed_10m_mps*3.6), 1),
@@ -333,26 +337,26 @@ class Commands {
 			"vis" 		=> round(($obs->obs->visibility->horiz_m/1000), 1),
 		);
 		
-		if (!file_exists("../Media/Maps/{$place['name']}.png")) { file_put_contents("../Media/Maps/{$place['name']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center={$place['name']},%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C{$place['name']}")); }
+		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); }
 		
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("{$place['name']}, {$place['state']}")
 			->setURL("")
-			->setDescription($place['district'])
+			->setDescription("{$place['district']} - {$place['postcode']} - {$temp['stn']}")
 			->addFieldValues("Temp", "{$temp['temp']}° (Feels {$temp['feels']}°)", true)
-			->addFieldValues("Wind", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp['direction'])." (Gusting {$temp['gusts']}kph)", true)
+			->addFieldValues("Wind", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/', '/^CALM$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘', ''), $temp['direction'])." (Gusting {$temp['gusts']}kph)", true)
 			->addFieldValues("Humidity", "{$temp['humidity']}%", true)
+			->addFieldValues("Max / Min", "{$temp['max']}° / {$temp['min']}°", true)
 			->addFieldValues("Rain", "{$temp['rain']}mm", true)
 			->addFieldValues("Visibility", "{$temp['vis']}km", true)
-			->addFieldValues("Postcode", $place['postcode'], true)
-			->setImage("attachment://map-of-{$place['name']}.png")
+			->setImage("attachment://map-of-{$place['filename']}.png")
 			->setColor("0x00A9FF")
 			->setTimestamp()
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
 			
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
-			->addFile("../Media/Maps/{$place['name']}.png", "map-of-{$place['name']}.png")
+			->addFile("../Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png")
 			->addFile("../Media/Maps/BOM.png", "BOM.png");
 		
 		return $message->channel->sendMessage($builder);
