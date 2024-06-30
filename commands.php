@@ -552,7 +552,6 @@ class Commands {
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
-			->setDescription()
 			->setImage("https://reg.bom.gov.au/radar/IDR023.gif?".time())
 			->setColor("0x00A9FF")
 			->setTimestamp()
