@@ -38,7 +38,8 @@ class Commands {
 			'/^(remind(?:me|er))/' => 'createReminder',
 			'/^(4k|games|afl|round)/' => 'afl',
 			'/^(f(ormula)?1)$/' => 'f1',
-			'/^(roll|dice)/' => 'dice'
+			'/^(roll|dice)/' => 'dice',
+			'/^(u(rban)?d(ictionary)?)/' => 'urbanDic'
 		];
 		
 	}
@@ -75,6 +76,12 @@ class Commands {
 	
 	function searchImage($message, $discord, $args) { 
 		$this->search('image', $args, $message);
+	}
+	
+	function urbanDic($message, $discord, $args) {
+		$getUD = (empty($args)) ? file_get_contents("https://www.urbandictionary.com/random.php") : file_get_contents("https://www.urbandictionary.com/define.php?term={$args}");
+		preg_match_all("/(:?href=\"\/define\.php\?term=(.+)\" id=\"\d+\">(.+)<\/a><\/h1>|<div class=\"break-words meaning mb-4\">(.+)<\/div>)/mU", $getUD, $matches);
+		$message->channel->sendMessage("**{$matches[2][0]}**: ".strip_tags($matches[4][1]));
 	}
 	
 	function dice($message, $discord, $args) {
@@ -247,7 +254,7 @@ class Commands {
 			"systemInstruction" => array(
 				"role" => "system",
 				"parts" => array(
-					"text" => "You are a Discord chatbot. Don't ask questions."
+					"text" => "Provide answers with an Australian context. Do not ask questions or use emoji. Don't use dot points where possible."
 				),
 			)
 		);
