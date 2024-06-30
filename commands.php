@@ -1,6 +1,8 @@
 <?php
 
 use Discord\Parts\Embed\Embed;
+use Discord\Parts\Channel\Attachment;
+use Discord\Builders\MessageBuilder;
 use Carbon\Carbon;
 
 class Commands {
@@ -32,8 +34,8 @@ class Commands {
 			'/^(ban|kick|sb|sinbin)/' => 'sinbin',
 			'/^(bard|gemini|(open)?ai)/' => 'gemini',
 			'/^(asx|share(s)?|stock(s)?|etf)/' => 'ASX',
-			'/^(temp(erature)?)$/' => 'temp',
-			'/^(weather|forecast)$/' => 'weather',
+			'/^(weather|temp(erature)?)$/' => 'temp',
+			'/^(forecast)$/' => 'weather',
 			'/^(shell|bash|cli|cmd)/' => 'runcli',
 			'/^(remind(?:me|er))/' => 'createReminder',
 			'/^(4k|games|afl|round)/' => 'afl',
@@ -294,22 +296,73 @@ class Commands {
 		
 	}
 	
-	function getTemp() {
+	function getTemp($message, $discord, $args) {
 		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "https://api.weather.bom.gov.au/v1/locations/r1ppvy/observations");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
-		$temp = json_decode(curl_exec($ch));
-		return "{$temp->data->temp}° (Feels {$temp->data->temp_feels_like}°) | Wind: {$temp->data->wind->speed_kilometre}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp->data->wind->direction)." | Humidity: {$temp->data->humidity}% | Rain: {$temp->data->rain_since_9am}mm";
-
+		$locale = (empty($args)) ? "Highett" : str_replace(' ', '+', trim($args));
+		$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
+		if (empty($results)) { return $message->channel->sendMessage("Location not found"); }
+		$place = array(
+			"type"		=> $results->candidates[0]->type
+		);
+		$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$results->candidates[0]->id}?filter=nearby_type:bom_stn"));
+		$place += array (
+			"name" 		=> $results->candidates[0]->name,
+			"district" 	=> $location->place->location_hierarchy->public_district->description,
+			"state" 	=> $location->place->location_hierarchy->region[1]->description,
+			"postcode" 	=> $results->candidates[0]->postcode->name,
+			"id" 		=> $location->place->location_hierarchy->nearest->id,
+		);
+		if (strpos($location->place->location_hierarchy->nearest->name, "NTC AWS")) {
+			foreach ($location->place->location_hierarchy->nearby as $stations) {
+				if (!strpos($stations->name, "NTC AWS")) {
+					$place["id"] = $stations->id;
+					break;
+				}
+			}
+		}
+		$obs = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/observations/latest/{$place['id']}/atm/surf_air?include_qc_results=false"));
+		$temp = array(
+			"temp" 		=> $obs->obs->temp->dry_bulb_1min_cel,
+			"wetBulb"	=> $obs->obs->temp->wet_bulb_1min_avg_cel,
+			"feels" 	=> $obs->obs->temp->apparent_1min_cel,
+			"humidity" 	=> $obs->obs->temp->rel_hum_percent,
+			"wind" 		=> round(($obs->obs->wind->speed_10m_mps*3.6), 1),
+			"gusts" 	=> round(($obs->obs->wind->gust_speed_10m_mps*3.6), 1),
+			"direction" => $obs->obs->wind->dirn_10m_ord,
+			"rain"		=> $obs->obs->precip->since_0900lct_total_mm,
+			"vis" 		=> round(($obs->obs->visibility->horiz_m/1000), 1),
+		);
+		
+		if (!file_exists("../Media/Maps/{$place['name']}.png")) { file_put_contents("../Media/Maps/{$place['name']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center={$place['name']},%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C{$place['name']}")); }
+		
+		$embed = $discord->factory(Embed::class);
+		$embed->setTitle("{$place['name']}, {$place['state']}")
+			->setURL("")
+			->setDescription($place['district'])
+			->addFieldValues("Temp", "{$temp['temp']}° (Feels {$temp['feels']}°)", true)
+			->addFieldValues("Wind", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘'), $temp['direction'])." (Gusting {$temp['gusts']}kph)", true)
+			->addFieldValues("Humidity", "{$temp['humidity']}%", true)
+			->addFieldValues("Rain", "{$temp['rain']}mm", true)
+			->addFieldValues("Visibility", "{$temp['vis']}km", true)
+			->addFieldValues("Postcode", $place['postcode'], true)
+			->setImage("attachment://map-of-{$place['name']}.png")
+			->setColor("0x00A9FF")
+			->setTimestamp()
+			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
+			
+		$builder = MessageBuilder::new()
+			->addEmbed($embed)
+			->addFile("../Media/Maps/{$place['name']}.png", "map-of-{$place['name']}.png")
+			->addFile("../Media/Maps/BOM.png", "BOM.png");
+		
+		return $message->channel->sendMessage($builder);
 		
 	}
 	
-	function temp($message) {
+	function temp($message, $discord, $args) {
 		
-		$message->channel->sendMessage($this->getTemp());
-		
+		$this->getTemp($message, $discord, $args);
+
 	}
 	
 	function weather($message) {
