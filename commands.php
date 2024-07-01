@@ -313,17 +313,24 @@ class Commands {
 			"state" 	=> $location->place->location_hierarchy->region[1]->description,
 			"postcode" 	=> $results->candidates[0]->postcode->name,
 			"id" 		=> $location->place->location_hierarchy->nearest->id,
+			"forecast"	=> $location->place->gridcells->forecast->x."/".$location->place->gridcells->forecast->y
 		);
-		if (preg_match("/(NTC AWS|PYLON|JETTY)/", $location->place->location_hierarchy->nearest->name)) {
+		if (preg_match("/(NTC AWS|PYLON|JETTY|RMYS)/", $location->place->location_hierarchy->nearest->name)) {
 			foreach ($location->place->location_hierarchy->nearby as $stations) {
-				if (!preg_match("/(NTC AWS|PYLON|JETTY)/", $stations->name)) {
+				if (!preg_match("/(NTC AWS|PYLON|JETTY|RMYS)/", $stations->name)) {
 					$place["id"] = $stations->id;
 					break;
 				}
 			}
 		}
+		$uv = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/forecasts/3hourly/{$place['forecast']}?timezone=Australia%2FMelbourne"));
+		$temp = array (
+			"uv"		=> round($uv->fcst[0]->{'3hourly'}[0]->atm->surf_air->radiation->uv_clear_sky_code, 2),
+			"cloudper"	=> $uv->fcst[0]->{'3hourly'}[0]->atm->surf_air->cloud_amt_avg_percent,
+			"rainper"	=> $uv->fcst[0]->{'3hourly'}[0]->atm->surf_air->precip->precip_any_probability_percent
+		);
 		$obs = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/observations/latest/{$place['id']}/atm/surf_air?include_qc_results=false"));
-		$temp = array(
+		$temp += array(
 			"stn"		=> $obs->stn->identity->bom_stn_name,
 			"temp" 		=> $obs->obs->temp->dry_bulb_1min_cel,
 			"feels" 	=> $obs->obs->temp->apparent_1min_cel,
@@ -341,13 +348,15 @@ class Commands {
 		
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("{$place['name']}, {$place['state']}")
-			->setURL("")
 			->setDescription("{$place['district']} - {$place['postcode']} - {$temp['stn']}")
-			->addFieldValues("Temp", "{$temp['temp']}° (Feels {$temp['feels']}°)", true)
-			->addFieldValues("Wind", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/', '/^CALM$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘', ''), $temp['direction'])." (Gusting {$temp['gusts']}kph)", true)
-			->addFieldValues("Humidity", "{$temp['humidity']}%", true)
+			->addFieldValues("Temp", "{$temp['temp']}°", true)
+			->addFieldValues("Feels", "{$temp['feels']}°", true)
 			->addFieldValues("Max / Min", "{$temp['max']}° / {$temp['min']}°", true)
-			->addFieldValues("Rain", "{$temp['rain']}mm", true)
+			->addFieldValues("Wind", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/', '/^CALM$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘', ''), $temp['direction']), true)
+			->addFieldValues("Gusts", "{$temp['gusts']}kph", true)
+			->addFieldValues("Humidity", "{$temp['humidity']}%", true)
+			->addFieldValues("Rain", "{$temp['rain']}mm ({$temp['rainper']}%)", true)
+			->addFieldValues("UV", $temp['uv'], true)
 			->addFieldValues("Visibility", "{$temp['vis']}km", true)
 			->setImage("attachment://map-of-{$place['filename']}.png")
 			->setColor("0x00A9FF")
