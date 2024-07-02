@@ -34,7 +34,7 @@ class Commands {
 			'/^(ban|kick|sb|sinbin)/' => 'sinbin',
 			'/^(bard|gemini|(open)?ai)/' => 'gemini',
 			'/^(asx|share(s)?|stock(s)?|etf)/' => 'ASX',
-			'/^(weather|temp(erature)?)/' => 'temp',
+			'/^(weather|temp(erature)?)/' => 'weather',
 			'/^(forecast)$/' => 'forecast',
 			'/^(shell|bash|cli|cmd)/' => 'runcli',
 			'/^(remind(?:me|er))/' => 'createReminder',
@@ -296,10 +296,10 @@ class Commands {
 		
 	}
 	
-	function forecast($message, $discord, $args) {
-		$locale = (empty($args)) ? "Highett" : str_replace(' ', '+', trim($args));
+	function getLocale($locale) {
+		$locale = (empty($locale)) ? "Highett" : str_replace(' ', '+', trim($locale));
 		$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
-		if (empty($results)) { return $message->channel->sendMessage("Location not found"); }
+		if (empty($results)) { return false; }
 		$place = array(
 			"name" 		=> $results->candidates[0]->name,
 			"state" 	=> $results->candidates[0]->state,
@@ -307,7 +307,14 @@ class Commands {
 			"type"		=> $results->candidates[0]->type,
 			"postcode" 	=> $results->candidates[0]->postcode->name,
 			"forecast"	=> $results->candidates[0]->gridcells->forecast->x."/".$results->candidates[0]->gridcells->forecast->y,
+			"id"		=> $results->candidates[0]->id
 		);
+		return $place;
+	}
+	
+	function forecast($message, $discord, $args) {
+		$place = $this->getLocale($args);
+		if (!$place) { return $message->channel->sendMessage("No location found"); }
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("{$place['name']}, {$place['state']} ({$place['postcode']})");
 		$forecast = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/forecasts/daily/{$place['forecast']}?timezone=Australia%2FMelbourne"));
@@ -332,29 +339,20 @@ class Commands {
 		return $message->channel->sendMessage($builder);
 	}
 	
-	function getTemp($message, $discord, $args) {
-		
-		$locale = (empty($args)) ? "Highett" : str_replace(' ', '+', trim($args));
-		$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
-		if (empty($results)) { return $message->channel->sendMessage("Location not found"); }
-		$place = array(
-			"type"		=> $results->candidates[0]->type
-		);
-		$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$results->candidates[0]->id}?filter=nearby_type:bom_stn"));	
+	function weather($message, $discord, $args) {
+		$place = $this->getLocale($args);
+		if (!$place) { return $message->channel->sendMessage("No location found"); }
+		$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$place['id']}?filter=nearby_type:bom_stn"));	
 		if (empty($location->place->location_hierarchy->nearest->id)) { return $message->channel->sendMessage("No weather for location"); }	
 		$place += array (
-			"name" 		=> $results->candidates[0]->name,
-			"filename"	=> str_replace(' ', '-', $results->candidates[0]->name),
 			"district" 	=> $location->place->location_hierarchy->public_district->description,
 			"state" 	=> $location->place->location_hierarchy->region[1]->description,
-			"postcode" 	=> $results->candidates[0]->postcode->name,
-			"id" 		=> $location->place->location_hierarchy->nearest->id,
-			"forecast"	=> $location->place->gridcells->forecast->x."/".$location->place->gridcells->forecast->y
+			"obsid" 	=> $location->place->location_hierarchy->nearest->id,
 		);
 		if (preg_match("/(NTC AWS|PYLON|JETTY|RMYS)/", $location->place->location_hierarchy->nearest->name)) {
 			foreach ($location->place->location_hierarchy->nearby as $stations) {
 				if (!preg_match("/(NTC AWS|PYLON|JETTY|RMYS)/", $stations->name)) {
-					$place["id"] = $stations->id;
+					$place['obsid'] = $stations->id;
 					break;
 				}
 			}
@@ -365,7 +363,7 @@ class Commands {
 			"cloudper"	=> $uv->fcst[0]->{'3hourly'}[0]->atm->surf_air->cloud_amt_avg_percent,
 			"rainper"	=> $uv->fcst[0]->{'3hourly'}[0]->atm->surf_air->precip->precip_any_probability_percent
 		);
-		$obs = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/observations/latest/{$place['id']}/atm/surf_air?include_qc_results=false"));
+		$obs = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/observations/latest/{$place['obsid']}/atm/surf_air?include_qc_results=false"));
 		$temp += array(
 			"stn"		=> $obs->stn->identity->bom_stn_name,
 			"temp" 		=> $obs->obs->temp->dry_bulb_1min_cel,
@@ -406,12 +404,6 @@ class Commands {
 		
 		return $message->channel->sendMessage($builder);
 		
-	}
-	
-	function temp($message, $discord, $args) {
-		
-		$this->getTemp($message, $discord, $args);
-
 	}
 	
 	function uptime($message) {
