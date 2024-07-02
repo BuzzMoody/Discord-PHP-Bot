@@ -34,8 +34,8 @@ class Commands {
 			'/^(ban|kick|sb|sinbin)/' => 'sinbin',
 			'/^(bard|gemini|(open)?ai)/' => 'gemini',
 			'/^(asx|share(s)?|stock(s)?|etf)/' => 'ASX',
-			'/^(weather|temp(erature)?)$/' => 'temp',
-			'/^(forecast)$/' => 'weather',
+			'/^(weather|temp(erature)?)/' => 'temp',
+			'/^(forecast)$/' => 'forecast',
 			'/^(shell|bash|cli|cmd)/' => 'runcli',
 			'/^(remind(?:me|er))/' => 'createReminder',
 			'/^(4k|games|afl|round)/' => 'afl',
@@ -296,6 +296,42 @@ class Commands {
 		
 	}
 	
+	function forecast($message, $discord, $args) {
+		$locale = (empty($args)) ? "Highett" : str_replace(' ', '+', trim($args));
+		$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
+		if (empty($results)) { return $message->channel->sendMessage("Location not found"); }
+		$place = array(
+			"name" 		=> $results->candidates[0]->name,
+			"state" 	=> $results->candidates[0]->state,
+			"filename"	=> str_replace(' ', '-', $results->candidates[0]->name),
+			"type"		=> $results->candidates[0]->type,
+			"postcode" 	=> $results->candidates[0]->postcode->name,
+			"forecast"	=> $results->candidates[0]->gridcells->forecast->x."/".$results->candidates[0]->gridcells->forecast->y,
+		);
+		$embed = $discord->factory(Embed::class);
+		$embed->setTitle("{$place['name']}, {$place['state']} ({$place['postcode']})");
+		$forecast = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/forecasts/daily/{$place['forecast']}?timezone=Australia%2FMelbourne"));
+		array_shift($forecast->fcst->daily);
+		$i=0;
+		foreach ($forecast->fcst->daily as $daily) {
+			$uv = (!empty($daily->atm->surf_air->radiation->uv_clear_sky_max_code) && $i < 3) ? ", uv ".round(@$daily->atm->surf_air->radiation->uv_clear_sky_max_code, 1) : "";
+			$icon = preg_replace(array('/^1$/', '/^2$/', '/^3$/', '/^4$/', '/^5$/', '/^6$/', '/^7$/', '/^8$/', '/^9$/', '/^10$/', '/^11$/'), array('☀️', '2', '🌤', '4', '5', '6', '7', '8', '9', '10', '🌦️'), $daily->atm->surf_air->weather->icon_code);
+			$embed->addFieldValues("{$this->toAusTime($daily->date_utc, 'l jS')} {$icon}", "".round($daily->atm->surf_air->temp_max_cel, 1)."° / ".round($daily->atm->surf_air->temp_min_cel, 1)."° \n_☔ {$daily->atm->surf_air->precip->any_probability_percent}% {$uv}_", true);
+			$i++;
+		}
+		$embed->setColor("0x00A9FF")
+			->setTimestamp()
+			->setImage("attachment://map-of-{$place['filename']}.png")
+			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
+			
+		$builder = MessageBuilder::new()
+			->addEmbed($embed)
+			->addFile("../Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png")
+			->addFile("../Media/Maps/BOM.png", "BOM.png");
+		
+		return $message->channel->sendMessage($builder);
+	}
+	
 	function getTemp($message, $discord, $args) {
 		
 		$locale = (empty($args)) ? "Highett" : str_replace(' ', '+', trim($args));
@@ -376,32 +412,6 @@ class Commands {
 		
 		$this->getTemp($message, $discord, $args);
 
-	}
-	
-	function weather($message) {
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "https://api.weather.bom.gov.au/v1/locations/r1ppvy/forecasts/daily");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36");
-		$temp = json_decode(curl_exec($ch));
-		
-		foreach ($temp->data as $daily => $info) {
-			
-			$date = new DateTime($info->date);
-			$date->setTimezone(new DateTimeZone("Australia/Melbourne"));
-			$localDate = $date->format('D dS');
-			
-			$desc = preg_replace(array('/light_shower/', '/mostly_sunny/', '/shower/', '/rain/', '/storm/', '/cloudy/', '/sunny/'), array('💡🚿', '🌤️', '🌦️', '🌧️', '🌩️', '☁️', '☀️'), $info->icon_descriptor);
-			$fire = (!empty($info->fire_danger)) ? " (🔥 {$info->fire_danger})" : "";
-			
-			$output .= "{$localDate}: {$info->temp_max}° {$desc}{$fire}";
-			if ($daily != array_key_last($temp->data)) { $output .= "\n"; }
-			
-		}
-
-		$message->channel->sendMessage("```\n{$output}\n```");
-		
 	}
 	
 	function uptime($message) {
