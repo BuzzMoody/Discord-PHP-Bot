@@ -312,6 +312,10 @@ class Commands {
 		return $place;
 	}
 	
+	function getMapImg($place) { 
+		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); }
+	}
+	
 	function forecast($message, $discord, $args) {
 		$place = $this->getLocale($args);
 		if (!$place) { return $message->channel->sendMessage("No location found"); }
@@ -326,9 +330,7 @@ class Commands {
 			$embed->addFieldValues("{$this->toAusTime($daily->date_utc, 'l jS')} {$icon}", "".round($daily->atm->surf_air->temp_max_cel, 1)."° / ".round($daily->atm->surf_air->temp_min_cel, 1)."° \n_☔ {$daily->atm->surf_air->precip->any_probability_percent}% {$uv}_", true);
 			$i++;
 		}
-		
-		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); }
-		
+		$this->getMapImg($place);
 		$embed->setColor("0x00A9FF")
 			->setTimestamp()
 			->setImage("attachment://map-of-{$place['filename']}.png")
@@ -380,9 +382,7 @@ class Commands {
 			"rain"		=> $obs->obs->precip->since_0900lct_total_mm,
 			"vis" 		=> round(($obs->obs->visibility->horiz_m/1000), 1),
 		);
-		
-		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); }
-		
+		$this->getMapImg($place);
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("{$place['name']}, {$place['state']}")
 			->setDescription("{$place['district']} - {$place['postcode']} - {$temp['stn']}")
