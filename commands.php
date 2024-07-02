@@ -322,10 +322,13 @@ class Commands {
 		$i=0;
 		foreach ($forecast->fcst->daily as $daily) {
 			$uv = (!empty($daily->atm->surf_air->radiation->uv_clear_sky_max_code) && $i < 3) ? ", uv ".round(@$daily->atm->surf_air->radiation->uv_clear_sky_max_code, 1) : "";
-			$icon = preg_replace(array('/^1$/', '/^2$/', '/^3$/', '/^4$/', '/^5$/', '/^6$/', '/^7$/', '/^8$/', '/^9$/', '/^10$/', '/^11$/'), array('☀️', '2', '🌤', '4', '5', '6', '7', '8', '9', '10', '🌦️'), $daily->atm->surf_air->weather->icon_code);
+			$icon = preg_replace(array('/^1$/', '/^2$/', '/^3$/', '/^4$/', '/^5$/', '/^6$/', '/^7$/', '/^8$/', '/^9$/', '/^10$/', '/^11$/'), array('☀️', '2', '🌤', ':cloud:', '5', '6', '7', '8', '9', '🌫️', '🌦️'), $daily->atm->surf_air->weather->icon_code);
 			$embed->addFieldValues("{$this->toAusTime($daily->date_utc, 'l jS')} {$icon}", "".round($daily->atm->surf_air->temp_max_cel, 1)."° / ".round($daily->atm->surf_air->temp_min_cel, 1)."° \n_☔ {$daily->atm->surf_air->precip->any_probability_percent}% {$uv}_", true);
 			$i++;
 		}
+		
+		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$this->keys['maps']}&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); }
+		
 		$embed->setColor("0x00A9FF")
 			->setTimestamp()
 			->setImage("attachment://map-of-{$place['filename']}.png")
