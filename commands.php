@@ -567,14 +567,19 @@ class Commands {
 	
 	function radar($message, $discord) {
 		
+		$time = microtime(true);
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
-			->setImage("https://reg.bom.gov.au/radar/IDR023.gif?".time())
+			->setImage("attachment://radar-{$time}.gif")
 			->setColor("0x00A9FF")
 			->setTimestamp()
-			->setFooter("BOM", "https://reg.bom.gov.au/images/touch-icon/touch-icon-76x76.png");
-		$message->channel->sendEmbed($embed);
+			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
+		$builder = MessageBuilder::new()
+			->addEmbed($embed)
+			->addFile("../Media/Maps/BOM.png", "BOM.png")
+			->addFile("../Media/Radar/animated.gif", "radar-{$time}.gif");		
+		$message->channel->sendMessage($builder);
 		
 	}
 	
