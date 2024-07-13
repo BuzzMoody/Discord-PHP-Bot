@@ -175,8 +175,9 @@ class Commands {
 	
 	function afl($message, $discord, $round) {
 		
-		$round = intval(date("W")) - 10;
+		$round = (empty($round)) ? intval(date("W")) - 10 : intval($round);
 		$fixture = json_decode(file_get_contents("https://aflapi.afl.com.au/broadcasting/match-events?competition=1&compseason=62&round={$round}&pageSize=9"));
+		if (empty($fixture->content)) { return $message->channel->sendMessage("Round not found."); }
 		$embed = $discord->factory(Embed::class);
 		foreach ($fixture->content as $game) {
 			foreach ($game->channels as $channel) { 
