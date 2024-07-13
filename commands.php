@@ -175,22 +175,31 @@ class Commands {
 	
 	function afl($message, $discord, $round) {
 		
-		$round = intval($round);
-		$round = (empty($round) || !is_int((int)$round) || $round < 0 || $round > 23) ? (date("W")-10) : $round;
-		$mysqli = mysqli_connect('localhost', 'buzz', $this->keys['mysql'], 'discord');
-		$result = $mysqli->query("SELECT * FROM games WHERE round={$round}");
-		if ($result->num_rows != 0) { 
-			$out = "### Round {$round} - Games in 4K\n\n";
-			while ($row = $result->fetch_assoc()) {
-				$out .= "- **{$row['teams']}**\n - *{$row['date']} - {$row['time']}*\n";
+		$round = intval(date("W")) - 10;
+		$fixture = json_decode(file_get_contents("https://aflapi.afl.com.au/broadcasting/match-events?competition=1&compseason=62&round={$round}&pageSize=9"));
+		$embed = $discord->factory(Embed::class);
+		foreach ($fixture->content as $game) {
+			foreach ($game->channels as $channel) { 
+				if ($channel->info->name == "Channel 7") { 
+					if (empty($channel->restrictedRegions)) { 
+						$seven = true;
+						break;
+					}
+					foreach ($channel->restrictedRegions as $region) { 
+						if ($region->id == 2) { $seven = true; }
+					}
+				}
 			}
-			$message->channel->sendMessage($out);
+			if (!$seven) { $embed->addFieldValues("{$game->name}", "{$this->toAusTime($game->startDateTime, "l d F - H:i")}", true); }
+			$seven = false;
 		}
-		else { 
-			$message->channel->sendMessage("Round not found in DB");
-		}
-		$mysqli->close();
 		
+		$embed->setTitle("Round {$round} - 4K Games")
+			->setColor("0x00A9FF")
+			->setTimestamp()
+			->setFooter("AFL", "https://www.afl.com.au/resources/v5.19.20/afl/apple-touch-icon.png");
+		$message->channel->sendEmbed($embed);
+
 	}
 	
 	function sendBabe($message, $discord, $args, $babe) {
