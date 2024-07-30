@@ -4,6 +4,8 @@ use Discord\Parts\Embed\Embed;
 use Discord\Parts\Channel\Attachment;
 use Discord\Builders\MessageBuilder;
 use Carbon\Carbon;
+use React\Http\Browser;
+use Psr\Http\Message\ResponseInterface;
 
 class Commands {
 	
@@ -41,6 +43,7 @@ class Commands {
 			'/^(4k|games|afl|round)/' => 'afl',
 			'/^(f(ormula)?1)$/' => 'f1',
 			'/^(roll|dice)/' => 'dice',
+			'/^(s(?:table)?d(?:iffusion)?)/' => 'stableDiffuse',
 			'/^(u(rban)?d(ictionary)?)/' => 'urbanDic'
 		];
 		
@@ -78,6 +81,19 @@ class Commands {
 	
 	function searchImage($message, $discord, $args) { 
 		$this->search('image', $args, $message);
+	}
+	
+	function stableDiffuse($message, $discord, $args) { 
+		$client = new Browser();
+		$client->get("{$this->keys['sd']}/?img={$args}")->then(function (ResponseInterface $response) use ($message) {
+			$rand = rand(1,100000);
+			file_put_contents("../Media/AI/{$rand}.png", $response->getBody());
+			$builder = MessageBuilder::new()
+				->addFile("../Media/AI/{$rand}.png", "{$rand}.png");
+			return $message->channel->sendMessage($builder);
+		}, function (Exception $e) {
+			echo "Error: {$e->getMessage()}\n";
+		});
 	}
 	
 	function urbanDic($message, $discord, $args) {
