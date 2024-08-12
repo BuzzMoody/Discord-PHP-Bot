@@ -248,7 +248,6 @@ class Commands {
 		if (empty($args)) { return $message->reply("Maybe give the AI something to do??"); }
 		
 		$tokens = ($this->isAdmin($message->author->id, $discord)) ? 400 : 200;
-		$words = ($this->isAdmin($message->author->id, $discord)) ? 200 : 50;
 		
 		$post_fields = array(
 			"contents" => array(
@@ -275,22 +274,20 @@ class Commands {
 				)
 			),
 			"generationConfig" => array(
-				"temperature" => 0.9,
+				"temperature" => 0.5,
 				"maxOutputTokens" => $tokens,
-				"topK" => 1,
-				"topP" => 0.95
 			),
 			"systemInstruction" => array(
 				"role" => "system",
 				"parts" => array(
-					"text" => "Provide answers with an Australian context. Do not ask questions or use emoji. Don't use dot points where possible."
+					"text" => "You are a Discord chatbot. Provide accurate and relevant answers to the questions and prompts given. Do not ask questions back. Answers must be in the form of full sentences. You may elaborate on your answer."
 				),
-			)
+			),
 		);
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:streamGenerateContent?key='.$this->keys["gemini"],
+			CURLOPT_URL => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key='.$this->keys["gemini"],
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
@@ -308,14 +305,16 @@ class Commands {
 		
 		curl_close($curl);
 
-		if (@$response[0]->error->message) { return $message->reply($response[0]->error->message); }
+		if (@$response->error->message) { return $message->channel->sendMessage($response->error->message); }
 
-		else if (@$response[0]->blockReason) { return $message->reply( "Error Reason: ".$response[0]->blockReason); }
-
-		for ($x = 0; $x < count($response); $x++) {
-			@$string .= @$response[$x]->candidates[0]->content->parts[0]->text;
+		else if (@$response->blockReason) { 
+			
+			return $message->channel->sendMessage("Error Reason: ".$response->blockReason); 
+			
 		}
-	
+
+		$string = $response->candidates[0]->content->parts[0]->text;
+
 		$output = (strlen($string) > 1995) ? substr($string,0,1995).'…' : $string;
 		
 		$message->channel->sendMessage($output);
