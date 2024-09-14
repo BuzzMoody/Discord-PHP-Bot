@@ -120,55 +120,32 @@ class Commands {
 	
 	function f1($message, $discord) {
 		
-		$current_datetime = new DateTime();
-		$nextRace = file_get_contents("https://www.formula1.com/");
-		preg_match_all("/(?:@id|description|startDate|endDate|address)\":\"(.+)\"/", $nextRace, $matches);
-		$next = array(
-			"URL" => $matches[1][1],
-			"name" => $matches[1][2],
-			"starts" => $matches[1][3],
-			"ends" => $matches[1][4],
-			"locale" => $matches[1][5]
-		);
-		$upcoming = array(
-			"first" => $matches[1][10],
-			"firstDate" => $matches[1][8],
-			"second" => $matches[1][15],
-			"secondDate" => $matches[1][13]
-		);
-		$sessions = array();
-		$sessionsInfo = file_get_contents($next['URL']);
-		preg_match_all("/\/en\/results\.html\/2024\/races\/(\d{4}\/\w*)\/race-result\.html\" data/", $sessionsInfo, $results);
-		$raceID = $results[1][0];
-		preg_match_all("/<script type=\"application\/ld\+json\">(.+)<\/script>/", $sessionsInfo, $matches);
-		$sessionJSON = json_decode($matches[1][0]);
-		for ($x=0;$x<count($sessionJSON->subEvent);$x++) {
-			$sessions[$x] = array(
-				"name" => $sessionJSON->subEvent[$x]->name,
-				"starts" => $sessionJSON->subEvent[$x]->startDate,
-				"ends" => $sessionJSON->subEvent[$x]->endDate
-			); 
-		}
-		
-		$embed = $discord->factory(Embed::class);
-		$embed->setAuthor("Formula 1 - Race Info", "https://media.formula1.com/etc/designs/fom-website/icon192x192.png")
-			->setTitle($next["name"])
-			->setURL($next["URL"])
-			->setColor("0x00A9FF")
-			->setDescription("The next race takes place in {$next["locale"]}.");
-		for ($x=0;$x<count($sessions);$x++) {
-			$session_datetime = new DateTime($sessions[$x]["ends"], new DateTimeZone('UTC'));
-			$session_datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
-			if ($session_datetime < $current_datetime) {
-				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "~~{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'G:i')}~~ - [Results](https://www.formula1.com/en/results.html/2024/races/{$raceID}/".substr(strtolower(str_replace(" ", "-",strtok($sessions[$x]["name"], '-'))), 0, -1).".html)", false);
-			}
-			else {
-				$embed->addFieldValues(strtok($sessions[$x]["name"], '-'), "{$this->toAusTime($sessions[$x]["starts"])} - {$this->toAusTime($sessions[$x]["ends"], 'G:i', $sessions[$x]["starts"])}", false);
+		$http = new Browser();
 
+		$headers = array(
+		  'apikey' => 'BQ1SiSmLUOsp460VzXBlLrh689kGgYEZ',
+		  'locale' => 'en',
+		);
+
+		$http->get('https://api.formula1.com/v1/event-tracker', $headers)->then(
+			function (ResponseInterface $response) use ($message, $discord) {
+				$output = json_decode($response->getBody());
+				$embed = $discord->factory(Embed::class);
+				$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png')
+					->setTitle($output->race->meetingOfficialName)
+					->setURL("https://www.formula1.com{$output->race->url}")
+					->setColor('0x00A9FF')
+					->setDescription("The current location is **{$output->race->meetingLocation}, {$output->race->meetingCountryName}**.");
+				foreach ($output->seasonContext->timetables as $event) {
+					$fieldval = ($event->state == 'completed') ? "~~{$this->toAusTime($event->startTime, 'G:i')} - {$this->toAusTime($event->endTime, 'G:i')}~~ - [Results](https://www.formula1.com/en/results/{$output->seasonContext->seasonYear}/races/{$output->fomRaceId}/{$output->race->meetingCountryName}/".str_replace(' ', '/', strtolower($event->description)).")" : "{$this->toAusTime($event->startTime, 'G:i')} - {$this->toAusTime($event->endTime, 'G:i')} (Starts <t:".strtotime($event->endTime).":R>)";	
+					$embed->addFieldValues($event->description, $fieldval, false);
+				}
+				$message->channel->sendEmbed($embed);
+			},
+			function (Exception $e) use ($message) {
+				$message->channel->send("Error: {$e->getMessage()}");
 			}
-		}
-		$embed->addFieldValues("Upcoming Races", "{$upcoming["first"]} - {$this->toAusTime($upcoming["firstDate"], 'jS F')}\n{$upcoming["second"]} - {$this->toAusTime($upcoming["secondDate"], 'jS F')}", false);
-		$message->channel->sendEmbed($embed);
+		);
 		
 	}
 	
