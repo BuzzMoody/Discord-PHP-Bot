@@ -2,17 +2,15 @@
 
 include __DIR__.'/vendor/autoload.php';
 include 'config.inc';
-include 'commands.php';
+include 'CommandHandler.php';
 
 use Discord\Discord;
-use Discord\Parts\Channel\Message;
 use Discord\WebSockets\Intents;
 use Discord\WebSockets\Event;
 use Discord\Parts\User\Game;
 use Discord\Parts\User\Activity;
 use Discord\Parts\Embed;
-
-$commands = new Commands($keys, floor(microtime(true) * 1000));
+use Discord\Parts\Channel\Message;
 
 $discord = new Discord([
     'token' => $keys['discord'],
@@ -20,6 +18,9 @@ $discord = new Discord([
 	'logger' => new \Monolog\Logger('New logger'),
 	'loadAllMembers' => true,
 ]);
+
+$uptime = (int)(microtime(true) * 1000);
+$commands = new Commands($keys, $uptime, $discord);
 
 $discord->on('ready', function (Discord $discord) use ($commands) {
 	
@@ -35,28 +36,20 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
-		if (preg_match('/(angela white|porn)/i', @$message->content) && $message->author->id == 119735534951202816) { 
-			$commands->sinbin("<@119735534951202816> 10 No more porn 4 you", $message, $discord, TRUE);
+		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2 && $message->channel->id == 274828566909157377) { 
+			$commands->funcExec($message);
 		}
 		
-		else if (preg_match('/cocaine/i', @$message->content) && $message->author->id == 193735519258148864) { 
-			$commands->sinbin("<@193735519258148864> 10 Don't do drugs", $message, $discord, TRUE);
-		}
+		$discord->getLoop()->addPeriodicTimer(15, function () use ($commands, $discord) {
+			$commands->checkReminders();
+			updateActivity($discord);	
+		});
 		
-		else if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			$commands->execute($message, $discord);
-		}
+		$discord->getLoop()->addPeriodicTimer(120, function () use ($commands) {
+			$commands->checkDota();
+		});
 		
     });
-	
-	$discord->getLoop()->addPeriodicTimer(15, function () use ($commands, $discord) {
-		$commands->checkReminders($discord);
-		updateActivity($discord);	
-	});
-	
-	$discord->getLoop()->addPeriodicTimer(120, function () use ($commands, $discord) {
-		$commands->checkDota($discord);
-	});
 	
 });
 
@@ -72,11 +65,11 @@ function updateActivity($discord) {
 
 function getMemberCount($discord) {
 	$countGuild = $discord->guilds->get('id', '232691831090053120');
-	$count = 0;
+	$count = -1;
 	foreach ($countGuild->members as $countMember) {
 		if ($countMember->status != NULL && $countMember->status != "offline") { @$count++; }
 	}
-	return $count-1;
+	return $count;
 }
 
 ?>
