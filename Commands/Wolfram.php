@@ -3,7 +3,7 @@
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 
-	function wolfram($message, $args) { 
+	function Wolfram($message, $args) { 
 
 		global $discord, $keys;
 

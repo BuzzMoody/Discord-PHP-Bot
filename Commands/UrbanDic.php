@@ -1,6 +1,6 @@
 <?php
 
-	function urbanDic($message, $args) {
+	function UrbanDic($message, $args) {
 		
 		$getUD = (empty($args)) ? @file_get_contents("https://www.urbandictionary.com/random.php") : @file_get_contents("https://www.urbandictionary.com/define.php?term=".urlencode($args));
 		if (empty($getUD)) { return $message->channel->sendMessage("Word not found"); }
