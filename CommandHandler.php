@@ -70,9 +70,6 @@ class Commands {
 		if (isset(self::$functions[$func_name]) && function_exists($func_name)) {
 			$func_name($message, $args, $matches);
 		}
-		else {
-			echo "Function {$func_name} not found.\n";
-		}
 		
 	}
 	
@@ -84,10 +81,8 @@ class Commands {
 				$func_name = pathinfo($file, PATHINFO_FILENAME);
 				include_once("{$dir}/{$file}");
 				self::$functions[$func_name] = $func_name;
-				echo "Command Included: {$func_name}\n";
 			}
 		}
-		echo "Commands Loaded\n";
 
 	}
 	
