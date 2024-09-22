@@ -61,7 +61,7 @@ class Commands {
 				$this->funcCall($func_name, $message, $args, $matches);
 				break;
 			}
-        }
+		}
 		
 	}
 	

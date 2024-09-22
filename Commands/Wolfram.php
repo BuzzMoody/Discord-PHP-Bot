@@ -5,7 +5,7 @@
 
 	function Wolfram($message, $args) { 
 
-		global $discord, $keys;
+		global $keys;
 
 		$waclient = new Browser();
 		$waclient->get("http://api.wolframalpha.com/v1/result?appid={$keys['wolf']}&i={$args}&units=metric")->then(function (ResponseInterface $waresponse) use ($message) {
