@@ -7,8 +7,10 @@
 
 	function StableDiffusion($message, $args) { 
 	
+		global $keys;
+	
 		$client = new Browser();
-		$client->get("{$this->keys['sd']}/?img={$args}")->then(function (ResponseInterface $response) use ($message) {
+		$client->get("{$keys['sd']}/?img={$args}")->then(function (ResponseInterface $response) use ($message) {
 			$rand = rand(1,100000);
 			file_put_contents("../Media/AI/{$rand}.png", $response->getBody());
 			$builder = MessageBuilder::new()

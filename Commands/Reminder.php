@@ -1,6 +1,4 @@
 <?php
-
-	global $keys;
 	
 	function Reminder($message, $args) {
 
