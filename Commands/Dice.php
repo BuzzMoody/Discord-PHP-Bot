@@ -1,6 +1,6 @@
 <?php
 
-	function dice($message, $args) {
+	function Dice($message, $args) {
 		
 		if (preg_match('/(\d{1,2})(d(\d{1,2}))?$/', $args, $die)) {
 			$dice = ($die[1] < 11 && $die[1] > 0) ? $die[1] : 1;

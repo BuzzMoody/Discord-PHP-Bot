@@ -13,8 +13,8 @@ use Discord\Parts\Embed;
 use Discord\Parts\Channel\Message;
 
 $discord = new Discord([
-    'token' => $keys['discord'],
-    'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
+	'token' => $keys['discord'],
+	'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
 	'logger' => new \Monolog\Logger('New logger'),
 	'loadAllMembers' => true,
 ]);
