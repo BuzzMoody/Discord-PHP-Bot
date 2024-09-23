@@ -24,7 +24,7 @@ $commands = new Commands($keys, $uptime, $discord);
 
 $discord->on('ready', function (Discord $discord) use ($commands) {
 	
-    echo "Bot is ready!\n";
+	echo "Bot is ready!\n";
 	
 	$activity = $discord->factory(Activity::class, [
 		'name' => getMemberCount($discord)." Incels",
@@ -32,7 +32,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	]);
 	$discord->updatePresence($activity);
 
-    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
+	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
@@ -49,27 +49,31 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 			checkDota();
 		});
 		
-    });
+	});
 	
 });
 
 $discord->run();
 
 function updateActivity($discord) {
+	
 	$activity = $discord->factory(Activity::class, [
 		'name' => getMemberCount($discord)." Incels",
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
+	
 }
 
 function getMemberCount($discord) {
+	
 	$countGuild = $discord->guilds->get('id', '232691831090053120');
 	$count = -1;
 	foreach ($countGuild->members as $countMember) {
 		if ($countMember->status != NULL && $countMember->status != "offline") { @$count++; }
 	}
 	return $count;
+	
 }
 
 ?>
