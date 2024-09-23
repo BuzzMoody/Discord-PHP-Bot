@@ -40,12 +40,12 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 			$commands->funcExec($message);
 		}
 		
-		$discord->getLoop()->addPeriodicTimer(15, function () use ($commands, $discord) {
+		$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 			checkReminders();
 			updateActivity($discord);	
 		});
 		
-		$discord->getLoop()->addPeriodicTimer(120, function () use ($commands) {
+		$discord->getLoop()->addPeriodicTimer(120, function () {
 			checkDota();
 		});
 		
