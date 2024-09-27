@@ -33,7 +33,6 @@ class Commands {
 			'/^(forecast)$/' => 'Forecast',
 			'/^(shell|bash|cli|cmd)/' => 'RunCLI',
 			'/^(remind(?:me|er))/' => 'Reminder',
-			// '/^(4k|games|afl|round)/' => 'afl',
 			'/^(f(ormula)?1)$/' => 'F1',
 			'/^(roll|dice)/' => 'Dice',
 			'/^(s(?:table)?d(?:iffusion)?)/' => 'StableDiffusion',
