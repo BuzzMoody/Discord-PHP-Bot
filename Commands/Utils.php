@@ -94,91 +94,95 @@
 	function checkDota() {
 		
 		global $discord;
-
-		$ids = array(
-			array("232691181396426752", "54716121", "Buzz"), 
-			array("381596223435702282", "33939542", "Dan"), 
-			array("276222661515018241", "77113202", "Hassler"), 
-		);
 		
-		$games = 0;
+		$current_hour = Date('G');
+		if (($current_hour >= 10 && $current_hour <= 23) || in_array($current_hour, [0, 1, 2])) {
 
-		for ($i = 0; $i < count($ids); $i++) {
-
-			$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1";
+			$ids = array(
+				array("232691181396426752", "54716121", "Buzz"), 
+				array("381596223435702282", "33939542", "Dan"), 
+				array("276222661515018241", "77113202", "Hassler"), 
+			);
 			
-			$content = @file_get_contents($url);
-			
-			if ($content === FALSE) { return; }
+			$games = 0;
 
-			$response = json_decode($content);
+			for ($i = 0; $i < count($ids); $i++) {
 
-			$details[$i]['user'] = $ids[$i][1];
-			$details[$i]['matchid'] = '';
-
-			if (checkNew($details[$i]['user'], $response[0]->match_id)) {
-
-				$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
-				$details[$i]['matchid'] = $response[0]->match_id;
+				$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/matches?limit=1";
 				
-				if (
-					$i == 0 || 
-					$i > 0 && @$keyz[0] == 1 && $response[0]->match_id == $details[($i-1)]['matchid'] && count($details[($i-1)]) > 2 || 
-					$i > 0 && @!$keyz[0] && $response[0]->match_id == $details[($i-1)]['matchid'] ||
-					$i > 0 && @!$keyz[0] && $details[($i-1)]['matchid'] == null
-				) {
+				$content = @file_get_contents($url);
 				
+				if ($content === FALSE) { return; }
+
+				$response = json_decode($content);
+
+				$details[$i]['user'] = $ids[$i][1];
+				$details[$i]['matchid'] = '';
+
+				if (checkNew($details[$i]['user'], $response[0]->match_id)) {
+
+					$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 					$details[$i]['matchid'] = $response[0]->match_id;
-					$details[$i]['new'] = true;
-					$details[$i]['discord'] = $ids[$i][0];
-					$details[$i]['name'] = $ids[$i][2];
-					$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
-					$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && $details[$i]['team'] == "Dire") ? "Won" : "Lost";
-					$details[$i]['hero'] = Commands::HEROES[$response[0]->hero_id];
-					$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
-					$start = $response[0]->start_time;
-					$length = gmdate("H:i:s", $response[0]->duration);
-					$mode = Commands::GAMEMODES[$response[0]->game_mode];
-					@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
-					$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
-					$games++;
-					updateMatch($details[$i]['user'], $response[0]->match_id);
+					
+					if (
+						$i == 0 || 
+						$i > 0 && @$keyz[0] == 1 && $response[0]->match_id == $details[($i-1)]['matchid'] && count($details[($i-1)]) > 2 || 
+						$i > 0 && @!$keyz[0] && $response[0]->match_id == $details[($i-1)]['matchid'] ||
+						$i > 0 && @!$keyz[0] && $details[($i-1)]['matchid'] == null
+					) {
+					
+						$details[$i]['matchid'] = $response[0]->match_id;
+						$details[$i]['new'] = true;
+						$details[$i]['discord'] = $ids[$i][0];
+						$details[$i]['name'] = $ids[$i][2];
+						$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
+						$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && $details[$i]['team'] == "Dire") ? "Won" : "Lost";
+						$details[$i]['hero'] = Commands::HEROES[$response[0]->hero_id];
+						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
+						$start = $response[0]->start_time;
+						$length = gmdate("H:i:s", $response[0]->duration);
+						$mode = Commands::GAMEMODES[$response[0]->game_mode];
+						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
+						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
+						$games++;
+						updateMatch($details[$i]['user'], $response[0]->match_id);
+						
+					}
 					
 				}
 				
 			}
-			
-		}
-		
-		
-		if ($games > 0) {
-			
-			$embed = $discord->factory(Embed::class);
-			$embed->setTitle("Dota 2 Match Information")
-				->setURL("https://www.opendota.com/matches/".$matchid)
-				->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
-				->setColor("0x00A9FF")
-				->setTimestamp()
-				->setFooter("Powered by OpenDota");
-			$desc = "\n\n";
-			
-			for ($x = 0; $x < count($details); $x++) {
-				if (@$details[$x]['new']) {
-					$id = $x;
-					$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
-					$embed->addFieldValues("\n\n".$details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
-				}
-			}
-			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-			$tz->setTimestamp($start);
-			$embed->setDescription($desc."\n");
-			$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$mode}\nRanked: {$ranked}\n", false);
-			
-			$guild = $discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '232691831090053120');
 
-			$channel->sendEmbed($embed);
-		
+			if ($games > 0) {
+				
+				$embed = $discord->factory(Embed::class);
+				$embed->setTitle("Dota 2 Match Information")
+					->setURL("https://www.opendota.com/matches/".$matchid)
+					->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
+					->setColor("0x00A9FF")
+					->setTimestamp()
+					->setFooter("Powered by OpenDota");
+				$desc = "\n\n";
+				
+				for ($x = 0; $x < count($details); $x++) {
+					if (@$details[$x]['new']) {
+						$id = $x;
+						$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
+						$embed->addFieldValues("\n\n".$details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
+					}
+				}
+				$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
+				$tz->setTimestamp($start);
+				$embed->setDescription($desc."\n");
+				$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$mode}\nRanked: {$ranked}\n", false);
+				
+				$guild = $discord->guilds->get('id', '232691831090053120');
+				$channel = $guild->channels->get('id', '232691831090053120');
+
+				$channel->sendEmbed($embed);
+			
+			}
+			
 		}
 	
 	}

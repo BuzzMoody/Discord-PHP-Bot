@@ -45,7 +45,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 			updateActivity($discord);	
 		});
 		
-		$discord->getLoop()->addPeriodicTimer(300, function () {
+		$discord->getLoop()->addPeriodicTimer(180, function () {
 			checkDota();
 		});
 		
