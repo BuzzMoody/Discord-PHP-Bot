@@ -24,13 +24,22 @@ $commands = new Commands($keys, $uptime, $discord);
 
 $discord->on('ready', function (Discord $discord) use ($commands) {
 	
-	echo "Bot is ready!\n";
+	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
 	$activity = $discord->factory(Activity::class, [
 		'name' => getMemberCount($discord)." Incels",
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
+
+	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
+		checkReminders();
+		updateActivity($discord);	
+	});
+	
+	$discord->getLoop()->addPeriodicTimer(120, function () {
+		checkDota();
+	});
 
 	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
@@ -39,15 +48,6 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
 			$commands->funcExec($message);
 		}
-		
-		$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
-			checkReminders();
-			updateActivity($discord);	
-		});
-		
-		$discord->getLoop()->addPeriodicTimer(180, function () {
-			checkDota();
-		});
 		
 	});
 	
