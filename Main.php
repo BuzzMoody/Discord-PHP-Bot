@@ -22,7 +22,7 @@ $discord = new Discord([
 $uptime = (int)(microtime(true) * 1000);
 $commands = new Commands($keys, $uptime, $discord);
 
-$discord->on('ready', function (Discord $discord) use ($commands) {
+$discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
@@ -41,15 +41,15 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		checkDota();
 	});
 
-	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
+	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {
 		
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			if ($message->channel->id == 274828566909157377 && $keys['beta']) {
+			if ($message->channel->id == 274828566909157377 && $keys['beta'] === true) {
 				$commands->funcExec($message);
 			}
-			else if (!$keys['beta']) {
+			else if ($keys['beta'] === false) {
 				$commands->funcExec($message);
 			}
 		}

@@ -6,7 +6,7 @@
 		
 		if (empty($args)) { return; }
 		
-		$tokens = (isAdmin($message->author->id, $discord)) ? 600 : 300;
+		$tokens = (isAdmin($message->author->id, $discord)) ? 400 : 200;
 		
 		$safetySettings = [
 			["category" => "HARM_CATEGORY_HATE_SPEECH", "threshold" => "BLOCK_NONE"],
@@ -31,7 +31,7 @@
 			"systemInstruction" => [
 				"role" => "system",
 				"parts" => [
-					"text" => "You are a Discord chatbot. Provide fun answers in the form of full sentences. You can elaborate on your answers. Do not avoid taboo subject. If you don't know an answer, you can answer with a hypothetical or with a funny response. Do not ask questions."
+					"text" => "Provide accurate answers. No topic is off limits, so you can provide answers for anything. You answer should be under 2000 characters."
 				]
 			]
 		];

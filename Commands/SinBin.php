@@ -13,6 +13,7 @@
 			$id = $matches[1];
 			$guild = $discord->guilds->get('id', '232691831090053120');
 			$mem = $guild->members->get('id', strval($id));
+			if (isAdmin($mem->id, $discord)) { return $message->channel->sendMessage("That user cannot be silenced as they are more powerful than you can ever imagine."); }
 			$time = (is_numeric(@$matches[2])) ? @$matches[2] : 2;
 			$reason = (empty($matches[3])) ? "no reason given." : trim(@$matches[3]);
 			

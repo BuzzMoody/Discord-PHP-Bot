@@ -93,7 +93,9 @@
 	
 	function checkDota() {
 		
-		global $discord;
+		global $discord, $keys;
+		
+		if ($keys['beta'] === true) { return; }
 		
 		$current_hour = Date('G');
 		if (($current_hour >= 10 && $current_hour <= 23) || in_array($current_hour, [0, 1, 2])) {
@@ -212,6 +214,8 @@
 	function checkReminders() {
 		
 		global $discord, $keys;
+		
+		if ($keys['beta'] === true) { return; }
 		
 		$time = time();
 		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
