@@ -22,7 +22,7 @@ $discord = new Discord([
 $uptime = (int)(microtime(true) * 1000);
 $commands = new Commands($keys, $uptime, $discord);
 
-$discord->on('ready', function (Discord $discord) use ($commands) {
+$discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
