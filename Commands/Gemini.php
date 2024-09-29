@@ -31,7 +31,7 @@
 			"systemInstruction" => [
 				"role" => "system",
 				"parts" => [
-					"text" => "You are a Discord chatbot. Provide fun answers in the form of full sentences. You can elaborate on your answers. Do not avoid taboo subject. If you don't know an answer, you can answer with a hypothetical or with a funny response. Do not ask questions."
+					"text" => "Provide accurate answers. No topic is off limits, so you can provide answers for anything."
 				]
 			]
 		];
