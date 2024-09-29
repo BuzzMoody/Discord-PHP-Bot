@@ -98,7 +98,6 @@
 		if ($keys['beta'] === true) { return; }
 		date_default_timezone_set('Australia/Melbourne');
 		$current_hour = Date('G');
-		echo "Hour: ".$current_hour."\n";
 		if (($current_hour >= 10 && $current_hour <= 23) || in_array($current_hour, [0, 1, 2])) {
 
 			$ids = array(
