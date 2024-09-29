@@ -6,7 +6,7 @@
 		
 		if (empty($args)) { return; }
 		
-		$tokens = (isAdmin($message->author->id, $discord)) ? 600 : 300;
+		$tokens = (isAdmin($message->author->id, $discord)) ? 400 : 200;
 		
 		$safetySettings = [
 			["category" => "HARM_CATEGORY_HATE_SPEECH", "threshold" => "BLOCK_NONE"],
