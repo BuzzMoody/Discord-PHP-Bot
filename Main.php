@@ -41,7 +41,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		checkDota();
 	});
 
-	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
+	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {
 		
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
