@@ -4,9 +4,9 @@
 	
 		global $keys;
 	
-		if (isAdmin($message->author->id)) {
+		if (isAdmin($message->author->id) && !$keys['beta']) {
 			exec("git stash");
-			exec("git pull https://buzz:{$keys['gh']}@github.com/BuzzMoody/Discord-PHP-Bot.git");
+			exec("git pull origin main");
 			die();
 		}
 		
