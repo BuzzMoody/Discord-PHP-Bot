@@ -42,7 +42,8 @@ class Commands {
 			'/^radar$/' => 'Radar',
 			'/^apex$/' => 'Apex',
 			'/^uptime$/' => 'Uptime',
-			'/^reload$/' => 'Reload'
+			'/^reload$/' => 'Reload',
+			'/^betarl$/' => 'BetaReload'
 		];
 		
 		$this->funcLoad();
