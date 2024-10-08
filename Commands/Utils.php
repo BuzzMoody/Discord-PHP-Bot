@@ -3,6 +3,8 @@
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
+	use React\Http\Browser;
+	use Psr\Http\Message\ResponseInterface;
 
 	function SearchFunc($type, $message, $args) {
 		
@@ -231,6 +233,54 @@
 		}
 		
 		$mysqli->close();
+		
+	}
+	
+	function checkTrades() {
+	
+		global $discord;
+		
+		$ids = file_exists('trades.txt') ? file('trades.txt',  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
+		$guild = $discord->guilds->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '274828566909157377');
+		$http = new Browser();
+		
+		$http->get("https://aflapi.afl.com.au/liveblog/afl/122/EN?maxResults=50")->then(
+			function (ResponseInterface $response) use ($ids, $discord, $channel) {
+				$output = json_decode($response->getBody());
+				foreach ($output->entries as $article) {
+					if (!in_array($article->id, $ids)) {
+						file_put_contents('trades.txt', $article->id . PHP_EOL, FILE_APPEND);
+						preg_match("/<p class=\"live-blog-post-trade__heading-section__label\">(.+)<p>/m", $article->comment, $trade_type);
+						preg_match_all("/<h2 class=\"live-blog-post-trade__title\">(.*?)<\/h2>/ms", $article->comment, $receives_team);
+						preg_match_all("/<p class=\"live-blog-post-trade__text\">(.*?)<\/p>/ms", $article->comment, $receives_item);
+						preg_match("/<h2 class=\"live-blog-post-article__title\">(.+?)<\/h2>.+<p class=\"live-blog-post-article__text\">(.+?)<\/p>/ms", $article->comment, $article_text);
+						preg_match("/, (https:\/\/resources\.afl\.com\.au\/photo-resources\/.+\.jpg\?width=2128&height=1200)/", $article->comment, $image);
+						preg_match("/href=\"(\/news\/(.+?))\".*target=\"_blank\"/s", $article->comment, $url);
+						
+						$embed = $discord->factory(Embed::class);
+						$embed->setTitle($article->title)
+							->setAuthor('AFL - Trade Radio')
+							->setDescription($article_text[1] . $article_text[2])
+							->setURL("https://www.afl.com.au{$url[1]}")
+							->setColor('237feb')
+							->setImage($image[1])
+							->setThumbnail('https://resources.afl.com.au/afl/photo/2024/09/29/c5264e60-a95e-41f0-9fe0-610f44d573ad/107886_Trade-Sponsorship_Digital-Assets_Tiles_Radio_340x176_FA_R-1x.jpg')
+							->setFooter($trade_type[1])
+							->setTimestamp($article->timestamp);
+						
+						$embed->addFieldValues(trim(strip_tags($receives_team[1][0])), trim(strip_tags($receives_item[1][0])));
+						$embed->addFieldValues(trim(strip_tags($receives_team[1][1])), trim(strip_tags($receives_item[1][1])));
+						
+						$channel->sendEmbed($embed);
+					}
+				}
+				
+			},
+			function (Exception $e) use ($channel) {
+				$channel->sendMessage("Error: {$e->getMessage()}");
+			}
+		);
 		
 	}
 	
