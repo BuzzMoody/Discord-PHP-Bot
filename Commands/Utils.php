@@ -247,7 +247,7 @@
 		$channel = $guild->channels->get('id', '1292725963754573844');
 		$http = new Browser();
 		
-		$http->get("https://aflapi.afl.com.au/liveblog/afl/122/EN?maxResults=50")->then(
+		$http->get("https://aflapi.afl.com.au/liveblog/afl/122/EN?maxResults=3")->then(
 			function (ResponseInterface $response) use ($ids, $discord, $channel) {
 				$output = json_decode($response->getBody());
 				foreach ($output->entries as $article) {
