@@ -238,14 +238,16 @@
 	
 	function checkTrades() {
 	
-		global $discord;
+		global $discord, $keys;
+		
+		if ($keys['beta'] === true) { return; }
 		
 		$ids = file_exists('trades.txt') ? file('trades.txt',  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '274828566909157377');
+		$channel = $guild->channels->get('id', '1292725963754573844');
 		$http = new Browser();
 		
-		$http->get("https://aflapi.afl.com.au/liveblog/afl/122/EN?maxResults=3")->then(
+		$http->get("https://aflapi.afl.com.au/liveblog/afl/122/EN?maxResults=50")->then(
 			function (ResponseInterface $response) use ($ids, $discord, $channel) {
 				$output = json_decode($response->getBody());
 				foreach ($output->entries as $article) {
@@ -255,7 +257,7 @@
 						preg_match_all("/<h2 class=\"live-blog-post-trade__title\">(.*?)<span/ms", $article->comment, $receives_team);
 						preg_match_all("/<p class=\"live-blog-post-trade__text\">(.*?)<\/p>/ms", $article->comment, $receives_item);
 						preg_match("/<h2 class=\"live-blog-post-article__title\">(.+?)<\/h2>.+<p class=\"live-blog-post-article__text\">(.+?)<\/p>/ms", $article->comment, $article_text);
-						preg_match("/, (https:\/\/resources\.afl\.com\.au\/photo-resources\/.+\.jpg\?width=2128&height=1200)/", $article->comment, $image);
+						preg_match("/, (https:\/\/resources\.afl\.com\.au\/photo-resources\/.+\.(jpg|png)\?width=2128&height=1200)/", $article->comment, $image);
 						preg_match("/href=\"(\/news\/(.+?))\".*target=\"_blank\"/s", $article->comment, $url);
 						
 						$embed = $discord->factory(Embed::class);
