@@ -269,8 +269,8 @@
 							->setFooter($trade_type[1])
 							->setTimestamp();
 						
-						$embed->addFieldValues(trim(strip_tags($receives_team[1][0])), trim(strip_tags($receives_item[1][0])));
-						$embed->addFieldValues(trim(strip_tags($receives_team[1][1])), trim(strip_tags($receives_item[1][1])));
+						$embed->addFieldValues(trim(strip_tags($receives_team[1][0]))." receive:", trim(strip_tags($receives_item[1][0])));
+						$embed->addFieldValues(trim(strip_tags($receives_team[1][1]))." receive:", trim(strip_tags($receives_item[1][1])));
 						
 						$channel->sendEmbed($embed);
 					}
