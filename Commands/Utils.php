@@ -254,8 +254,8 @@
 					if (!in_array($article->id, $ids)) {
 						file_put_contents('trades.txt', $article->id . PHP_EOL, FILE_APPEND);
 						preg_match("/<p class=\"live-blog-post-trade__heading-section__label\">(.+)<p>/m", $article->comment, $trade_type);
-						preg_match_all("/<h2 class=\"live-blog-post-trade__title\">(.*?)<span/ms", $article->comment, $receives_team);
-						preg_match_all("/<p class=\"live-blog-post-trade__text\">(.*?)<\/p>/ms", $article->comment, $receives_item);
+						preg_match_all("/<h2 class=\"live-blog-post-trade__title\">\s*(.*?)\s*<span.+?> (receive|give)s?:<\/span>/ms", $article->comment, $receives_team);
+						preg_match_all("/<p class=\"live-blog-post-trade__text\">\s*(.*?)\s*<\/p>/ms", $article->comment, $receives_item);
 						preg_match("/<h2 class=\"live-blog-post-article__title\">(.+?)<\/h2>.+<p class=\"live-blog-post-article__text\">(.+?)<\/p>/ms", $article->comment, $article_text);
 						preg_match("/, (https:\/\/resources\.afl\.com\.au\/photo-resources\/.+\.(jpg|png)\?width=2128&height=1200)/", $article->comment, $image);
 						preg_match("/href=\"(\/news\/(.+?))\".*target=\"_blank\"/s", $article->comment, $url);
@@ -271,8 +271,11 @@
 							->setFooter($trade_type[1])
 							->setTimestamp();
 						
-						$embed->addFieldValues(trim(strip_tags($receives_team[1][0]))." receive:", trim(strip_tags($receives_item[1][0])));
-						$embed->addFieldValues(trim(strip_tags($receives_team[1][1]))." receive:", trim(strip_tags($receives_item[1][1])));
+						for ($x=0;$x<count($receives_team[1]);$x++) {
+						
+							$embed->addFieldValues("{$receives_team[1][$x]} {$receives_team[2][$x]}:", $receives_item[1][$x]);
+							
+						}
 						
 						$channel->sendEmbed($embed);
 					}
