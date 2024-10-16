@@ -236,7 +236,7 @@
 		
 	}
 	
-	function checkTrades() {
+	/* function checkTrades() {
 	
 		global $discord, $keys;
 		
@@ -287,6 +287,6 @@
 			}
 		);
 		
-	}
+	} */
 	
 ?>
