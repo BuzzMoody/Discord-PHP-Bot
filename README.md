@@ -9,6 +9,7 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 * [DiscordPHP](https://github.com/discord-php/DiscordPHP)
 * Discord API Key
 * [DaemonTools](https://cr.yp.to/daemontools.html)
+* MySQL/MariaDB
 
 ### Installation
 
@@ -35,8 +36,9 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 
 5. Create MySQL/MariaDB table:
 
-	- Database called `discord`
-	- Table called `reminders`
+> [!NOTE]
+> If you don't want to create a database, be sure to remove the two functions from the loops in `Main.php` so that `CheckDota()` and `CheckReminders()` don't run.
+
 ```sql
 CREATE DATABASE discord;
 
@@ -47,9 +49,6 @@ CREATE TABLE reminders (
    channelid VARCHAR(255)
 );
 ```
-
-> [!NOTE]
-> If you don't want to create a database, be sure to remove the two functions from the loops in `Main.php` so that `CheckDota()` and `CheckReminders()` don't run.
 
 ### Usage
 
