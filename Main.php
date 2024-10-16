@@ -34,7 +34,6 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
-		checkTrades();
 		updateActivity($discord);	
 	});
 	
