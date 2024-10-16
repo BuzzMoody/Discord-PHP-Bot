@@ -34,12 +34,12 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
+		checkTrades();
 		updateActivity($discord);	
 	});
 	
 	$discord->getLoop()->addPeriodicTimer(120, function () {
 		checkDota();
-		checkTrades();
 	});
 
 	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {
