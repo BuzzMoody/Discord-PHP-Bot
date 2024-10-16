@@ -39,3 +39,11 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
    - Requires a table called `reminders`
 
 ### Usage
+
+1. Create a file called `run` and it place:
+```bash
+#!/usr/bin/bash
+
+php Main.php
+```
+2. Using `supervise` from DaemonTools run the following CLI command: `./run`
