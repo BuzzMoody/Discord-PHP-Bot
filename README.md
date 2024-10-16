@@ -35,8 +35,19 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 
 5. **Create MySQL/MariaDB table:**
 
-   - Requires a database called `discord`
-   - Requires a table called `reminders`
+   - A database called `discord`
+```sql
+CREATE DATABASE discord;
+```
+   - A table called `reminders`
+```sql
+CREATE TABLE reminders (
+   userid VARCHAR(255),
+   time VARCHAR(255),
+   messageid VARCHAR(255),
+   channelid VARCHAR(255)
+);
+```
 
 ### Usage
 
