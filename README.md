@@ -17,7 +17,7 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 3. Main.php and CommandHandler.php should now be in the folder with DiscordPHP
 4. Configure the required API keys:
 
-   - Create `config.inc` and update the credentials in PHP code format. For example:
+	- Create `config.inc` and update the credentials in PHP code format. For example:
 ```PHP
 <?php
 
@@ -33,13 +33,14 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 ?>
 ```
 
-5. **Create MySQL/MariaDB table:**
+5. Create MySQL/MariaDB table:
 
-   - A database called `discord`
+	- A database called `discord`
+	- Tables called `reminders`
 ```sql
 CREATE DATABASE discord;
 ```
-   - A table called `reminders`
+
 ```sql
 CREATE TABLE reminders (
    userid VARCHAR(255),
