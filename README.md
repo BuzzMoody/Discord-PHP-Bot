@@ -15,11 +15,11 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 1. Install [DiscordPHP](https://github.com/discord-php/DiscordPHP)
 2. Clone the repository: `git clone https://github.com/BuzzMoody/Discord-PHP-Bot.git`
 3. Main.php and CommandHandler.php should now be in the folder with DiscordPHP
-4. **Configure the required API keys:**
+4. Configure the required API keys:
 
    - Create `config.inc` and update the credentials in PHP code format. For example:
    
-```PHP
+   - ```PHP
 <?php
 
 	$keys = array(
