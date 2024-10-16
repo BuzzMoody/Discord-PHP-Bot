@@ -18,13 +18,16 @@ This project is a Discord PHP bot running on the DiscordPHP codebase. It uses wr
 4. Configure the required API keys:
 
    - Create `config.inc` and update the credentials in PHP code format. For example:
-   
-   - ```PHP
+```PHP
 <?php
 
 	$keys = array(
-		"discord" => "[DISCORDAPIKEY]",
-		"mysql" => "[MYSQLPW]"
+		"discord" 	=> "[DISCORDAPIKEY]",
+		"mysql" 	=> "[MYSQLPW]",
+		"gemini" 	=> "[GOOGLEVERTEXKEY]",
+		"google"	=> "[GOOGLECONSOLEKEY]",
+		"od" 		=> "[OPENDOTAKEY]",
+		"wolf"		=> "[WOLFRAMKEY]"	
 	);
 
 ?>
