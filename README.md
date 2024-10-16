@@ -1,5 +1,7 @@
 # Discord PHP  Bot
 
+![Discord PHP Bot Logo](https://buzzy.au/discord-php-bot.png)
+
 This project is a Discord PHP bot running on the DiscordPHP codebase. It uses written commands (no slash commands) that are distributed in the Commands folder.
 
 ### Requirements
