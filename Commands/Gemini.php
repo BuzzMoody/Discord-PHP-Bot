@@ -1,5 +1,9 @@
 <?php
 
+	use Discord\Parts\Embed\Embed;
+	use Discord\Parts\Channel\Attachment;
+	use Discord\Builders\MessageBuilder;
+
 	function Gemini($message, $args) {
 		
 		global $discord, $keys;
@@ -63,7 +67,12 @@
 
 		$string = $response->candidates[0]->content->parts[0]->text;
 		$output = (strlen($string) > 1995) ? substr($string,0,1995).'…' : $string;	
-		$message->channel->sendMessage($output);
+		
+		$embed = $discord->factory(Embed::class);
+		$embed->setColor('237feb')
+			->setDescription($output);
+		
+		$message->channel->sendEmbed($embed);
 		
 	}
 	
