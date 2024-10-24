@@ -76,6 +76,7 @@
 			$hours = (intval($matches[2]) - 11);
 			$minutes = intval($matches[3]);
 			$offset = sprintf('%s%02d:%02d', $sign, $hours, $minutes);
+			echo $offset."\n";
 		}
 		$datetime = new DateTime($time, new DateTimeZone($offset));
 		$datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
