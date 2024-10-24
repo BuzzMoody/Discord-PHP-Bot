@@ -75,7 +75,7 @@
 			$sign = $matches[1];
 			$hours = abs(intval($matches[2]) - 11);
 			$minutes = intval($matches[3]);
-			$offset = sprintf('%02d:%02d', $hours, $minutes);
+			$offset = sprintf('+%02d:%02d', $hours, $minutes);
 			echo $offset."\n";
 		}
 		$datetime = new DateTime($time, new DateTimeZone($offset));
