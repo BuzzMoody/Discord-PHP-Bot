@@ -26,7 +26,7 @@
 					->setColor('0x00A9FF')
 					->setDescription("The current location is **{$output->race->meetingLocation}, {$output->race->meetingCountryName}**.");
 				foreach ($output->seasonContext->timetables as $event) {
-					$fieldval = ($event->state == 'completed') ? "~~".toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)."~~ - [Results](https://www.formula1.com/en/results/{$output->seasonContext->seasonYear}/races/{$output->fomRaceId}/{$output->race->meetingCountryName}/".str_replace(' ', '/', strtolower($event->description)).")" : toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)." (Starts <t:".strtotime(toAusTime($event->startTime, 'Y-m-d\TH:i:s', null, $event->gmtOffset, true)).":R>)";
+					$fieldval = ($event->state == 'completed') ? "~~".toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)."~~ - [Results](https://www.formula1.com/en/results/{$output->seasonContext->seasonYear}/races/{$output->fomRaceId}/{$output->race->meetingCountryName}/".str_replace(' ', '/', strtolower($event->description)).")" : toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)." (Starts <t:".strtotime(toAusTime($event->startTime, 'Y-m-d\TH:i:s', null, $event->gmtOffset, true)).":R> ".strtotime(toAusTime($event->startTime, 'Y-m-d\TH:i:s', null, $event->gmtOffset, true)).")";
 					$embed->addFieldValues($event->description, $fieldval, false);
 				}
 				$message->channel->sendEmbed($embed);

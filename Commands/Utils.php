@@ -88,7 +88,6 @@
 			if ($diffTime->i > 0) { $countTime .= "{$diffTime->i} mins"; }
 			return $datetime->format($format)." ({$countTime})";
 		}
-		echo  $datetime->format($format)."\n";
 		return $datetime->format($format);	
 		
 	}
