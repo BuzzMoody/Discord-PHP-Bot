@@ -75,7 +75,7 @@
 			$sign = $matches[1];
 			$hours = intval($matches[2]);
 			$minutes = intval($matches[3]);
-			$hours = ($hours + 10);
+			$hours += $hours;
 			echo $hours;
 			$offset = sprintf('%s%02d:%02d', $sign, $hours, $minutes);
 		}
