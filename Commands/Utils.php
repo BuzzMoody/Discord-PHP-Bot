@@ -73,7 +73,7 @@
 		if ($relative) {
 			preg_match('/([+-])(\d{2}):(\d{2})/', $offset, $matches);
 			$sign = $matches[1];
-			$hours = intval($matches[2]);
+			$hours = (intval($matches[2]) - 11);
 			$minutes = intval($matches[3]);
 			$offset = sprintf('%s%02d:%02d', $sign, $hours, $minutes);
 		}
