@@ -76,7 +76,6 @@
 			$hours = intval($matches[2]);
 			$minutes = intval($matches[3]);
 			$offset = sprintf('%s%02d:%02d', $sign, $hours, $minutes);
-			echo $offset;
 		}
 		$datetime = new DateTime($time, new DateTimeZone($offset));
 		$datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
@@ -89,6 +88,7 @@
 			if ($diffTime->i > 0) { $countTime .= "{$diffTime->i} mins"; }
 			return $datetime->format($format)." ({$countTime})";
 		}
+		echo  $datetime->format($format);
 		return $datetime->format($format);	
 		
 	}
