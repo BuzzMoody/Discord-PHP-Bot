@@ -59,7 +59,7 @@
 			->addFieldValues("UV", $temp['uv'], true)
 			->addFieldValues("Visibility", "{$temp['vis']}km", true)
 			->setImage("attachment://map-of-{$place['filename']}.png")
-			->setColor("0x00A9FF")
+			->setColor("F1C40F")
 			->setTimestamp()
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
 			
