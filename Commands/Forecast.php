@@ -22,7 +22,7 @@
 			$i++;
 		}
 		getMapImg($place);
-		$embed->setColor("0x00A9FF")
+		$embed->setColor("F1C40F")
 			->setTimestamp()
 			->setImage("attachment://map-of-{$place['filename']}.png")
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");

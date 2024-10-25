@@ -25,7 +25,7 @@
 		$embed->setTitle($header->data->displayName)
 			->setURL("https://www2.asx.com.au/markets/company/{$args}")
 			->setDescription("ASX : ".strtoupper($args))
-			->setColor("0x00A9FF")
+			->setColor("F1C40F")
 			->setTimestamp()
 			->setFooter("ASX", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png");
 		

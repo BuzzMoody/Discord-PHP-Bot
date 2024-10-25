@@ -13,7 +13,7 @@
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
 			->setImage("attachment://radar-{$time}.gif")
-			->setColor("0x00A9FF")
+			->setColor("F1C40F")
 			->setTimestamp()
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
 		$builder = MessageBuilder::new()
