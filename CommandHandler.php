@@ -37,7 +37,6 @@ class Commands {
 			'/^(roll|dice)/' => 'Dice',
 			'/^(s(?:table)?d(?:iffusion)?)/' => 'StableDiffusion',
 			'/^(u(rban)?d(ictionary)?)/' => 'UrbanDic',
-			'/^(w(olfram)?a(lpha)?)/' => 'Wolfram',
 			'/^ping$/' => 'Ping',
 			'/^radar$/' => 'Radar',
 			'/^apex$/' => 'Apex',
