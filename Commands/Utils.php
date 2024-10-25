@@ -162,7 +162,7 @@
 				$embed->setTitle("Dota 2 Match Information")
 					->setURL("https://www.opendota.com/matches/".$matchid)
 					->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
-					->setColor("F1C40F")
+					->setColor($keys['colour'])
 					->setTimestamp()
 					->setFooter("Powered by OpenDota");
 				$desc = "\n\n";

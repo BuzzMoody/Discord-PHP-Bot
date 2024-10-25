@@ -6,7 +6,7 @@
 
 	function Weather($message, $args) {
 		
-		global $discord;
+		global $discord, $keys;
 		
 		$place = getLocale($args);
 		if (!$place) { return $message->channel->sendMessage("No location found"); }
@@ -59,7 +59,7 @@
 			->addFieldValues("UV", $temp['uv'], true)
 			->addFieldValues("Visibility", "{$temp['vis']}km", true)
 			->setImage("attachment://map-of-{$place['filename']}.png")
-			->setColor("F1C40F")
+			->setColor($keys['colour'])
 			->setTimestamp()
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
 			

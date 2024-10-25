@@ -6,14 +6,14 @@
 
 	function Radar($message) {
 		
-		global $discord;
+		global $discord, $keys;
 		
 		$time = microtime(true);
 		$embed = $discord->factory(Embed::class);
 		$embed->setTitle("Melbourne Weather Radar")
 			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
 			->setImage("attachment://radar-{$time}.gif")
-			->setColor("F1C40F")
+			->setColor($keys['colour'])
 			->setTimestamp()
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
 		$builder = MessageBuilder::new()

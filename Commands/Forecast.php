@@ -6,7 +6,7 @@
 
 	function Forecast($message, $args) {
 		
-		global $discord;
+		global $discord, $keys;
 		
 		$place = getLocale($args);
 		if (!$place) { return $message->channel->sendMessage("No location found"); }
@@ -22,7 +22,7 @@
 			$i++;
 		}
 		getMapImg($place);
-		$embed->setColor("F1C40F")
+		$embed->setColor($keys['colour'])
 			->setTimestamp()
 			->setImage("attachment://map-of-{$place['filename']}.png")
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
