@@ -9,6 +9,7 @@
 	function F1($message) {
 		
 		global $discord, $keys;
+		
 		$http = new Browser();
 
 		$headers = array(
@@ -17,7 +18,7 @@
 		);
 
 		$http->get('https://api.formula1.com/v1/event-tracker', $headers)->then(
-			function (ResponseInterface $response) use ($message, $discord) {
+			function (ResponseInterface $response) use ($message, $discord, $keys) {
 				$output = json_decode($response->getBody());
 				$embed = $discord->factory(Embed::class);
 				$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png')
