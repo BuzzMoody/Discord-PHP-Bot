@@ -70,6 +70,8 @@
 	
 	function toAusTime($time, $format = 'jS F: G:i', $countdown = false, $offset = 'UTC', $relative = false) {
 		
+		date_default_timezone_set('Australia/Melbourne');
+		
 		if ($relative) {
 			preg_match('/([+-])(\d{2}):(\d{2})/', $offset, $matches);
 			$sign = $matches[1];
