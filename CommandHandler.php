@@ -52,7 +52,7 @@ class Commands {
 	public function funcExec($message) {
 	
 		$content = trim($message->content);
-		preg_match('/^!(\w+)(?:\s+(.*))?$/i', $content, $matches);
+		preg_match('/^!(\w+)(?:\s+(.*))?$/is', $content, $matches);
 		$command = strtolower($matches[1]);
 		$args = $matches[2] ?? '';		
 		foreach ($this->patterns as $pattern => $func_name) {
