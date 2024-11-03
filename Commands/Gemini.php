@@ -22,7 +22,7 @@
 		$post_fields = [
 			"contents" => [
 				"parts" => [
-					"text" => $args
+					"text" =>  urlencode($args)
 				]
 			],
 			"safetySettings" => $safetySettings,
