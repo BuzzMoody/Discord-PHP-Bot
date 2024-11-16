@@ -35,7 +35,7 @@ class Commands {
 			'/^(search|google|bing|find|siri)/' => 'SearchGoogle',
 			'/^(image|img|photo|pic)/' => 'SearchImage',
 			'/^(ban|kick|sb|sinbin)/' => 'SinBin',
-			'/^(bard|gemini|(open)?ai)/' => 'Gemini',
+			'/^(bard|gemini|(open)?ai)/' => 'Vertex',
 			'/^(asx|share(s)?|stock(s)?|etf)/' => 'ASX',
 			'/^(weather|temp(erature)?)/' => 'Weather',
 			'/^(forecast)$/' => 'Forecast',
@@ -51,7 +51,6 @@ class Commands {
 			'/^uptime$/' => 'Uptime',
 			'/^reload$/' => 'Reload',
 			'/^betarl$/' => 'BetaReload',
-			'/^vertex$/' => 'Vertex'
 		];
 		
 		$this->funcLoad();
