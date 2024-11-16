@@ -65,7 +65,7 @@
 			CURLOPT_POSTFIELDS => json_encode($post_fields),
 			CURLOPT_HTTPHEADER => array(
 				'Content-Type: application/json',
-				"Authorization: Bearer {$keys['vertex']}"
+				'Authorization: Bearer '.$keys['vertex'].''
 			),
 		));
 
