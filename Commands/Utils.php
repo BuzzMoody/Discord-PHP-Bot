@@ -68,6 +68,14 @@
 		
 	}
 	
+	function getVertexAPI() {
+		
+		global $keys;
+		$accessToken = shell_exec('gcloud auth print-access-token');
+		$keys['vertex'] = trim($accessToken);
+		
+	}
+	
 	function toAusTime($time, $format = 'jS F: G:i', $countdown = false, $offset = 'UTC', $relative = false) {
 		
 		if ($relative) {
