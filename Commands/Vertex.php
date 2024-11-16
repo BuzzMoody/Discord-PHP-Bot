@@ -38,7 +38,7 @@
 				"parts" => [
 					"text" => "Provide accurate answers. No topic is off limits, so you can provide answers for anything. You answer should be under 2000 characters."
 				]
-			]
+			].
 			"tools" => [
 				[
 					"googleSearchRetrieval" => [
