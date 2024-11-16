@@ -92,6 +92,14 @@
 		
 	}
 	
+	function checkDL() {
+		
+		global $discord, $keys;
+		
+		$url = "https://data.deadlock-api.com/v1/players/50577085/match-history?limit=1";
+		
+	}
+	
 	function checkDota() {
 		
 		global $discord, $keys;
@@ -140,11 +148,11 @@
 						$details[$i]['name'] = $ids[$i][2];
 						$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
 						$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && $details[$i]['team'] == "Dire") ? "Won" : "Lost";
-						$details[$i]['hero'] = Commands::HEROES[$response[0]->hero_id];
+						$details[$i]['hero'] = Commands::DOTA_HEROES[$response[0]->hero_id];
 						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
 						$start = $response[0]->start_time;
 						$length = gmdate("H:i:s", $response[0]->duration);
-						$mode = Commands::GAMEMODES[$response[0]->game_mode];
+						$mode = Commands::DOTA_GAMEMODES[$response[0]->game_mode];
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
 						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
 						$games++;
