@@ -51,7 +51,7 @@ class Commands {
 			'/^uptime$/' => 'Uptime',
 			'/^reload$/' => 'Reload',
 			'/^betarl$/' => 'BetaReload',
-			'/^vertex$/' => 'VertexAI'
+			'/^vertex$/' => 'Vertex'
 		];
 		
 		$this->funcLoad();
