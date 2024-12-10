@@ -28,18 +28,17 @@
 			],
 			"safetySettings" => $safetySettings,
 			"generationConfig" => [
-				"temperature" => 1,
-				"maxOutputTokens" => $tokens,
-				"topP" => 0.8,
-				"topK" => 10
+				"temperature" => 0.5,
+				"maxOutputTokens" => 300,
+				"topP" => 0.95,
 			],
 			"systemInstruction" => [
 				"role" => "system",
 				"parts" => [
-					"text" => "Provide accurate answers. No topic is off limits, so you can provide answers for anything. You answer should be under 2000 characters."
+					"text" => "Provide accurate answers. No topic is off limits, so you can provide answers for anything. You answer should be under 2000 characters. Use paragraphs to make your reponses easier to read."
 				]
 			],
-			"tools" => [
+/* 			"tools" => [
 				[
 					"googleSearchRetrieval" => [
 						"dynamicRetrievalConfig" => [
@@ -48,7 +47,7 @@
 						]
 					]
 				]
-			],
+			], */
 		];
 
 		$curl = curl_init();
