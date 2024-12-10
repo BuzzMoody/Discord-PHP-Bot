@@ -72,7 +72,8 @@
 		
 		global $keys;
 		$accessToken = shell_exec('gcloud auth print-access-token');
-		$keys['vertex'] = trim($accessToken);
+		$token = explode("\n", $accesstoken);
+		$keys['vertex'] = trim($token[0]);
 		
 	}
 	
