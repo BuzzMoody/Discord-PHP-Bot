@@ -28,7 +28,7 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	
 	$activity = $discord->factory(Activity::class, [
 		'name' => getMemberCount($discord)." Incels",
-		'type' => Activity::TYPE_LISTENING,
+		'type' => Activity::TYPE_CUSTOM,
 	]);
 	$discord->updatePresence($activity);
 	
