@@ -70,8 +70,9 @@ $discord->run();
 function updateActivity($discord) {
 	
 	$activity = $discord->factory(Activity::class, [
-		'name' => getMemberCount($discord)." Incels",
-		'type' => Activity::TYPE_LISTENING,
+		'emoji' => '☁️',
+		'state' => 'testing',
+		'type' => Activity::TYPE_CUSTOM
 	]);
 	$discord->updatePresence($activity);
 	
