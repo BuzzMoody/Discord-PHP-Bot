@@ -114,7 +114,7 @@
 			$title = (string)$item->title;
 			$link = (string)$item->id;
 			if (!in_array($title, $existingNews)) {
-				$channel->sendMessage("(".$title.")[".$link."]");
+				$channel->sendMessage("[".$title."](".$link.")");
 				file_put_contents('news.txt', $title . PHP_EOL, FILE_APPEND);
 			}
 		}
