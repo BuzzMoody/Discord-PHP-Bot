@@ -108,7 +108,7 @@
 		$existingNews = file_exists('news.txt') ? file('news.txt', FILE_IGNORE_NEW_LINES) : [];
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '274828566909157377');
+		$channel = $guild->channels->get('id', '1324520408040472576');
 
 		foreach ($xml->entry as $item) {
 			$title = (string)$item->title;
