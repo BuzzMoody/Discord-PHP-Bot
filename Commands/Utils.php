@@ -103,7 +103,9 @@
 	
 	function checkNews() {
 		
-		global $discord;
+		global $discord, $keys;
+		if ($keys['beta'] === true) { return; }
+		
 		$xml = simplexml_load_file('https://www.theverge.com/rss/ces/index.xml');
 		$existingNews = file_exists('news.txt') ? file('news.txt', FILE_IGNORE_NEW_LINES) : [];
 		
