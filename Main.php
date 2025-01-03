@@ -27,8 +27,8 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
 	$activity = $discord->factory(Activity::class, [
-		'name' => getMemberCount($discord)." Incels",
-		'type' => Activity::TYPE_LISTENING,
+		'state' => 'testing',
+		'type' => Activity::TYPE_CUSTOM
 	]);
 	$discord->updatePresence($activity);
 	
@@ -41,6 +41,7 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	
 	$discord->getLoop()->addPeriodicTimer(120, function () {
 		checkDota();
+		checkNews();
 	});
 	
 	$discord->getLoop()->addPeriodicTimer(1800, function () {
@@ -69,8 +70,8 @@ $discord->run();
 function updateActivity($discord) {
 	
 	$activity = $discord->factory(Activity::class, [
-		'name' => getMemberCount($discord)." Incels",
-		'type' => Activity::TYPE_LISTENING,
+		'state' => 'testing',
+		'type' => Activity::TYPE_CUSTOM
 	]);
 	$discord->updatePresence($activity);
 	

@@ -101,6 +101,28 @@
 		
 	}
 	
+	function checkNews() {
+		
+		global $discord, $keys;
+		if ($keys['beta'] === true) { return; }
+		
+		$xml = simplexml_load_file('https://www.theverge.com/rss/ces/index.xml');
+		$existingNews = file_exists('news.txt') ? file('news.txt', FILE_IGNORE_NEW_LINES) : [];
+		
+		$guild = $discord->guilds->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '1324520408040472576');
+
+		foreach ($xml->entry as $item) {
+			$title = (string)$item->title;
+			$link = (string)$item->id;
+			if (!in_array($title, $existingNews)) {
+				$channel->sendMessage("[".$title."](".$link.")");
+				file_put_contents('news.txt', $title . PHP_EOL, FILE_APPEND);
+			}
+		}
+		
+	}
+	
 	function checkDL() {
 		
 		global $discord, $keys;
