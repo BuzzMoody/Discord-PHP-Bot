@@ -105,7 +105,6 @@
 		
 		global $discord;
 		$xml = simplexml_load_file('https://www.theverge.com/rss/ces/index.xml');
-		print_r($xml);
 		$existingNews = file_exists('news.txt') ? file('news.txt', FILE_IGNORE_NEW_LINES) : [];
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
@@ -115,7 +114,7 @@
 			$title = (string)$item->title;
 			$link = (string)$item->id;
 			if (!in_array($title, $existingNews)) {
-				$channel->sendMessage($link);
+				$channel->sendMessage("(".$title.")[".$link."]");
 				file_put_contents('news.txt', $title . PHP_EOL, FILE_APPEND);
 			}
 		}
