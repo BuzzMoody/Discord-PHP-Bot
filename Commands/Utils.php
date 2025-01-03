@@ -111,9 +111,9 @@
 		$guild = $discord->guilds->get('id', '232691831090053120');
 		$channel = $guild->channels->get('id', '274828566909157377');
 
-		foreach ($xml->channel->item as $item) {
+		foreach ($xml->entry as $item) {
 			$title = (string)$item->title;
-			$link = (string)$item->link;
+			$link = (string)$item->id;
 			if (!in_array($title, $existingNews)) {
 				$channel->sendMessage($link);
 				file_put_contents('news.txt', $title . PHP_EOL, FILE_APPEND);
