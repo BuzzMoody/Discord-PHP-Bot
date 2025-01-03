@@ -27,8 +27,8 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
 	$activity = $discord->factory(Activity::class, [
-		'state' => 'testing',
-		'type' => Activity::TYPE_CUSTOM
+		'name' => getMemberCount($discord)." Incels",
+		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
 	
@@ -70,8 +70,8 @@ $discord->run();
 function updateActivity($discord) {
 	
 	$activity = $discord->factory(Activity::class, [
-		'state' => 'testing',
-		'type' => Activity::TYPE_CUSTOM
+		'name' => getMemberCount($discord)." Incels",
+		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
 	
