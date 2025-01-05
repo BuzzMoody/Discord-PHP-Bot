@@ -149,6 +149,8 @@
 				$response = json_decode($content);
 				$match = $response->matches[0];
 				
+				$details = [];
+				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
 					$time = new DateTime("now");
