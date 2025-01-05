@@ -19,7 +19,7 @@
 			
 			for ($x = 0; $x < count($ids); $x++) {
 				
-				$url = "https://data.deadlock-api.com/v2/players/{$ids[$x][1]}/match-history";
+				$url = "https://data.deadlock-api.com/v2/players/{$ids[$x][1]}/match-history?api_key={$keys['deadlock']}";
 				$content = @file_get_contents($url);
 				if ($content === FALSE) { return; }
 				$response = json_decode($content);
@@ -65,7 +65,7 @@
 				foreach ($details as $player) {
 					print_r($player);
 					$desc .= "<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
-					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']}\nLevel {$player['level']}\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n\${$player['worth']}\n\n", true);
+					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n\${$player['worth']}\n\n", true);
 					$mode = $player['mode'];
 					$start = $player['time'];
 					$length = $player['length'];
