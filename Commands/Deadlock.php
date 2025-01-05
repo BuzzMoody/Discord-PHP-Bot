@@ -33,16 +33,19 @@
 					
 					$details[$x]['matchid'] = $match->match_id;
 					$details[$x]['discord'] = $ids[$x][0];
+					$details[$x]['name'] = $ids[$x][2];
 					$details[$x]['user'] = $ids[$x][1];
 					$details[$x]['hero'] = Commands::DL_HEROES[$match->hero_id];
+					$details[$x]['team'] = $match->player_team;
 					$details[$x]['level'] = $match->hero_level;
 					$details[$x]['time'] = $time->format("H:i:s");
+					$details[$x]['length'] = gmdate("H:i:s", $match->match_duration_s);
 					$details[$x]['mode'] = Commands::DL_GAMEMODES[$match->match_mode];
 					$details[$x]['kda'] = "{$match->player_kills} / {$match->player_deaths} / {$match->player_assists}";
 					$details[$x]['lh'] = $match->last_hits;
 					$details[$x]['worth'] = number_format($match->net_worth);
 					$details[$x]['denies'] = $match->denies;
-					$details[$x]['result'] = ($match->match_result == 0) ? "Won" : "Lost";
+					$details[$x]['result'] = ($match->match_result == $match->player_team) ? "Won" : "Lost";
 					
 				}
 				
@@ -60,13 +63,19 @@
 				$desc = "\n\n";
 				
 				foreach ($details as $player) {
-					print_r($player);
-					//$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
-					//$embed->addFieldValues("\n\n".$details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
+					$desc .= "<@{$player->discord}> **{$player->result}** playing as **{$player->hero}**\n\n";
+					$embed->addFieldValues("\n\n".$player->name, "{$player->hero}\nLevel {$player->level}\n{$player->kda}\n{$player->lh} LH\n{$player->denies} Denies\n${$player->worth}\n\n", true);
+					$mode = $player->mode;
+					$start = $player->time;
+					$length = $player->length;
+					$mode = $player->mode;
+			
 				}
 
-				//$embed->setDescription($desc."\n");
-				//$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$mode}\nRanked: {$ranked}\n", false);
+				$embed->setDescription($desc."\n");
+				$embed->addFieldValues("\n\nGame Information", "Start Time: {$start}\nLength: {$length}\nGame Mode: {$mode}\n", false);
+				
+				$message->channel->sendEmbed($embed);
 			
 			}
 			
