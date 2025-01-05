@@ -64,18 +64,18 @@
 				
 				foreach ($details as $player) {
 					print_r($player);
-					//$desc .= "<@{$player->discord}> **{$player->result}** playing as **{$player->hero}**\n\n";
-					//$embed->addFieldValues("\n\n".$player->name, "{$player->hero}\nLevel {$player->level}\n{$player->kda}\n{$player->lh} LH\n{$player->denies} Denies\n${$player->worth}\n\n", true);
-					$mode = (string)$player->mode;
-					$start = (string)$player->time;
-					$length = (string)$player->length;
+					$desc .= "<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
+					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']}\nLevel {$player['level']}\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n${$player['worth']}\n\n", true);
+					$mode = $player['mode'];
+					$start = $player['time'];
+					$length = $player['length'];
 			
 				}
 
-				//$embed->setDescription($desc."\n");
-				//$embed->addFieldValues("\n\nGame Information", "Start Time: {$start}\nLength: {$length}\nGame Mode: {$mode}\n", false);
+				$embed->setDescription($desc."\n")
+					->addFieldValues("\n\nGame Information", "Start Time: {$start}\nLength: {$length}\nGame Mode: {$mode}\n", false);
 				
-				//$message->channel->sendEmbed($embed);
+				$message->channel->sendEmbed($embed);
 			
 			}
 			
