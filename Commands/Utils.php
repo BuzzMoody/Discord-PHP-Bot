@@ -234,6 +234,8 @@
 		
 		global $discord, $keys;
 		
+		if ($keys['beta'] === true) { return; }
+		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
 		if ($current_hour >= 10 || $current_hour <= 2) {
