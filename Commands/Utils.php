@@ -123,11 +123,9 @@
 		
 	}
 	
-	function checkDL() {
-		
-		global $discord, $keys;
-		
-		$url = "https://data.deadlock-api.com/v1/players/50577085/match-history?limit=1";
+	function checkDeadlock() {
+
+		return true;
 		
 	}
 	
@@ -161,7 +159,7 @@
 				$details[$i]['user'] = $ids[$i][1];
 				$details[$i]['matchid'] = '';
 
-				if (checkNew($details[$i]['user'], $response[0]->match_id)) {
+				if (checkNew($details[$i]['user'], $response[0]->match_id, "Dota")) {
 
 					$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 					$details[$i]['matchid'] = $response[0]->match_id;
@@ -187,7 +185,7 @@
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
 						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
 						$games++;
-						updateMatch($details[$i]['user'], $response[0]->match_id);
+						updateMatch($details[$i]['user'], $response[0]->match_id, "Dota");
 						
 					}
 					
@@ -229,25 +227,41 @@
 	
 	}
 	
-	function checkNew($id, $matchID) {
+	function checkNew($id, $matchID, $game = "Dota") {
 		
 		global $keys;
 
 		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
-		$result = $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'");
+		$result = ($game == "Dota") ? $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'") : $mysqli->query("SELECT * FROM deadlock WHERE id='{$id}' AND matchid='{$matchID}'");
 		$mysqli->close();
 		if ($result->num_rows == 0) { return true; }
 		else { return false; }
 		
 	}
 
-	function updateMatch($id, $matchID) {
+	function updateMatch($id, $matchID, $game = "Dota") {
 		
 		global $keys;
 		
 		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
-		$result = $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'");
+		$result = ($game == "Dota") ? $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'") : $mysqli->query("UPDATE deadlock SET matchid='{$matchID}' WHERE id='{$id}'");
 		$mysqli->close();
+		
+	}
+	
+	function allMatchIDsMatch($details) {
+		
+		$first = $details[0]['matchid'];
+		
+		foreach ($details as $item) {
+			
+			if (!isset($item['matchid']) || $item['matchid'] !== $first) {
+				return false;
+			}
+			
+		}
+		
+		return true;
 		
 	}
 	

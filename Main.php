@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('Australia/Melbourne');
+
 include __DIR__.'/vendor/autoload.php';
 include 'config.inc';
 include 'CommandHandler.php';
@@ -41,6 +43,7 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	
 	$discord->getLoop()->addPeriodicTimer(120, function () {
 		checkDota();
+		checkDeadlock();
 		checkNews();
 	});
 	
