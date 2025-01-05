@@ -235,9 +235,10 @@
 		global $discord, $keys;
 		
 		if ($keys['beta'] === true) { return; }
-		$date = new DateTime('now', new DateTimeZone('Australia/Melbourne'));
-        $current_hour = (int)$date->format('G');
-		if (($current_hour >= 10 && $current_hour <= 23) || in_array($current_hour, [0, 1, 2])) {
+		
+		$date = new DateTime('now');
+		$current_hour = (int)$date->format('G');
+		if ($current_hour >= 10 || $current_hour <= 2) {
 
 			$ids = array(
 				array("232691181396426752", "54716121", "Buzz"), 
