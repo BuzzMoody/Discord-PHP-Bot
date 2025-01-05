@@ -51,7 +51,6 @@ class Commands {
 			'/^uptime$/' => 'Uptime',
 			'/^reload$/' => 'Reload',
 			'/^betarl$/' => 'BetaReload',
-			'/^deadlock$/' => 'Deadlock',
 		];
 		
 		$this->funcLoad();
