@@ -238,6 +238,7 @@
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
+		echo "Current hour: {$current_hour}\n";
 		if ($current_hour >= 10 || $current_hour <= 2) {
 
 			$ids = array(
