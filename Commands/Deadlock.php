@@ -65,7 +65,7 @@
 				foreach ($details as $player) {
 					print_r($player);
 					$desc .= "<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
-					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n\${$player['worth']}\n\n", true);
+					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
 					$mode = $player['mode'];
 					$start = $player['time'];
 					$length = $player['length'];
