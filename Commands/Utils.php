@@ -123,11 +123,108 @@
 		
 	}
 	
-	function checkDL() {
-		
+	function checkDeadlock() {
+
 		global $discord, $keys;
 		
-		$url = "https://data.deadlock-api.com/v1/players/50577085/match-history?limit=1";
+		if ($keys['beta'] === true) { return; }
+		
+		$guild = $discord->guilds->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '232691831090053120');
+		
+		$date = new DateTime('now');
+		$current_hour = (int)$date->format('G');
+		if ($current_hour >= 10 || $current_hour <= 2) {
+
+			$ids = array(
+				array("381596223435702282", "33939542", "Dan"), 
+				array("132458420375650304", "50577085", "Bryce"), 
+			);
+			
+			for ($x = 0; $x < count($ids); $x++) {
+				
+				$url = "https://data.deadlock-api.com/v2/players/{$ids[$x][1]}/match-history?api_key={$keys['deadlock']}";
+				$content = @file_get_contents($url);
+				if ($content === FALSE) { return; }
+				$response = json_decode($content);
+				$match = $response->matches[0];
+				
+				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
+					
+					$time = new DateTime("now");
+					$time->setTimestamp($match->start_time);
+					
+					$details[$x]['matchid'] = $match->match_id;
+					$details[$x]['discord'] = $ids[$x][0];
+					$details[$x]['name'] = $ids[$x][2];
+					$details[$x]['user'] = $ids[$x][1];
+					$details[$x]['hero'] = Commands::DL_HEROES[$match->hero_id];
+					$details[$x]['team'] = $match->player_team;
+					$details[$x]['level'] = $match->hero_level;
+					$details[$x]['time'] = $time->format("H:i:s");
+					$details[$x]['length'] = gmdate("H:i:s", $match->match_duration_s);
+					$details[$x]['mode'] = Commands::DL_GAMEMODES[$match->match_mode];
+					$details[$x]['kda'] = "{$match->player_kills} / {$match->player_deaths} / {$match->player_assists}";
+					$details[$x]['lh'] = $match->last_hits;
+					$details[$x]['worth'] = number_format($match->net_worth);
+					$details[$x]['denies'] = $match->denies;
+					$details[$x]['result'] = ($match->match_result == $match->player_team) ? "Won" : "Lost";
+					
+					updateMatch($details[$x]['user'], $match->match_id, "Deadlock");
+					
+				}
+				
+			}
+
+			if (count($details) > 1 && allMatchIDsMatch($details)) { 
+			
+				$embed = $discord->factory(Embed::class);
+				$embed->setTitle("Deadlock Match Results")
+					->setImage("https://buzzmoody.au/deadlock-banner.jpg")
+					->setColor($keys['colour'])
+					->setTimestamp()
+					->setFooter("Powered by Deadlock-API");
+					//->setURL("https://www.opendota.com/matches/".$matchid)
+				$desc = "\n\n";
+
+				foreach ($details as $player) {
+					$desc .= "<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
+					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
+					$mode = $player['mode'];
+					$start = $player['time'];
+					$length = $player['length'];
+				}
+				
+				$embed->setDescription($desc."\n")
+					->addFieldValues("\n\nGame Information", "Start Time: {$start}\nLength: {$length}\nGame Mode: {$mode}\n", false);
+
+				$channel->sendEmbed($embed);
+			
+			}
+			
+			else {
+				
+				foreach ($details as $player) {
+					$embed = $discord->factory(Embed::class);
+					$embed->setTitle("Deadlock Match Results")
+						->setImage("https://buzzmoody.au/deadlock-banner.jpg")
+						->setColor($keys['colour'])
+						->setTimestamp()
+						->setFooter("Powered by Deadlock-API");
+						//->setURL("https://www.opendota.com/matches/".$matchid)
+					$desc = "\n\n<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
+					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
+
+					$embed->setDescription($desc."\n")
+						->addFieldValues("\n\nGame Information", "Start Time: {$player['time']}\nLength: {$player['length']}\nGame Mode: {$player['mode']}\n", false);
+
+					$channel->sendEmbed($embed);
+
+				}
+
+			}
+		
+		}
 		
 	}
 	
@@ -161,7 +258,7 @@
 				$details[$i]['user'] = $ids[$i][1];
 				$details[$i]['matchid'] = '';
 
-				if (checkNew($details[$i]['user'], $response[0]->match_id)) {
+				if (checkNew($details[$i]['user'], $response[0]->match_id, "Dota")) {
 
 					$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 					$details[$i]['matchid'] = $response[0]->match_id;
@@ -187,7 +284,7 @@
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
 						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
 						$games++;
-						updateMatch($details[$i]['user'], $response[0]->match_id);
+						updateMatch($details[$i]['user'], $response[0]->match_id, "Dota");
 						
 					}
 					
@@ -229,25 +326,41 @@
 	
 	}
 	
-	function checkNew($id, $matchID) {
+	function checkNew($id, $matchID, $game = "Dota") {
 		
 		global $keys;
 
 		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
-		$result = $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'");
+		$result = ($game == "Dota") ? $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'") : $mysqli->query("SELECT * FROM deadlock WHERE id='{$id}' AND matchid='{$matchID}'");
 		$mysqli->close();
 		if ($result->num_rows == 0) { return true; }
 		else { return false; }
 		
 	}
 
-	function updateMatch($id, $matchID) {
+	function updateMatch($id, $matchID, $game = "Dota") {
 		
 		global $keys;
 		
 		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
-		$result = $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'");
+		$result = ($game == "Dota") ? $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'") : $mysqli->query("UPDATE deadlock SET matchid='{$matchID}' WHERE id='{$id}'");
 		$mysqli->close();
+		
+	}
+	
+	function allMatchIDsMatch($details) {
+		
+		$first = $details[0]['matchid'];
+		
+		foreach ($details as $item) {
+			
+			if (!isset($item['matchid']) || $item['matchid'] !== $first) {
+				return false;
+			}
+			
+		}
+		
+		return true;
 		
 	}
 	
