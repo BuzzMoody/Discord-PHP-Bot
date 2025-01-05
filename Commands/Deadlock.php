@@ -32,6 +32,7 @@
 					$time->setTimestamp($match->start_time);
 					
 					$details[$x]['matchid'] = $match->match_id;
+					$details[$x]['discord'] = $ids[$x][0];
 					$details[$x]['user'] = $ids[$x][1];
 					$details[$x]['hero'] = Commands::DL_HEROES[$match->hero_id];
 					$details[$x]['level'] = $match->hero_level;
@@ -49,7 +50,23 @@
 			
 			if (count($details) > 1 && allMatchIDsMatch($details)) { 
 		
-				echo "They match!";
+				$embed = $discord->factory(Embed::class);
+				$embed->setTitle("Deadlock Match Results")
+					->setImage("https://buzzmoody.au/deadlock-banner.jpg")
+					->setColor($keys['colour'])
+					->setTimestamp()
+					->setFooter("Powered by Deadlock-API");
+					//->setURL("https://www.opendota.com/matches/".$matchid)
+				$desc = "\n\n";
+				
+				foreach ($details as $player) {
+					print_r($player);
+					//$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**\n\n";
+					//$embed->addFieldValues("\n\n".$details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
+				}
+
+				//$embed->setDescription($desc."\n");
+				//$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$mode}\nRanked: {$ranked}\n", false);
 			
 			}
 			
