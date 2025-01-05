@@ -33,10 +33,10 @@
 					
 					$details[$x]['matchid'] = $match->match_id;
 					$details[$x]['user'] = $ids[$x][1];
-					$details[$x]['hero'] = DL_HEROES[$match->hero_id];
+					$details[$x]['hero'] = Commands::DL_HEROES[$match->hero_id];
 					$details[$x]['level'] = $match->hero_level;
 					$details[$x]['time'] = $time->format("H:i:s");
-					$details[$x]['mode'] = DL_GAMEMODES[$match->match_mode];
+					$details[$x]['mode'] = Commands::DL_GAMEMODES[$match->match_mode];
 					$details[$x]['kda'] = "{$match->player_kills} / {$match->player_deaths} / {$match->player_assists}";
 					$details[$x]['lh'] = $match->last_hits;
 					$details[$x]['worth'] = number_format($match->net_worth);
