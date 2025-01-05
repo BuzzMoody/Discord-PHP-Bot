@@ -66,10 +66,9 @@
 					print_r($player);
 					//$desc .= "<@{$player->discord}> **{$player->result}** playing as **{$player->hero}**\n\n";
 					//$embed->addFieldValues("\n\n".$player->name, "{$player->hero}\nLevel {$player->level}\n{$player->kda}\n{$player->lh} LH\n{$player->denies} Denies\n${$player->worth}\n\n", true);
-					$mode = $player->mode;
-					$start = $player->time;
-					$length = $player->length;
-					$mode = $player->mode;
+					$mode = (string)$player->mode;
+					$start = (string)$player->time;
+					$length = (string)$player->length;
 			
 				}
 
