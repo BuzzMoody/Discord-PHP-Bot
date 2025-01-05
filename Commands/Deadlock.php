@@ -24,7 +24,6 @@
 				if ($content === FALSE) { return; }
 				$response = json_decode($content);
 				$match = $response->matches[0];
-				print_r($match);
 				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
@@ -50,9 +49,9 @@
 				}
 				
 			}
-			
+
 			if (count($details) > 1 && allMatchIDsMatch($details)) { 
-		
+			
 				$embed = $discord->factory(Embed::class);
 				$embed->setTitle("Deadlock Match Results")
 					->setImage("https://buzzmoody.au/deadlock-banner.jpg")
@@ -61,27 +60,40 @@
 					->setFooter("Powered by Deadlock-API");
 					//->setURL("https://www.opendota.com/matches/".$matchid)
 				$desc = "\n\n";
-				
+
 				foreach ($details as $player) {
-					print_r($player);
 					$desc .= "<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
 					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
 					$mode = $player['mode'];
 					$start = $player['time'];
 					$length = $player['length'];
-			
 				}
-
+				
 				$embed->setDescription($desc."\n")
 					->addFieldValues("\n\nGame Information", "Start Time: {$start}\nLength: {$length}\nGame Mode: {$mode}\n", false);
-				
+			
 				$message->channel->sendEmbed($embed);
 			
 			}
 			
 			else {
 				
-				echo "They don't match!";
+				foreach ($details as $player) {
+					$embed = $discord->factory(Embed::class);
+					$embed->setTitle("Deadlock Match Results")
+						->setImage("https://buzzmoody.au/deadlock-banner.jpg")
+						->setColor($keys['colour'])
+						->setTimestamp()
+						->setFooter("Powered by Deadlock-API");
+						//->setURL("https://www.opendota.com/matches/".$matchid)
+					$desc = "\n\n<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
+					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
+
+					$embed->setDescription($desc."\n")
+						->addFieldValues("\n\nGame Information", "Start Time: {$player['time']}\nLength: {$player['length']}\nGame Mode: {$player['mode']}\n", false);
+			
+					$message->channel->sendEmbed($embed);
+				}
 
 			}
 		
