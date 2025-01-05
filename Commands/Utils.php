@@ -234,10 +234,11 @@
 		
 		global $discord, $keys;
 		
-		if ($keys['beta'] === true) { return; }
-		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
+		echo "Current hour: {$current_hour}\n";
+		
+		if ($keys['beta'] === true) { return; }
 		if ($current_hour >= 10 || $current_hour <= 2) {
 
 			$ids = array(
