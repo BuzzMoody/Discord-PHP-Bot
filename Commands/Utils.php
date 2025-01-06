@@ -147,7 +147,7 @@
 				$content = @file_get_contents($url);
 				if ($content === FALSE) { return; }
 				$response = json_decode($content);
-				if (count($response->matches)) < 2)) { return; }
+				if (count($response->matches) < 2) { return; }
 				$match = $response->matches[0];
 				
 				$details = [];
