@@ -147,6 +147,7 @@
 				$content = @file_get_contents($url);
 				if ($content === FALSE) { return; }
 				$response = json_decode($content);
+				if (count($response->matches)) < 2)) { return; }
 				$match = $response->matches[0];
 				
 				$details = [];
@@ -207,21 +208,22 @@
 			else {
 				
 				foreach ($details as $player) {
-					$embed = $discord->factory(Embed::class);
-					$embed->setTitle("Deadlock Match Results")
-						->setImage("https://buzzmoody.au/deadlock-banner.jpg")
-						->setColor($keys['colour'])
-						->setTimestamp()
-						->setFooter("Powered by Deadlock-API");
-						//->setURL("https://www.opendota.com/matches/".$matchid)
-					$desc = "\n\n<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
-					$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
+					if (!empty($player['lh'])) {
+						$embed = $discord->factory(Embed::class);
+						$embed->setTitle("Deadlock Match Results")
+							->setImage("https://buzzmoody.au/deadlock-banner.jpg")
+							->setColor($keys['colour'])
+							->setTimestamp()
+							->setFooter("Powered by Deadlock-API");
+							//->setURL("https://www.opendota.com/matches/".$matchid)
+						$desc = "\n\n<@{$player['discord']}> **{$player['result']}** playing as **{$player['hero']}**\n\n";
+						$embed->addFieldValues("\n\n".$player['name'], "{$player['hero']} (Lvl {$player['level']})\n{$player['kda']}\n{$player['lh']} LH\n{$player['denies']} Denies\n{$player['worth']} Souls\n\n", true);
 
-					$embed->setDescription($desc."\n")
-						->addFieldValues("\n\nGame Information", "Start Time: {$player['time']}\nLength: {$player['length']}\nGame Mode: {$player['mode']}\n", false);
+						$embed->setDescription($desc."\n")
+							->addFieldValues("\n\nGame Information", "Start Time: {$player['time']}\nLength: {$player['length']}\nGame Mode: {$player['mode']}\n", false);
 
-					$channel->sendEmbed($embed);
-
+						$channel->sendEmbed($embed);
+					}
 				}
 
 			}
