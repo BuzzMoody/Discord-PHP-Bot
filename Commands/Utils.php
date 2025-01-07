@@ -130,16 +130,19 @@
 		if ($keys['beta'] === true) { return; }
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '274828566909157377');
+		$channel = $guild->channels->get('id', '232691831090053120');
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
+		
 		if ($current_hour >= 10 || $current_hour <= 2) {
 
 			$ids = array(
 				array("381596223435702282", "33939542", "Dan"), 
 				array("132458420375650304", "50577085", "Bryce"), 
 			);
+			
+			$details = [];
 			
 			for ($x = 0; $x < count($ids); $x++) {
 				
@@ -149,8 +152,6 @@
 				$response = json_decode($content);
 				if (count($response->matches) < 2) { return; }
 				$match = $response->matches[0];
-				
-				$details = [];
 				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
@@ -206,7 +207,7 @@
 			}
 			
 			else {
-				
+
 				foreach ($details as $player) {
 					if (!empty($player['lh'])) {
 						$embed = $discord->factory(Embed::class);
