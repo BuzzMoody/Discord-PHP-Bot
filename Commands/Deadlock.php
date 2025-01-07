@@ -33,9 +33,6 @@
 				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
-					print_r($ids[$x]);
-					print_r($ids);
-					
 					$time = new DateTime("now");
 					$time->setTimestamp($match->start_time);
 					
@@ -60,8 +57,6 @@
 				}
 				
 			}
-			
-			print_r($details);
 
 			if (count($details) > 1 && allMatchIDsMatch($details)) { 
 			
@@ -92,6 +87,8 @@
 			else {
 				
 				echo "One result\n";
+				
+				print_r($details);
 				
 				foreach ($details as $player) {
 					if (!empty($player['lh'])) {
