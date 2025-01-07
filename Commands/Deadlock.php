@@ -33,6 +33,8 @@
 				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
+					"New game found for {$ids[$x][2]}\n";
+					
 					$time = new DateTime("now");
 					$time->setTimestamp($match->start_time);
 					
@@ -53,6 +55,8 @@
 					$details[$x]['result'] = ($match->match_result == $match->player_team) ? "Won" : "Lost";
 					
 					updateMatch($details[$x]['user'], $match->match_id, "Deadlock");
+					
+					print_r($details);
 					
 				}
 				
