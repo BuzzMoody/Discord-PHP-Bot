@@ -130,7 +130,7 @@
 		if ($keys['beta'] === true) { return; }
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '274828566909157377');
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
