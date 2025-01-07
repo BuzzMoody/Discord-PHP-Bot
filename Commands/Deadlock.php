@@ -91,6 +91,8 @@
 			
 			else {
 				
+				echo "One result\n";
+				
 				foreach ($details as $player) {
 					if (!empty($player['lh'])) {
 						$embed = $discord->factory(Embed::class);
