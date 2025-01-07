@@ -33,6 +33,8 @@
 				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
+					print_r($ids[$x]);
+					
 					$time = new DateTime("now");
 					$time->setTimestamp($match->start_time);
 					
