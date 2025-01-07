@@ -20,6 +20,8 @@
 				array("132458420375650304", "50577085", "Bryce"), 
 			);
 			
+			$details = [];
+			
 			for ($x = 0; $x < count($ids); $x++) {
 				
 				$url = "https://data.deadlock-api.com/v2/players/{$ids[$x][1]}/match-history?api_key={$keys['deadlock']}";
@@ -28,8 +30,6 @@
 				$response = json_decode($content);
 				if (count($response->matches) < 2) { return; }
 				$match = $response->matches[0];
-				
-				$details = [];
 				
 				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
 					
