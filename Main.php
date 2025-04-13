@@ -44,7 +44,6 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	$discord->getLoop()->addPeriodicTimer(120, function () {
 		checkDota();
 		checkDeadlock();
-		checkNews();
 	});
 	
 	$discord->getLoop()->addPeriodicTimer(1800, function () {

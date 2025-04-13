@@ -80,28 +80,26 @@
 	function toAusTime($time, $format = 'jS F: G:i', $countdown = false, $offset = 'UTC', $relative = false) {
 		
 		if ($relative) {
-			preg_match('/([+-])(\d{2}):(\d{2})/', $offset, $matches);
-			$sign = $matches[1];
-			$hours = abs(intval($matches[2]) - 11);
-			$minutes = intval($matches[3]);
-			$offset = sprintf('+%02d:%02d', $hours, $minutes);
+			$dateTimeWithOffset = $time . $offset;
+			$dateTime = new DateTime($dateTimeWithOffset);
+			$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 		}
-		$datetime = new DateTime($time, new DateTimeZone($offset));
-		$datetime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+		$dateTime = new DateTime($time, new DateTimeZone($offset));
+		$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 		if ($countdown) {
 			$currTime = new DateTime();
-			$diffTime = $currTime->diff($datetime);
+			$diffTime = $currTime->diff($dateTime);
 			$countTime = "";
 			if ($diffTime->days > 0) { $countTime .= "{$diffTime->days} days, "; }
 			if ($diffTime->h > 0) { $countTime .= "{$diffTime->h} hrs, "; }
 			if ($diffTime->i > 0) { $countTime .= "{$diffTime->i} mins"; }
-			return $datetime->format($format)." ({$countTime})";
+			return $dateTime->format($format)." ({$countTime})";
 		}
-		return $datetime->format($format);	
+		return $dateTime->format($format);	
 		
 	}
 	
-	function checkNews() {
+/* 	function checkNews() {
 		
 		global $discord, $keys;
 		if ($keys['beta'] === true) { return; }
@@ -121,7 +119,7 @@
 			}
 		}
 		
-	}
+	} */
 	
 	function checkDeadlock() {
 
