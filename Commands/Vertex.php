@@ -52,7 +52,7 @@
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://australia-southeast1-aiplatform.googleapis.com/v1/projects/discordbot-225807/locations/australia-southeast1/publishers/google/models/gemini-1.5-flash-002:generateContent',
+			CURLOPT_URL => 'https://australia-southeast1-aiplatform.googleapis.com/v1/projects/discordbot-225807/locations/australia-southeast1/publishers/google/models/models/gemini-2.0-flash:generateContent',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
