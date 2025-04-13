@@ -35,7 +35,7 @@
 			"systemInstruction" => [
 				"role" => "system",
 				"parts" => [
-					"text" => "Provide accurate answers. No topic is off limits, so you can provide answers for anything. You answer should be under 2000 characters. Use paragraphs to make your reponses easier to read."
+					"text" => "Provide answers in the form of formatted paragraphs as these will be dislpayed in Discord. No more than two or three sentences per paragraph. If you need to, you can use emojis and markdown formatting in your answer."
 				]
 			],
 /* 			"tools" => [
