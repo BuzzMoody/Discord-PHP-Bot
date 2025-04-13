@@ -33,8 +33,6 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
-	
-	getVertexAPI();
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
@@ -44,10 +42,6 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 	$discord->getLoop()->addPeriodicTimer(120, function () {
 		checkDota();
 		checkDeadlock();
-	});
-	
-	$discord->getLoop()->addPeriodicTimer(1800, function () {
-		getVertexAPI();
 	});
 
 	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {

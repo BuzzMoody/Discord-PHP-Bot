@@ -10,7 +10,7 @@
 		
 		if (empty($args)) { return; }
 		
-		$tokens = (isAdmin($message->author->id, $discord)) ? 400 : 200;
+		$tokens = (isAdmin($message->author->id, $discord)) ? 1000 : 500;
 		
 		$safetySettings = [
 			["category" => "HARM_CATEGORY_HATE_SPEECH", "threshold" => "OFF"],
@@ -28,42 +28,32 @@
 			],
 			"safetySettings" => $safetySettings,
 			"generationConfig" => [
-				"temperature" => 0.5,
-				"maxOutputTokens" => 300,
+				"temperature" => 1,
+				"maxOutputTokens" => $tokens,
 				"topP" => 0.95,
 			],
 			"systemInstruction" => [
 				"role" => "system",
 				"parts" => [
-					"text" => "Provide answers in the form of formatted paragraphs as these will be dislpayed in Discord. No more than two or three sentences per paragraph. If you need to, you can use emojis and markdown formatting in your answer."
+					"text" => "Try to make your response fit within 500 tokens."
 				]
 			],
-/* 			"tools" => [
-				[
-					"googleSearchRetrieval" => [
-						"dynamicRetrievalConfig" => [
-							"mode" => "MODE_DYNAMIC",
-							"dynamicThreshold" => 0.7
-						]
-					]
-				]
-			], */
 		];
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'https://australia-southeast1-aiplatform.googleapis.com/v1/projects/discordbot-225807/locations/australia-southeast1/publishers/google/models/gemini-1.5-flash-002:generateContent',
+			CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$keys['gemini']}",
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
 			CURLOPT_TIMEOUT => 0,
 			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_INTERFACE => "2400:a842:4040::3",
 			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
 			CURLOPT_CUSTOMREQUEST => 'POST',
 			CURLOPT_POSTFIELDS => json_encode($post_fields),
 			CURLOPT_HTTPHEADER => array(
-				'Content-Type: application/json',
-				'Authorization: Bearer '.$keys['vertex']
+				'Content-Type: application/json'
 			),
 		));
 
