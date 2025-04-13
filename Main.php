@@ -45,10 +45,6 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 		checkDota();
 		checkDeadlock();
 	});
-	
-	$discord->getLoop()->addPeriodicTimer(1800, function () {
-		getVertexAPI();
-	});
 
 	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {
 		
