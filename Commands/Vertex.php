@@ -35,7 +35,7 @@
 			"systemInstruction" => [
 				"role" => "system",
 				"parts" => [
-					"text" => "Provide answers in the form of formatted paragraphs as these will be dislpayed in Discord"
+					"text" => "Provide answers in the form of formatted paragraphs as these will be dislpayed in Discord. No more than two or three sentences per paragraph."
 				]
 			],
 /* 			"tools" => [
