@@ -83,10 +83,9 @@
 			$dateTimeWithOffset = $time . $offset;
 			$dateTime = new DateTime($dateTimeWithOffset);
 			$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+			return $dateTime->format($format);	
 		}
-		$dateTime = new DateTime($time, new DateTimeZone($offset));
-		$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
-		if ($countdown) {
+		else if ($countdown) {
 			$currTime = new DateTime();
 			$diffTime = $currTime->diff($dateTime);
 			$countTime = "";
@@ -95,7 +94,11 @@
 			if ($diffTime->i > 0) { $countTime .= "{$diffTime->i} mins"; }
 			return $dateTime->format($format)." ({$countTime})";
 		}
-		return $dateTime->format($format);	
+		else {
+			$dateTime = new DateTime($time, new DateTimeZone($offset));
+			$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+			return $dateTime->format($format);	
+		}
 		
 	}
 	
