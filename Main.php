@@ -33,8 +33,6 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
-	
-	getVertexAPI();
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
