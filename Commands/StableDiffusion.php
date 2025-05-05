@@ -65,6 +65,8 @@
 
 		if (!is_dir($s)) mkdir($s, 0755, true);
 		if (!is_writable($s)) die("Directory not writable: $s\n");
+		
+		file_put_contents($fp, $bin);
 
 		if (file_put_contents($fp, $bin) !== false) {
 			$builder = MessageBuilder::new()->addFile($fp, $fp);
