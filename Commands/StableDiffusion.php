@@ -41,6 +41,7 @@
 			]
 		]);
 		$r = curl_exec($c);
+		print_r($r);
 		$h = curl_getinfo($c, CURLINFO_HTTP_CODE);
 		$err = curl_error($c);
 		curl_close($c);
