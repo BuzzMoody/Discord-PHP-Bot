@@ -15,7 +15,7 @@
 		$e = "australia-southeast1-aiplatform.googleapis.com";
 		$s = __DIR__ . '../Media/AI/';
 		
-		$prompt = "A photorealistic image of a lavender perfume bottle in a still life composition. The perfume bottle is made of clear glass with a simple, minimalist design. The bottle is filled with a pale liquid. There are a few sprigs of fresh lavender and a single white rosebud next to the perfume bottle. Product photography with a focus on luxury and elegance. Dynamic, sumptuous lighting with nice contrast.";
+		$prompt = $args;
 
 		$t = trim(shell_exec('gcloud auth print-access-token 2>&1'));
 		if (empty($t) || strpos($t, 'ERROR:') !== false) die("Auth Error: " . $t . "\n");
