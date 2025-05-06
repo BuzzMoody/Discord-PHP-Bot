@@ -25,7 +25,7 @@
 			"instances" => [["prompt" => $prompt]],
 			"parameters" => [
 				"aspectRatio" => "16:9", "sampleCount" => 1, "negativePrompt" => "",
-				"enhancePrompt" => false, "personGeneration" => "", "safetySetting" => "block_none",
+				"enhancePrompt" => false, "personGeneration" => "", "safetySetting" => "",
 				"addWatermark" => true, "includeRaiReason" => true, "language" => "auto",
 			]
 		];
