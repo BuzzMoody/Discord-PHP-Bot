@@ -13,7 +13,7 @@
 		$l = "australia-southeast1";
 		$m = "imagen-3.0-generate-002";
 		$e = "australia-southeast1-aiplatform.googleapis.com";
-		$s = "../Media/AI/";
+		$s = "/home/buzz/WWW/buzzy.au/AI/";
 		
 		$prompt = $args;
 
@@ -68,9 +68,8 @@
 		file_put_contents($fp, $bin);
 		
 		chmod($fp, 0777);
-		
-		$builder = MessageBuilder::new()->addFile("../Media/AI/{$f}", "{$f}");
-		return $message->channel->sendMessage($builder);
+
+		return $message->channel->sendMessage("https://ai.buzzy.au/{$f}");
 
 
 	}
