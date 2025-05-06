@@ -36,7 +36,7 @@
 		
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(
-			function (ResponseInterface $response) {
+			function (ResponseInterface $response) use ($message) {
 				$responseBody = (string) $response->getBody();
 				$responseData = json_decode($responseBody);
 				$base64 = $responseData['predictions'][0]['bytesBase64Encoded'];
@@ -52,7 +52,7 @@
                 $file->putContents($bin)->then(
                     function () use ($filePath, $message) {
                         echo "Image successfully saved to: " . $filePath . PHP_EOL;
-                        $message->channel->sendFile($filePath);
+                        //$message->channel->sendFile($filePath);
                     },
                     function (Exception $e) use ($filePath) {
                         echo "Error saving image to " . $filePath . ": " . $e->getMessage() . PHP_EOL;
