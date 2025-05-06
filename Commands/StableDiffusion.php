@@ -37,7 +37,8 @@
 		$headers = [
 			'Content-Type: application/json', 'Authorization: Bearer ' . $gcloud,
 			'Content-Length: ' . strlen($postDataEnc)
-			
+		];
+		
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(function (ResponseInterface $response) {
 			$responseBody = (string) $response->getBody();
