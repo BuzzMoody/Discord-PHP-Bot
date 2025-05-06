@@ -11,7 +11,7 @@
 	
 		$p = $keys['cloud'];
 		$l = "australia-southeast1";
-		$m = "imagen-3.0-generate-002";
+		$m = "imagen-3.0-fast-generate-001";
 		$e = "australia-southeast1-aiplatform.googleapis.com";
 		$s = "../Media/AI/";
 		
@@ -25,7 +25,7 @@
 			"instances" => [["prompt" => $prompt]],
 			"parameters" => [
 				"aspectRatio" => "16:9", "sampleCount" => 1, "negativePrompt" => "",
-				"enhancePrompt" => false, "personGeneration" => "", "safetySetting" => "",
+				"enhancePrompt" => false, "personGeneration" => "", "safetySetting" => "block_none",
 				"addWatermark" => true, "includeRaiReason" => true, "language" => "auto",
 			]
 		];
