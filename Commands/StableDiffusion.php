@@ -13,9 +13,10 @@
 		$prompt = $args;
 		$apicode = $keys['cloud'];
 		$model = "imagen-3.0-generate-002";
-		$gcloud = trim(shell_exec('gcloud auth print-access-token 2>&1'));
-		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/$apicode/locations/australia-southeast1/publishers/google/models/$model:predict";
-		
+		$gcloud = trim(shell_exec('gcloud auth print-access-token 2>&1'));		
+		echo $gcloud.PHP_EOL;
+	
+		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/$apicode/locations/australia-southeast1/publishers/google/models/$model:predict";	
 		echo $url.PHP_EOL;
 		
 		$postData = [
@@ -28,8 +29,9 @@
 		];
 		$postDataEnc = json_encode($postData);
 		$headers = [
-			'Content-Type: application/json', 'Authorization: Bearer ' . $gcloud,
-			'Content-Length: ' . strlen($postDataEnc)
+			'Content-Type' => 'application/json', 
+			'Authorization' => 'Bearer ' . $gcloud,
+			'Content-Length' => strlen($postDataEnc)
 		];
 		
 		$browser = new Browser();
