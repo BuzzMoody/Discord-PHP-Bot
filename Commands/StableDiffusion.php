@@ -65,7 +65,10 @@
 		if (!is_dir($s)) mkdir($s, 0755, true);
 		if (!is_writable($s)) die("Directory not writable: $s\n");
 		
-		$message->channel->sendFile($bin, $f);
+		file_put_contents($fp, $bin);
+		
+		$message->channel->sendFile($fp, $f);
+
 
 	}
 	
