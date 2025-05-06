@@ -11,7 +11,7 @@
 	
 		$p = $keys['cloud'];
 		$l = "australia-southeast1";
-		$m = "imagen-3.0-fast-generate-001";
+		$m = "imagen-3.0-generate-002";
 		$e = "australia-southeast1-aiplatform.googleapis.com";
 		$s = "../Media/AI/";
 		
