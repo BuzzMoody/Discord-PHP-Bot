@@ -69,7 +69,7 @@
 		
 		chmod($fp, 0777);
 		
-		$builder = MessageBuilder::new()->addFile($fp, $fp);
+		$builder = MessageBuilder::new()->addFile("../Media/AI/{$f}", "{$f}");
 		return $message->channel->sendMessage($builder);
 
 
