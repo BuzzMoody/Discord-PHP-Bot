@@ -67,7 +67,7 @@
 		
 		file_put_contents($fp, $bin);
 		
-		chmod($fp, 0777)
+		chmod($fp, 0777);
 		
 		$builder = MessageBuilder::new()->addFile($fp, $fp);
 		return $message->channel->sendMessage($builder);
