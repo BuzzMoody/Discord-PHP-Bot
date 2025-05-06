@@ -66,13 +66,11 @@
 		if (!is_writable($s)) die("Directory not writable: $s\n");
 		
 		file_put_contents($fp, $bin);
-
-		if (file_put_contents($fp, $bin) !== false) {
-			$builder = MessageBuilder::new()->addFile($fp, $fp);
-			return $message->channel->sendMessage($builder);
-		} else {
-			die("Failed to save file: $fp\n");
-		}
+		
+		chmod($fp, 0777);
+		
+		$builder = MessageBuilder::new()->addFile("../Media/AI/{$f}", "{$f}");
+		return $message->channel->sendMessage($builder);
 
 
 	}
