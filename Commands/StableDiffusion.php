@@ -65,12 +65,17 @@
 		if (!is_dir($s)) mkdir($s, 0755, true);
 		if (!is_writable($s)) die("Directory not writable: $s\n");
 		
-		file_put_contents($fp, $bin);
+		$saveAI = file_put_contents($fp, $bin);
 		
-		chmod($fp, 0777);
+		if ($saveAI !== false) {
+			
+			chmod($fp, 0777);
 
-		return $message->channel->sendMessage("https://ai.buzzy.au/{$f}");
-
+			return $message->channel->sendMessage("https://ai.buzzy.au/{$f}");
+			
+		}
+		
+		else { die("file not written properly"); }
 
 	}
 	
