@@ -30,12 +30,17 @@
 		];
 		
 		$browser = new Browser();
-		$browser->post($url, $headers, $postDataEnc)->then(function (ResponseInterface $response) {
-			$responseBody = (string) $response->getBody();
-			print_r($responseBody);
-			$responseData = json_decode($responseBody);
-			print_r($responseData);
-		});
+		$browser->post($url, $headers, $postDataEnc)->then(
+			function (ResponseInterface $response) {
+				$responseBody = (string) $response->getBody();
+				print_r($responseBody);
+				$responseData = json_decode($responseBody);
+				print_r($responseData);
+			},
+			function (Exception $e) {
+				echo "Error: ".$e->getMessage();
+			}
+		);
 
 
 	}
