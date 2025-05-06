@@ -13,7 +13,7 @@
 		$l = "australia-southeast1";
 		$m = "imagen-3.0-generate-002";
 		$e = "australia-southeast1-aiplatform.googleapis.com";
-		$s = "/home/buzz/WWW/buzzy.au/AI/";
+		$s = "/home/buzz/WWW/buzzy.au/public/AI";
 		
 		$prompt = $args;
 
