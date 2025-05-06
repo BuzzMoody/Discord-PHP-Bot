@@ -10,6 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 // use Discord\Builders\MessageBuilder; // Uncomment if used
 use React\Filesystem\Filesystem;
 use React\EventLoop\Loop; // Required for Filesystem::get()
+use React\Filesystem\Factory;
+use React\Filesystem\Node\DirectoryInterface;
+use React\Filesystem\Node\NodeInterface;
 
 function StableDiffusion($message, $args) {
     echo "[DEBUG] StableDiffusion function started." . PHP_EOL;
