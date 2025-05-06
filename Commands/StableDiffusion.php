@@ -11,9 +11,10 @@
 		global $keys;
 		
 		$prompt = $args;
+		$apicode = $keys['cloud'];
 		$model = "imagen-3.0-generate-002";
 		$gcloud = trim(shell_exec('gcloud auth print-access-token 2>&1'));
-		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/{$keys['cloud']}/locations/australia-southeast1/publishers/google/models/$model:predict";
+		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/$apicode/locations/australia-southeast1/publishers/google/models/$model:predict";
 		
 		$postData = [
 			"instances" => [["prompt" => $prompt]],
