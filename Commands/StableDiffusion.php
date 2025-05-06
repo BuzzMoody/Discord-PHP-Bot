@@ -32,22 +32,10 @@
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(function (ResponseInterface $response) {
 			$responseBody = (string) $response->getBody();
+			print_r($responseBody);
 			$responseData = json_decode($responseBody);
 			print_r($responseData);
 		});
-		
-		$b64 = $rd['predictions'][0]['bytesBase64Encoded'];
-		$mt = $rd['predictions'][0]['mimeType'];
-		$bin = base64_decode($b64);
-
-		$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mt)) ?: 'png';
-		$f = 'img_' . time() . '_' . uniqid() . '.' . $ext;
-		$fp = rtrim($s, '/') . '/' . $f;
-		
-		// file_put_contents($fp, $bin);
-		
-		//$message->channel->sendMessage(MessageBuilder::new()
-		//	->addFile($fp));
 
 
 	}
