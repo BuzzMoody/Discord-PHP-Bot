@@ -36,7 +36,8 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
-				print_r($responseData);
+				$responsePrint = print_r($responseData, true);
+				file_put_contents("output.txt", $responsePrint);
 				$base64 = $responseData['predictions'][0]['bytesBase64Encoded'];
 				$mimeType = $responseData['predictions'][0]['mimeType'];
 				$bin = base64_decode($base64);
