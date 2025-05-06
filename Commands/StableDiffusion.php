@@ -36,15 +36,13 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
-				$responsePrint = print_r($responseData, true);
-				file_put_contents("output.txt", $responsePrint);
 				$base64 = $responseData['predictions'][0]['bytesBase64Encoded'];
 				$mimeType = $responseData['predictions'][0]['mimeType'];
 				$bin = base64_decode($base64);
 				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
 				
 				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;
-                $filePath = '..Media/AI/' . $filename;
+                $filePath = "../Media/AI/" . $filename;
                 $filesystem = Filesystem::create();
                 $file = $filesystem->file($filePath);
 
