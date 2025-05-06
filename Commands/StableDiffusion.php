@@ -122,7 +122,7 @@ function StableDiffusion($message, $args) {
 
             // Construct a more robust path. __DIR__ refers to the directory of the current PHP file.
             // Adjust this path according to your actual directory structure.
-            $dirPath = __DIR__ . "/../Media/AI/";
+            $dirPath = "/home/buzz/Bots/Media/AI/";
             $filePath = $dirPath . $filename;
             echo "[DEBUG] Target file path: " . $filePath . PHP_EOL;
 
