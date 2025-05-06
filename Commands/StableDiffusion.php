@@ -16,6 +16,8 @@
 		$gcloud = trim(shell_exec('gcloud auth print-access-token 2>&1'));
 		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/$apicode/locations/australia-southeast1/publishers/google/models/$model:predict";
 		
+		echo $url.PHP_EOL;
+		
 		$postData = [
 			"instances" => [["prompt" => $prompt]],
 			"parameters" => [
