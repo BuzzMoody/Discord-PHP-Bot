@@ -8,7 +8,7 @@
 
 	function StableDiffusion($message, $args) { 
 	
-		global $keys
+		global $keys;
 		
 		$prompt = $args;
 		$model = "imagen-3.0-generate-002";
