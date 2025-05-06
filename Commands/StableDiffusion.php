@@ -68,8 +68,6 @@
 		$message->channel->sendMessage("https://ai.buzzy.au/{$f}");
 		$saveAI = file_put_contents($fp, $bin);
 
-		else { die("file not written properly"); }
-
 	}
 	
 ?>
