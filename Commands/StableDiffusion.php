@@ -36,10 +36,10 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
+				print_r($responseData);
 				$base64 = $responseData['predictions'][0]['bytesBase64Encoded'];
 				$mimeType = $responseData['predictions'][0]['mimeType'];
 				$bin = base64_decode($base64);
-				echo $bin;
 				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
 				
 				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;
