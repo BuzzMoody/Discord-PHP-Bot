@@ -15,16 +15,6 @@
 		$gcloud = trim(shell_exec('gcloud auth print-access-token 2>&1'));
 		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/{$keys['cloud']}/locations/australia-southeast1/publishers/google/models/$model:predict";
 		
-		$client->get("{$keys['sd']}/?img={$args}")->then(function (ResponseInterface $response) use ($message) {
-			$rand = rand(1,100000);
-			file_put_contents("../Media/AI/{$rand}.png", $response->getBody());
-			$builder = MessageBuilder::new()
-				->addFile("../Media/AI/{$rand}.png", "{$rand}.png");
-			return $message->channel->sendMessage($builder);
-		}, function (Exception $e) {
-			echo "Error: {$e->getMessage()}\n";
-		});
-		
 		$postData = [
 			"instances" => [["prompt" => $prompt]],
 			"parameters" => [
