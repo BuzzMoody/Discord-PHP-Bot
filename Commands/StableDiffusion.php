@@ -14,10 +14,7 @@
 		$apicode = $keys['cloud'];
 		$model = "imagen-3.0-generate-002";
 		$gcloud = trim(shell_exec('gcloud auth print-access-token 2>&1'));		
-		echo $gcloud.PHP_EOL;
-	
 		$url = "https://australia-southeast1-aiplatform.googleapis.com/v1/projects/$apicode/locations/australia-southeast1/publishers/google/models/$model:predict";	
-		echo $url.PHP_EOL;
 		
 		$postData = [
 			"instances" => [["prompt" => $prompt]],
@@ -42,6 +39,7 @@
 				$base64 = $responseData['predictions'][0]['bytesBase64Encoded'];
 				$mimeType = $responseData['predictions'][0]['mimeType'];
 				$bin = base64_decode($base64);
+				echo $bin;
 				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
 				
 				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;
