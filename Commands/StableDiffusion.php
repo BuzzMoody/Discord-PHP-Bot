@@ -13,7 +13,7 @@
 		$l = "australia-southeast1";
 		$m = "imagen-3.0-generate-002";
 		$e = "australia-southeast1-aiplatform.googleapis.com";
-		$s = "../Media/AI/";
+		$s = "/home/buzz/WWW/buzzy.au/public/AI";
 		
 		$prompt = $args;
 
@@ -65,13 +65,8 @@
 		if (!is_dir($s)) mkdir($s, 0755, true);
 		if (!is_writable($s)) die("Directory not writable: $s\n");
 		
-		file_put_contents($fp, $bin);
-		
-		chmod($fp, 0777);
-		
-		$builder = MessageBuilder::new()->addFile("../Media/AI/{$f}", "{$f}");
-		return $message->channel->sendMessage($builder);
-
+		$message->channel->sendMessage("https://ai.buzzy.au/{$f}");
+		$saveAI = file_put_contents($fp, $bin);
 
 	}
 	
