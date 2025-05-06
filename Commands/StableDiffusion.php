@@ -54,7 +54,8 @@
 		
 		file_put_contents($fp, $bin);
 		
-		$message->channel->sendFile($fp, $f);
+		$message->channel->sendMessage(MessageBuilder::new()
+			->addFile($fp));
 
 
 	}
