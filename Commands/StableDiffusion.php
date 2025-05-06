@@ -3,7 +3,7 @@
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 	use Discord\Parts\Channel\Attachment;
-	use React\Socket\Connector
+	use React\Socket\Connector;
 	use Discord\Builders\MessageBuilder;
 
 	function StableDiffusion($message, $args) { 
