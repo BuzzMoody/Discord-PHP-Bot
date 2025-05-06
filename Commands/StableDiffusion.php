@@ -34,7 +34,7 @@
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(
 			function (ResponseInterface $response) use ($message) {
-				$responseBody = (string) $response->getBody();
+				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
 				$base64 = $responseData['predictions'][0]['bytesBase64Encoded'];
 				$mimeType = $responseData['predictions'][0]['mimeType'];
