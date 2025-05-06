@@ -140,7 +140,7 @@ function StableDiffusion($message, $args) {
             }
 
             // Get the filesystem instance using the event loop
-            $filesystem = Filesystem::get(Loop::get());
+            $filesystem = new Filesystem();
             $file = $filesystem->file($filePath);
             echo "[DEBUG] Filesystem object created. Attempting to save file..." . PHP_EOL;
 
