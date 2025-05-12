@@ -28,7 +28,13 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
-				file_put_contents("vertex.log", print_r($responseData, true));				
+				$base64 = $responseData['candidates'][0]['content']['parts'][1]['inlineData']['data'];
+				$mimeType = $responseData['candidates'][0]['content']['parts'][1]['inlineData']['mimeType'];
+				$bin = base64_decode($base64);
+				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
+				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;
+                $filePath = "../Media/AI/" . $filename;
+				file_put_contents($filePath, $bin);				
 			},
 			function (Exception $e) {
 				echo "Error: ".$e->getMessage();
