@@ -20,9 +20,7 @@
 		];
 		$postDataEnc = json_encode($postData);
 		$headers = [
-			'Content-Type' => 'application/json', 
-			'Authorization' => 'Bearer ' . $gcloud,
-			'Content-Length' => strlen($postDataEnc)
+			'Content-Type' => 'application/json'
 		];
 		
 		$browser = new Browser();
