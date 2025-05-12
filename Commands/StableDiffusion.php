@@ -33,7 +33,6 @@
 				$bin = base64_decode($base64);
 				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
 				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;
-                $filePath = "../Media/AI/" . $filename;
 				$builder = MessageBuilder::new()->addFileFromContent($filename, $bin);
 				$message->channel->sendMessage($builder);
 			},
