@@ -39,7 +39,7 @@
 				foreach ($gamesList as $key => $value) {
 					$content = "";
 					foreach ($value as $session) {
-						$content .= "{$session['teams']} {$session['time']} (*{$session['venue']}*)\n";
+						$content .= " {$session['time']}: {$session['teams']} (*{$session['venue']}*)\n";
 					}
 					$embed->addFieldValues("**{$key}**", $content, false);
 				}
