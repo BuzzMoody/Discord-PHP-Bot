@@ -51,6 +51,7 @@ class Commands {
 			'/^uptime$/' => 'Uptime',
 			'/^reload$/' => 'Reload',
 			'/^betarl$/' => 'BetaReload',
+			'/^(afl|footy)$/' => 'Footy',
 		];
 		
 		$this->funcLoad();
