@@ -8,14 +8,12 @@
 	
 	function Footy($message) {
 		
-		if ($message->channel->id != 1352902587837583370) { return; }
+		//if ($message->channel->id != 1352902587837583370) { return; }
 		
 		global $discord;
 	
 		$client = new Browser();
 		$embed = $discord->factory(Embed::class);
-		
-		$embed->setTitle("AFL Round Summary");
 
 		$client->get('https://www.afl.com.au')->then(
 			function (ResponseInterface $response) use ($client, $message, $embed, $keys) {
@@ -23,12 +21,14 @@
 				$responseBody = $response->getBody();
 				preg_match("/data-round-number=\"(\d+)\"/", $responseBody, $round);
 				
+				$embed->setTitle("AFL Round {$round[1]} Summary")
+					->setFooter("Australian Football League", "https://www.afl.com.au/resources/v5.32.21/afl/apple-touch-icon.png");
+				
 				$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=73&pageSize=10&roundNumber='.$round[1])->then(
 					function (ResponseInterface $response) use ($message, $embed, $keys) {
 						
 						$responseBody = $response->getBody();
 						$responseData = json_decode($responseBody);
-						$day = "Thursday";
 						
 						foreach ($responseData->matches as $game) {
 							$time = new DateTime($game->utcStartTime);
