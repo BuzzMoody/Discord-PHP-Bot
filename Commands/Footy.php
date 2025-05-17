@@ -8,7 +8,7 @@
 	
 	function Footy($message) {
 		
-		global $keys;
+		global $discord, $keys;
 	
 		$client = new Browser();
 		$embed = $discord->factory(Embed::class);
