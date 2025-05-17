@@ -62,9 +62,11 @@
 					function (Exception $e) use ($message) {
 						$message->channel->sendMessage('Error: ' . $e->getMessage());
 					}
-				);				
+				);	
+				
 			}
 		);
+		
 	}
 	
 ?>
