@@ -23,7 +23,7 @@
 				
 				$embed->setTitle("AFL Round {$round[1]} Summary")
 					->setFooter("Australian Football League", "https://www.afl.com.au/resources/v5.32.21/afl/apple-touch-icon.png")
-					->setDescription("\n\n\n\n");
+					->setTimestamp();
 				
 				$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=73&pageSize=10&roundNumber='.$round[1])->then(
 					function (ResponseInterface $response) use ($message, $embed, $keys) {
@@ -47,10 +47,11 @@
 						
 						foreach ($gamesList as $key => $value) {
 							$content = "";
+							$inline = (count($value) > 1) ? false : true;
 							foreach ($value as $session) {
 								$content .= " {$session['time']}: {$session['teams']} (*{$session['venue']}*)\n";
 							}
-							$embed->addFieldValues("**{$key}**", $content, false);
+							$embed->addFieldValues("**{$key}**", $content, $inline);
 						}
 						
 						$embed->setColor($keys['colour']);
