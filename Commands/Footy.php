@@ -46,7 +46,7 @@
 						
 						foreach ($gamesList as $key => $value) {
 							$content = "";
-							$inline = (count($value) > 1) ? false : true;
+							$inline = false; //$inline = (count($value) > 1) ? false : true;
 							foreach ($value as $session) {
 								$content .= " {$session['time']}: {$session['teams']} (*{$session['venue']}*)\n";
 							}
