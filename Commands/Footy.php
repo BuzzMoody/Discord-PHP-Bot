@@ -22,7 +22,8 @@
 				preg_match("/data-round-number=\"(\d+)\"/", $responseBody, $round);
 				
 				$embed->setTitle("AFL Round {$round[1]} Summary")
-					->setFooter("Australian Football League", "https://www.afl.com.au/resources/v5.32.21/afl/apple-touch-icon.png");
+					->setFooter("Australian Football League", "https://www.afl.com.au/resources/v5.32.21/afl/apple-touch-icon.png")
+					->setDescription("\n\n\n\n");
 				
 				$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=73&pageSize=10&roundNumber='.$round[1])->then(
 					function (ResponseInterface $response) use ($message, $embed, $keys) {
