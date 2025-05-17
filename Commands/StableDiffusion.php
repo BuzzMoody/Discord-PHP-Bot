@@ -36,8 +36,8 @@
 				$builder = MessageBuilder::new()->addFileFromContent($filename, $bin);
 				$message->channel->sendMessage($builder);
 			},
-			function (Exception $e) {
-				echo "Error: ".$e->getMessage();
+			function (Exception $e) use ($message) {
+				$message->channel->sendMessage("Error: ".$e->getMessage());
 			}
 		);
 		
