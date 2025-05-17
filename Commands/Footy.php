@@ -16,7 +16,7 @@
 		$embed->setTitle("AFL Round Summary");
 
 		$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=73&pageSize=10&roundNumber=10')->then(
-			function (ResponseInterface $response) {
+			function (ResponseInterface $response) use ($message, $embed) {
 				
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
@@ -52,7 +52,7 @@
 				$message->channel->sendMessage($builder);
 				
 			},
-			function (Exception $e) {
+			function (Exception $e) use ($message) {
 				$message->channel->sendMessage('Error: ' . $e->getMessage());
 			}
 		);
