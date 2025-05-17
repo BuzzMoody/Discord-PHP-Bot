@@ -39,9 +39,9 @@
 				foreach ($gamesList as $key => $value) {
 					$content = "";
 					foreach ($value as $session) {
-						$content .= "**{$session['teams']}** {$session['time']} (*{$session['venue']}*)\n\n";
+						$content .= "{$session['teams']} {$session['time']} (*{$session['venue']}*)\n\n";
 					}
-					$embed->addFieldValues($key, $content, false);
+					$embed->addFieldValues("**{$key}**", $content, false);
 				}
 				
 				$embed->setColor($keys['colour']);
