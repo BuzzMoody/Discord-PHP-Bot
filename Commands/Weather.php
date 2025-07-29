@@ -65,8 +65,8 @@
 			
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
-			->addFile("../Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png")
-			->addFile("../Media/Maps/BOM.png", "BOM.png");
+			->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png")
+			->addFile("/Media/Maps/BOM.png", "BOM.png");
 		
 		return $message->channel->sendMessage($builder);
 		

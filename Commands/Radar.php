@@ -18,8 +18,8 @@
 			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
-			->addFile("../Media/Maps/BOM.png", "BOM.png")
-			->addFile("../Media/Radar/animated.gif", "radar-{$time}.gif");		
+			->addFile("/Media/Maps/BOM.png", "BOM.png")
+			->addFile("/Media/Radar/animated.gif", "radar-{$time}.gif");		
 		$message->channel->sendMessage($builder);
 		
 	}
