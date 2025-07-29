@@ -34,7 +34,7 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
-				print_r($responseData);
+				file_put_contents('/Media/filename.txt', print_r($responseData, true));
 				$base64 = $responseData->candidates[0]->content->parts[1]->inlineData->data;
 				$mimeType = $responseData->candidates[0]->content->parts[1]->inlineData->mimeType;
 				$bin = base64_decode($base64);
