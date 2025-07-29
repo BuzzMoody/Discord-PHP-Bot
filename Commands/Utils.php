@@ -119,7 +119,7 @@
 				if (count($response->matches) < 2) { return; }
 				$match = $response->matches[0];
 				
-				if (checkNew($ids[$x][1], $match->match_id, "Deadlock")) {
+				if (checkNew($ids[$x][1], $match->match_id, "deadlock")) {
 					
 					$time = new DateTime("now");
 					$time->setTimestamp($match->start_time);
@@ -140,7 +140,7 @@
 					$details[$x]['denies'] = $match->denies;
 					$details[$x]['result'] = ($match->match_result == $match->player_team) ? "Won" : "Lost";
 					
-					updateMatch($details[$x]['user'], $match->match_id, "Deadlock");
+					updateMatch($details[$x]['user'], $match->match_id, "deadlock");
 					
 				}
 				
@@ -231,7 +231,7 @@
 				$details[$i]['user'] = $ids[$i][1];
 				$details[$i]['matchid'] = '';
 
-				if (checkNew($details[$i]['user'], $response[0]->match_id, "Dota")) {
+				if (checkNew($details[$i]['user'], $response[0]->match_id, "dota2")) {
 
 					$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 					$details[$i]['matchid'] = $response[0]->match_id;
@@ -257,7 +257,7 @@
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
 						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
 						$games++;
-						updateMatch($details[$i]['user'], $response[0]->match_id, "Dota");
+						updateMatch($details[$i]['user'], $response[0]->match_id, "dota2");
 						
 					}
 					
@@ -299,20 +299,27 @@
 	
 	}
 	
-	function checkNew($id, $matchID, $game = "Dota") {
+	function checkNew($id, $matchID, $game = "dota2") {
 
 		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
-		$result = ($game == "Dota") ? $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'") : $mysqli->query("SELECT * FROM deadlock WHERE id='{$id}' AND matchid='{$matchID}'");
+		$checkNewDB = $mysqli->query("SELECT * FROM {$game} WHERE id='{$id}' AND matchid='1'");
+		if ($checkNewDB->num_rows != 0) {
+			updateMatch($id, $matchID, $game);
+			return false;
+		}
+		else {
+			$result = $mysqli->query("SELECT * FROM {$game} WHERE id='{$id}' AND matchid='{$matchID}'");
+			if ($result->num_rows == 0) { return true; }
+			else { return false; }
+		}
 		$mysqli->close();
-		if ($result->num_rows == 0) { return true; }
-		else { return false; }
 		
 	}
 
-	function updateMatch($id, $matchID, $game = "Dota") {
+	function updateMatch($id, $matchID, $game = "dota2") {
 		
 		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
-		$result = ($game == "Dota") ? $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'") : $mysqli->query("UPDATE deadlock SET matchid='{$matchID}' WHERE id='{$id}'");
+		$result = $mysqli->query("UPDATE {$game} SET matchid='{$matchID}' WHERE id='{$id}'");
 		$mysqli->close();
 		
 	}
