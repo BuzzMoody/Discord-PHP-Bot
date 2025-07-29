@@ -51,7 +51,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			if ($message->channel->id == 274828566909157377 && getenv('BETA') === true) {
+			if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
 				$commands->funcExec($message);
 			}
 			else if (getenv('BETA') === false) {
