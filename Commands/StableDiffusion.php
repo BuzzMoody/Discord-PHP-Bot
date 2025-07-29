@@ -8,17 +8,25 @@
 	function StableDiffusion($message, $args) { 
 	
 		$prompt = $args;
-		$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=".getenv('VERTEX_API_KEY');	
+		$url = "https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-preview-06-06:predict";
 		
 		$postData = [
-			"contents" => [["parts" => [["text" => $prompt]]]],
-			"generationConfig" => [
-				"responseModalities" => ["TEXT", "IMAGE"]
+			'instances' => [
+				[
+					'prompt' => $args
+				]
+			],
+			'parameters' => [
+				'sampleCount' => 4,
+				'numberOfImages' => 1,
+				'aspectRatio' => '16:9',
+				'personGeneration' => 'allow_adult'
 			]
 		];
 		$postDataEnc = json_encode($postData);
 		$headers = [
-			'Content-Type' => 'application/json'
+			'Content-Type' => 'application/json',
+			'x-goog-api-key' => getenv('VERTEX_API_KEY'),
 		];
 		
 		$browser = new Browser();
@@ -26,6 +34,7 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
+				print_r($responseData);
 				$base64 = $responseData->candidates[0]->content->parts[1]->inlineData->data;
 				$mimeType = $responseData->candidates[0]->content->parts[1]->inlineData->mimeType;
 				$bin = base64_decode($base64);
