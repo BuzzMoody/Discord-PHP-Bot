@@ -2,11 +2,7 @@
 
 	function BetaReload($message) { 
 	
-		global $keys;
-	
-		if (isAdmin($message->author->id) && getenv('BETA') === true) {
-			exec("git stash");
-			exec("git pull origin discord");
+		if (isAdmin($message->author->id) && getenv('BETA') === 'true') {
 			die();
 		}
 		
