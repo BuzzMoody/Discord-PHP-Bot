@@ -69,7 +69,7 @@
 		$output = (strlen($string) > 1995) ? substr($string,0,1995).'…' : $string;	
 		
 		$embed = $discord->factory(Embed::class);
-		$embed->setColor($keys['colour'])
+		$embed->setColor(getenv('COLOUR'))
 			->setDescription($output);
 		
 		$message->channel->sendEmbed($embed);

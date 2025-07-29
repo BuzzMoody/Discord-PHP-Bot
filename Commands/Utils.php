@@ -58,8 +58,8 @@
 	
 	function getMapImg($place) {
 		
-		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { 
-			file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key=".getenv('MAPS_API_KEY')."&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); 
+		if (!file_exists("/Media/Maps/{$place['filename']}.png")) { 
+			file_put_contents("/Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key=".getenv('MAPS_API_KEY')."&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); 
 		}
 		
 	}
@@ -91,12 +91,12 @@
 
 	function checkDeadlock() {
 
+		if (getenv('BETA') === 'true') { return; }
+
 		global $discord;
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
 		$channel = $guild->channels->get('id', '232691831090053120');
-		
-		if (getenv('BETA') === 'true') { $channel = $guild->channels->get('id', '274828566909157377'); }
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
@@ -201,6 +201,8 @@
 	
 	function checkDota() {
 		
+		if (getenv('BETA') === 'true') { return; }
+		
 		global $discord;
 		
 		$date = new DateTime('now');
@@ -288,8 +290,6 @@
 				
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', '232691831090053120');
-				
-				if (getenv('BETA') === 'true') { $channel = $guild->channels->get('id', '274828566909157377'); }
 
 				$channel->sendEmbed($embed);
 			

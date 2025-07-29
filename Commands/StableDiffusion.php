@@ -34,7 +34,7 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
-				if (!$responseData->predictions[0]->bytesBase64Encoded) { return $message->channel->sendMessage("No image could be generated"); }
+				if (!@$responseData->predictions[0]->bytesBase64Encoded) { return $message->channel->sendMessage("No image could be generated"); }
 				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
 				$mimeType = $responseData->predictions[0]->mimeType;
 				$bin = base64_decode($base64);
