@@ -35,6 +35,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
+	checkDatabase();
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
@@ -54,7 +55,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 			if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
 				$commands->funcExec($message);
 			}
-			else if (getenv('BETA') === false) {
+			else if (getenv('BETA') !== 'true') {
 				$commands->funcExec($message);
 			}
 		}
@@ -84,6 +85,15 @@ function getMemberCount($discord) {
 	}
 	return $count;
 	
+}
+
+function checkDatabase() 
+
+	$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
+	$result = $mysqli->query("SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'discord' AND table_name IN ('reminders', 'dota2', 'deadlock')");
+	echo "Number of tables: ".count($results)."\n";
+	if (count($result) != 3) { shell_exec("mariadb -h\"".getenv('DB_HOST')."\" -u\"".getenv('DB_USER')."\" -p\"".getenv('DB_KEY')."\" -e "SELECT 1;" \"".getenv('DB_NAME')."\" > /dev/null 2>&1"); }
+
 }
 
 ?>
