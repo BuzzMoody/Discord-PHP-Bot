@@ -336,9 +336,7 @@
 	function checkReminders() {
 		
 		global $discord;
-		
-		if (getenv('BETA') === 'true') { return; }
-		
+
 		$time = time();
 		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
