@@ -96,7 +96,7 @@
 		$guild = $discord->guilds->get('id', '232691831090053120');
 		$channel = $guild->channels->get('id', '232691831090053120');
 		
-		if (getenv('BETA') === true) { $channel = $guild->channels->get('id', '274828566909157377'); }
+		if (getenv('BETA') === 'true') { $channel = $guild->channels->get('id', '274828566909157377'); }
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
@@ -289,7 +289,7 @@
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', '232691831090053120');
 				
-				if (getenv('BETA') === true) { $channel = $guild->channels->get('id', '274828566909157377'); }
+				if (getenv('BETA') === 'true') { $channel = $guild->channels->get('id', '274828566909157377'); }
 
 				$channel->sendEmbed($embed);
 			
@@ -303,7 +303,7 @@
 
 		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$checkNewDB = $mysqli->query("SELECT * FROM {$game} WHERE id='{$id}' AND matchid='1'");
-		if ($checkNewDB->num_rows != 0) {
+		if ($checkNewDB->num_rows > 0) {
 			updateMatch($id, $matchID, $game);
 			return false;
 		}
