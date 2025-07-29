@@ -17,7 +17,7 @@
 				]
 			],
 			'parameters' => [
-				'sampleCount' => 4,
+				'sampleCount' => 1,
 				'numberOfImages' => 1,
 				'aspectRatio' => '16:9',
 				'personGeneration' => 'allow_adult'
@@ -35,8 +35,9 @@
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
 				file_put_contents('/Media/filename.txt', print_r($responseData, true));
-				$base64 = $responseData->candidates[0]->content->parts[1]->inlineData->data;
-				$mimeType = $responseData->candidates[0]->content->parts[1]->inlineData->mimeType;
+				if (!$responseData->predictions[0]->bytesBase64Encoded) { return $message->channel->sendMessage("No image could be generated"); }
+				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
+				$mimeType = $responseData->predictions[0]->mimeType;
 				$bin = base64_decode($base64);
 				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
 				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;
