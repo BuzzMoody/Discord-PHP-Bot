@@ -11,7 +11,7 @@
 		$diff -= $hours * 3600;
 		$minutes = floor($diff / 60) % 60;
 		$diff -= $minutes * 60;
-		$seconds = floor($diff % 60);
+		$seconds = (int) floor($diff % 60);
 		$message->reply("{$days} days, {$hours} hrs, {$minutes} mins, {$seconds} secs");
 		
 	}
