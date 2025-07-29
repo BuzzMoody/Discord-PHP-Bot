@@ -6,7 +6,7 @@
 
 	function Vertex($message, $args) {
 		
-		global $discord, $keys;
+		global $discord;
 		
 		if (empty($args)) { return; }
 		
@@ -42,7 +42,7 @@
 
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$keys['gemini']}",
+			CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=".getenv('VERTEX_API_KEY'),
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,

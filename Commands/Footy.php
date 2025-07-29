@@ -10,7 +10,7 @@
 		
 		if ($message->channel->id != 1352902587837583370) { return; }
 		
-		global $discord, $keys;
+		global $discord;
 	
 		$client = new Browser();
 		$embed = $discord->factory(Embed::class);
@@ -52,7 +52,7 @@
 							$embed->addFieldValues("**{$key}**", $content, false);
 						}
 						
-						$embed->setColor($keys['colour']);
+						$embed->setColor(getenv('COLOUR'));
 						$builder = MessageBuilder::new()
 							->addEmbed($embed);
 							

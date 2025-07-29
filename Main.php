@@ -6,7 +6,6 @@ error_reporting(E_ALL);
 date_default_timezone_set('Australia/Melbourne');
 
 include __DIR__.'/vendor/autoload.php';
-include 'config.inc';
 include 'CommandHandler.php';
 
 use Discord\Discord;
@@ -18,16 +17,16 @@ use Discord\Parts\Embed;
 use Discord\Parts\Channel\Message;
 
 $discord = new Discord([
-	'token' => $keys['discord'],
+	'token' => getenv('DISCORD_API_KEY'),
 	'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
 	'logger' => new \Monolog\Logger('New logger'),
 	'loadAllMembers' => true,
 ]);
 
 $uptime = (int)(microtime(true) * 1000);
-$commands = new Commands($keys, $uptime, $discord);
+$commands = new Commands($uptime, $discord);
 
-$discord->on('ready', function (Discord $discord) use ($commands, $keys) {
+$discord->on('ready', function (Discord $discord) use ($commands) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
@@ -47,15 +46,15 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 		checkDeadlock();
 	});
 
-	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {
+	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			if ($message->channel->id == 274828566909157377 && $keys['beta'] === true) {
+			if ($message->channel->id == 274828566909157377 && getenv('BETA') === true) {
 				$commands->funcExec($message);
 			}
-			else if ($keys['beta'] === false) {
+			else if (getenv('BETA') === false) {
 				$commands->funcExec($message);
 			}
 		}

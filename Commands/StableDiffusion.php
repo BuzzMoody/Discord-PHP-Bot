@@ -7,10 +7,8 @@
 
 	function StableDiffusion($message, $args) { 
 	
-		global $keys;
-		
 		$prompt = $args;
-		$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=".$keys['gemini'];	
+		$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=".getenv('VERTEX_API_KEY');	
 		
 		$postData = [
 			"contents" => [["parts" => [["text" => $prompt]]]],

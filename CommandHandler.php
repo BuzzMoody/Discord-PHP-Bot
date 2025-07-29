@@ -2,7 +2,6 @@
 
 class Commands {
 	
-	public $keys;
 	public $uptime;
 	public $patterns;
 	public $discord;
@@ -25,9 +24,8 @@ class Commands {
 		0 => "Invalid", 1 => "Unranked", 2 => "Private Lobby", 3 => "Co-Op Bots", 4 => "Ranked", 5 => "Server Test", 6 => "Tutorial"
 	];
 	
-	public function __construct($keys, $uptime, $discord) {
-		
-		$this->keys = $keys;
+	public function __construct($uptime, $discord) {
+
 		$this->uptime = $uptime;
 		$this->discord = $discord;
 		$this->patterns = [

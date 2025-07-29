@@ -7,12 +7,10 @@
 	use Psr\Http\Message\ResponseInterface;
 
 	function SearchFunc($type, $message, $args) {
-		
-		global $keys;
 	
 		if (empty($args)) { return $message->reply("Maybe give me something to search for??"); }
 		
-		$api_url = ($type == 'google') ? "https://customsearch.googleapis.com/customsearch/v1?key={$keys['google']}&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args) : "https://customsearch.googleapis.com/customsearch/v1?key={$keys['google']}&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com%20-site:tiktok.com%20-site:instagram.com";
+		$api_url = ($type == 'google') ? "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args) : "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com%20-site:tiktok.com%20-site:instagram.com";
 		
 		try {
 			$search = file_get_contents($api_url);
@@ -60,10 +58,8 @@
 	
 	function getMapImg($place) {
 		
-		global $keys;
-		
 		if (!file_exists("../Media/Maps/{$place['filename']}.png")) { 
-			file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key={$keys['maps']}&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); 
+			file_put_contents("../Media/Maps/{$place['filename']}.png", file_get_contents("https://maps.googleapis.com/maps/api/staticmap?key=".getenv('MAPS_API_KEY')."&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']))); 
 		}
 		
 	}
@@ -95,9 +91,9 @@
 
 	function checkDeadlock() {
 
-		global $discord, $keys;
+		global $discord;
 		
-		if ($keys['beta'] === true) { return; }
+		if (getenv('BETA') === true) { return; }
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
 		$channel = $guild->channels->get('id', '232691831090053120');
@@ -116,7 +112,7 @@
 			
 			for ($x = 0; $x < count($ids); $x++) {
 				
-				$url = "https://data.deadlock-api.com/v2/players/{$ids[$x][1]}/match-history?api_key={$keys['deadlock']}";
+				$url = "https://data.deadlock-api.com/v2/players/{$ids[$x][1]}/match-history?api_key=".getenv('DEADLOCK_API_KEY');
 				$content = @file_get_contents($url);
 				if ($content === FALSE) { return; }
 				$response = json_decode($content);
@@ -155,7 +151,7 @@
 				$embed = $discord->factory(Embed::class);
 				$embed->setTitle("Deadlock Match Results")
 					->setImage("https://buzzmoody.au/deadlock-banner.jpg")
-					->setColor($keys['colour'])
+					->setColor(getenv('COLOUR'))
 					->setTimestamp()
 					->setFooter("Powered by Deadlock-API");
 					//->setURL("https://www.opendota.com/matches/".$matchid)
@@ -183,7 +179,7 @@
 						$embed = $discord->factory(Embed::class);
 						$embed->setTitle("Deadlock Match Results")
 							->setImage("https://buzzmoody.au/deadlock-banner.jpg")
-							->setColor($keys['colour'])
+							->setColor(getenv('COLOUR'))
 							->setTimestamp()
 							->setFooter("Powered by Deadlock-API");
 							//->setURL("https://www.opendota.com/matches/".$matchid)
@@ -205,9 +201,9 @@
 	
 	function checkDota() {
 		
-		global $discord, $keys;
+		global $discord;
 		
-		if ($keys['beta'] === true) { return; }
+		if (getenv('BETA') === true) { return; }
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
@@ -275,7 +271,7 @@
 				$embed->setTitle("Dota 2 Match Information")
 					->setURL("https://www.opendota.com/matches/".$matchid)
 					->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
-					->setColor($keys['colour'])
+					->setColor(getenv('COLOUR'))
 					->setTimestamp()
 					->setFooter("Powered by OpenDota");
 				$desc = "\n\n";
@@ -304,10 +300,8 @@
 	}
 	
 	function checkNew($id, $matchID, $game = "Dota") {
-		
-		global $keys;
 
-		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
+		$mysqli = mysqli_connect('localhost', getenv('MARIADB_USER'), getenv('MARIADB_KEY'), 'discord');
 		$result = ($game == "Dota") ? $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'") : $mysqli->query("SELECT * FROM deadlock WHERE id='{$id}' AND matchid='{$matchID}'");
 		$mysqli->close();
 		if ($result->num_rows == 0) { return true; }
@@ -317,9 +311,7 @@
 
 	function updateMatch($id, $matchID, $game = "Dota") {
 		
-		global $keys;
-		
-		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
+		$mysqli = mysqli_connect('localhost', getenv('MARIADB_USER'), getenv('MARIADB_KEY'), 'discord');
 		$result = ($game == "Dota") ? $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'") : $mysqli->query("UPDATE deadlock SET matchid='{$matchID}' WHERE id='{$id}'");
 		$mysqli->close();
 		
@@ -343,12 +335,12 @@
 	
 	function checkReminders() {
 		
-		global $discord, $keys;
+		global $discord;
 		
-		if ($keys['beta'] === true) { return; }
+		if (getenv('BETA') === true) { return; }
 		
 		$time = time();
-		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
+		$mysqli = mysqli_connect('localhost', getenv('MARIADB_USER'), getenv('MARIADB_KEY'), 'discord');
 		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
 		
 		if ($result->num_rows > 0) {

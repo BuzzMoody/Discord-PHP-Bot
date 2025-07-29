@@ -4,9 +4,9 @@
 	
 		global $keys;
 	
-		if (isAdmin($message->author->id) && $keys['beta']) {
+		if (isAdmin($message->author->id) && getenv('BETA') === true) {
 			exec("git stash");
-			exec("git pull origin beta");
+			exec("git pull origin discord");
 			die();
 		}
 		
