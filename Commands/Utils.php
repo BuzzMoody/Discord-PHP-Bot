@@ -93,10 +93,10 @@
 
 		global $discord;
 		
-		if (getenv('BETA') === true) { return; }
-		
 		$guild = $discord->guilds->get('id', '232691831090053120');
 		$channel = $guild->channels->get('id', '232691831090053120');
+		
+		if (getenv('BETA') === true) { $channel = $guild->channels->get('id', '274828566909157377'); }
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
@@ -203,8 +203,6 @@
 		
 		global $discord;
 		
-		if (getenv('BETA') === 'true') { return; }
-		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
 
@@ -290,6 +288,8 @@
 				
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', '232691831090053120');
+				
+				if (getenv('BETA') === true) { $channel = $guild->channels->get('id', '274828566909157377'); }
 
 				$channel->sendEmbed($embed);
 			
