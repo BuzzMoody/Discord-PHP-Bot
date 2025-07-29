@@ -1,8 +1,6 @@
 <?php
 	
 	function Reminder($message, $args) {
-
-		global $keys;
 		
 		if (empty($args)) { return $message->reply("no args"); }
 		
@@ -14,7 +12,7 @@
 		
 		if ($time > (time() + 2592000*12)) { return $message->reply("Too far into the future lol."); }
 		
-		$mysqli = mysqli_connect('localhost', 'buzz', $keys['mysql'], 'discord');
+		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$result = $mysqli->query("SELECT * FROM reminders WHERE userid = '{$message->author->id}'");
 		
 		if ($result->num_rows > 4) {

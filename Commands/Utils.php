@@ -203,7 +203,7 @@
 		
 		global $discord;
 		
-		if (getenv('BETA') === true) { return; }
+		if (getenv('BETA') === 'true') { return; }
 		
 		$date = new DateTime('now');
 		$current_hour = (int)$date->format('G');
@@ -301,7 +301,7 @@
 	
 	function checkNew($id, $matchID, $game = "Dota") {
 
-		$mysqli = mysqli_connect('localhost', getenv('MARIADB_USER'), getenv('MARIADB_KEY'), 'discord');
+		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$result = ($game == "Dota") ? $mysqli->query("SELECT * FROM dota2 WHERE id='{$id}' AND matchid='{$matchID}'") : $mysqli->query("SELECT * FROM deadlock WHERE id='{$id}' AND matchid='{$matchID}'");
 		$mysqli->close();
 		if ($result->num_rows == 0) { return true; }
@@ -311,7 +311,7 @@
 
 	function updateMatch($id, $matchID, $game = "Dota") {
 		
-		$mysqli = mysqli_connect('localhost', getenv('MARIADB_USER'), getenv('MARIADB_KEY'), 'discord');
+		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$result = ($game == "Dota") ? $mysqli->query("UPDATE dota2 SET matchid='{$matchID}' WHERE id='{$id}'") : $mysqli->query("UPDATE deadlock SET matchid='{$matchID}' WHERE id='{$id}'");
 		$mysqli->close();
 		
@@ -337,10 +337,10 @@
 		
 		global $discord;
 		
-		if (getenv('BETA') === true) { return; }
+		if (getenv('BETA') === 'true') { return; }
 		
 		$time = time();
-		$mysqli = mysqli_connect('localhost', getenv('MARIADB_USER'), getenv('MARIADB_KEY'), 'discord');
+		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
 		
 		if ($result->num_rows > 0) {
