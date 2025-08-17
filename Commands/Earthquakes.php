@@ -54,7 +54,7 @@
 						$embed = $discord->factory(Embed::class);
 						$embed->setTitle("⚠️ Earthquake Alert ⚠️")
 							->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **{$quakes->properties->depth} km**\n\nLocation: **{$quakes->properties->description}**")
-							->setImage("map-of-{$quakes->properties->event_id}.png")
+							->setImage("attachment://map-of-{$quakes->properties->event_id}.png")
 							->setColor(getenv('COLOUR'))
 							->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
 							->setFooter("Geoscience Australia");
