@@ -49,7 +49,7 @@
 					
 					foreach ($responseData->features as $quakes) {
 						
-						getMapImg($quakes->geometry->coordinates[1].",."$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
+						getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
 						
 						$embed = $discord->factory(Embed::class);
 						$embed->setTitle("⚠️ Earthquake Alert ⚠️")
