@@ -49,9 +49,12 @@
 					
 					foreach ($responseData->features as $quakes) {
 						
+						getMapImg($quakes->geometry->coordinates[1].",."$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
+						
 						$embed = $discord->factory(Embed::class);
 						$embed->setTitle("⚠️ Earthquake Alert ⚠️")
-							->setDescription("Magnitude **{$quakes->properties->preferred_magnitude}** earthquake detected at a depth of **{$quakes->properties->depth} km**\n\nLocation: **{$quakes->properties->description}**")
+							->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **{$quakes->properties->depth} km**\n\nLocation: **{$quakes->properties->description}**")
+							->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png")
 							->setColor(getenv('COLOUR'))
 							->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
 							->setFooter("Geoscience Australia");
