@@ -13,7 +13,7 @@
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;
-		$priorTime->sub(new DateInterval('P2D'));
+		$priorTime->sub(new DateInterval('P5D'));
 		$currentFormatted = $currentTime->format('Y-m-d\TH:i:s\Z');
 		$priorFormatted = $priorTime->format('Y-m-d\TH:i:s\Z');
 		
@@ -43,6 +43,8 @@
 		$result = curl_exec($ch);
 		
 		$responseData = json_decode($result);
+		
+		print_r($responseData);
 				
 		if ($responseData->totalFeatures >= 1) {
 			
