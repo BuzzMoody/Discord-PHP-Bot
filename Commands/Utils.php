@@ -5,7 +5,7 @@
 	use Discord\Builders\MessageBuilder;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
-	use React\Filesystem\Filesystem;
+	use React\Filesystem\Factory;
 	use React\Filesystem\FilesystemInterface;
 	use React\Promise\PromiseInterface;
 	use React\EventLoop\Loop;
