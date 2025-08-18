@@ -44,6 +44,8 @@
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		$result = curl_exec($ch);
 		
+		echo $result;
+		
 		$responseData = json_decode($result);
 		
 		print_r($responseData);
