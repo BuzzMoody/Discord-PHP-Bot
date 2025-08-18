@@ -78,7 +78,7 @@
 
 		$loop = Loop::get();
 		$browser = new Browser($loop);
-		$filesystem = Filesystem::create($loop);
+		$filesystem = \React\Filesystem\Factory::create();
 		
 		// Determine the filename and URL based on the arguments
 		if ($eq) {
