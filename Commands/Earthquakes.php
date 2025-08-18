@@ -6,14 +6,16 @@
 	
 	function Earthquakes() {
 		
+		if (getenv('BETA') === 'true') { return; }
+		
 		global $discord;
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '274828566909157377');
+		$channel = $guild->channels->get('id', '232691831090053120');
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;
-		$priorTime->sub(new DateInterval('P5D'));
+		$priorTime->sub(new DateInterval('PT2M'));
 		$currentFormatted = $currentTime->format('Y-m-d\TH:i:s\Z');
 		$priorFormatted = $priorTime->format('Y-m-d\TH:i:s\Z');
 		
@@ -62,8 +64,6 @@
 					->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
 				
 				$channel->sendMessage($builder);
-				unset($embed);
-				unset($builder);
 				
 			}
 			
