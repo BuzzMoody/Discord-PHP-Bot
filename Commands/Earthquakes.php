@@ -22,20 +22,20 @@
 		echo $url."\n";
 		
 		$headers = [
-			'accept' => '*/*',
-			'accept-language' => 'en-AU,en;q=0.9',
-			'dnt' => '1',
-			'origin' => 'https://earthquakes.ga.gov.au',
-			'priority' => 'u=1, i',
-			'referer' => 'https://earthquakes.ga.gov.au/',
-			'sec-ch-ua' => '"Not;A=Brand";v="99", "Brave";v="139", "Chromium";v="139"',
-			'sec-ch-ua-mobile' => '?0',
-			'sec-ch-ua-platform' => '"Windows"',
-			'sec-fetch-dest' => 'empty',
-			'sec-fetch-mode' => 'cors',
-			'sec-fetch-site' => 'same-site',
-			'sec-gpc' => '1',
-			'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
+			'accept: */*',
+			'accept-language: en-AU,en;q=0.9',
+			'dnt: 1',
+			'origin: https://earthquakes.ga.gov.au',
+			'priority: u=1, i',
+			'referer: https://earthquakes.ga.gov.au/',
+			'sec-ch-ua: "Not;A=Brand";v="99", "Brave";v="139", "Chromium";v="139"',
+			'sec-ch-ua-mobile: ?0',
+			'sec-ch-ua-platform: "Windows"',
+			'sec-fetch-dest: empty',
+			'sec-fetch-mode: cors',
+			'sec-fetch-site: same-site',
+			'sec-gpc: 1',
+			'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
 		];
 		
 		$ch = curl_init();
