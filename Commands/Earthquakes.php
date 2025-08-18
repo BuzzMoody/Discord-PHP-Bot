@@ -19,8 +19,6 @@
 		
 		$url = "https://ui.earthquakes.ga.gov.au/geoserver/earthquakes/wfs?service=WFS&request=getfeature&typeNames=earthquakes:earthquakes&outputFormat=application/json&CQL_FILTER=display_flag=%27Y%27%20AND%20origin_time%20BETWEEN%20{$priorFormatted}%20AND%20{$currentFormatted}%20AND%20located_in_australia=%27Y%27&sortBy=origin_time%20D";
 		
-		echo $url."\n";
-		
 		$headers = [
 			'accept: */*',
 			'accept-language: en-AU,en;q=0.9',
@@ -43,13 +41,8 @@
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		$result = curl_exec($ch);
-		
-		echo $result;
-		
 		$responseData = json_decode($result);
-		
-		print_r($responseData);
-				
+
 		if ($responseData->totalFeatures >= 1) {
 			
 			foreach ($responseData->features as $quakes) {
@@ -68,7 +61,7 @@
 					->addEmbed($embed)
 					->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
 				
-				$channel->sendEmbed($embed);
+				$channel->sendMessage($builder);
 				unset($embed);
 				unset($builder);
 				
