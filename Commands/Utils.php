@@ -74,40 +74,6 @@
 		}
 	}
 	
-	function getMapImgNonBlocking($place, $eq = false, $name = ""): PromiseInterface {
-
-		global $discord;
-		$filesystem = \React\Filesystem\Filesystem::create($discord->getLoop());
-		$browser = new Browser($loop);
-		
-		// Determine the filename and URL based on the arguments
-		if ($eq) {
-			$filename = "/Media/Maps/{$name}.png";
-			$url = "https://maps.googleapis.com/maps/api/staticmap?key=".getenv('MAPS_API_KEY')."&center=-27.918284,133.995323&zoom=4&size=600x450&scale=1&markers=size:mid|color:red|{$place}";
-		} else {
-			$filename = "/Media/Maps/{$place['filename']}.png";
-			$url = "https://maps.googleapis.com/maps/api/staticmap?key=".getenv('MAPS_API_KEY')."&center=".str_replace(' ', '%20', $place['name']).",%20".str_replace(' ', '%20', $place['state'])."&zoom=9&size=640x300&scale=2&markers=size:mid%7Ccolor:red%7C".str_replace(' ', '%20', $place['name']);
-		}
-
-		// Check if the file exists asynchronously
-		return $filesystem->getContents($filename)->then(
-			// File exists, resolve immediately without doing anything
-			function () {
-				return "File already exists.";
-			},
-			// File does not exist, so proceed with downloading and saving
-			function (\Exception $e) use ($browser, $url, $filename, $filesystem) {
-				return $browser->get($url)->then(
-					// The HTTP GET request was successful
-					function (\Psr\Http\Message\ResponseInterface $response) use ($filesystem, $filename) {
-						$body = (string)$response->getBody();
-						return $filesystem->putContents($filename, $body);
-					}
-				);
-			}
-		);
-	}
-	
 	function toAusTime($time, $format = 'jS F: G:i', $countdown = false, $offset = 'UTC', $relative = false) {
 		
 		if ($relative) {

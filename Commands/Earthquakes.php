@@ -3,8 +3,6 @@
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
-	use React\Http\Browser;
-	use Psr\Http\Message\ResponseInterface;
 	
 	function Earthquakes() {
 		
@@ -38,49 +36,39 @@
 			'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36',
 		];
 		
-		$client = new Browser();
-		$client->get($url, $headers)->then(
-			function (ResponseInterface $response) use ($channel, $discord) {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		$result = curl_exec($ch);
+		
+		$responseData = json_decode($result);
 				
-				$responseBody = $response->getBody();
-				$responseData = json_decode($responseBody);
+		if ($responseData->totalFeatures >= 1) {
+			
+			foreach ($responseData->features as $quakes) {
 				
-				if ($responseData->totalFeatures >= 1) {
+				getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
+				
+				$embed = $discord->factory(Embed::class);
+				$embed->setTitle("⚠️ Earthquake Alert ⚠️")
+					->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **{$quakes->properties->depth} km**\n\nLocation: **{$quakes->properties->description}**")
+					->setImage("attachment://map-of-{$quakes->properties->event_id}.png")
+					->setColor(getenv('COLOUR'))
+					->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
+					->setFooter("Geoscience Australia");
 					
-					foreach ($responseData->features as $quakes) {
-						
-						getMapImgNonBlocking($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakes->properties->event_id)->then(
-							function ($result) use ($channel, $discord) {
-								$embed = $discord->factory(Embed::class);
-								$embed->setTitle("⚠️ Earthquake Alert ⚠️")
-									->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **{$quakes->properties->depth} km**\n\nLocation: **{$quakes->properties->description}**")
-									->setImage("attachment://map-of-{$quakes->properties->event_id}.png")
-									->setColor(getenv('COLOUR'))
-									->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
-									->setFooter("Geoscience Australia");
-									
-								$builder = MessageBuilder::new()
-									->addEmbed($embed)
-									->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
-								
-								$channel->sendEmbed($embed);
-								unset($embed);
-								unset($builder);
-							},
-							function (\Exception $e) {
-								echo "Error: " . $e->getMessage() . "\n";
-							}
-						);
-						
-					}
-					
-				}
+				$builder = MessageBuilder::new()
+					->addEmbed($embed)
+					->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
 				
-			},
-			function (Exception $e) use ($channel) {
-				$channel->sendMessage('Error: ' . $e->getMessage());
+				$channel->sendEmbed($embed);
+				unset($embed);
+				unset($builder);
+				
 			}
-		);
+			
+		}
 	
 	}
 
