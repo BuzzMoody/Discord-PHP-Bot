@@ -19,6 +19,8 @@
 		
 		$url = "https://ui.earthquakes.ga.gov.au/geoserver/earthquakes/wfs?service=WFS&request=getfeature&typeNames=earthquakes:earthquakes&outputFormat=application/json&CQL_FILTER=display_flag=%27Y%27%20AND%20origin_time%20BETWEEN%20{$priorFormatted}%20AND%20{$currentFormatted}%20AND%20located_in_australia=%27Y%27&sortBy=origin_time%20D";
 		
+		echo $url."\n";
+		
 		$headers = [
 			'accept' => '*/*',
 			'accept-language' => 'en-AU,en;q=0.9',
