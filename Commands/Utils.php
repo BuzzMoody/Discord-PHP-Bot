@@ -5,7 +5,7 @@
 	use Discord\Builders\MessageBuilder;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
-	use React\Filesystem\Factory;
+	use React\Filesystem\Filesystem
 	use React\Filesystem\FilesystemInterface;
 	use React\Promise\PromiseInterface;
 	use React\EventLoop\Loop;
@@ -76,9 +76,9 @@
 	
 	function getMapImgNonBlocking($place, $eq = false, $name = ""): PromiseInterface {
 
-		$loop = Loop::get();
+		global $discord;
+		$filesystem = \React\Filesystem\Filesystem::create($discord->getLoop());
 		$browser = new Browser($loop);
-		$filesystem = \React\Filesystem\Factory::create();
 		
 		// Determine the filename and URL based on the arguments
 		if ($eq) {
