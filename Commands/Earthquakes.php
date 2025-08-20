@@ -15,7 +15,7 @@
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;
-		$priorTime->sub(new DateInterval('PT2M'));
+		$priorTime->sub(new DateInterval('PT10M'));
 		$currentFormatted = $currentTime->format('Y-m-d\TH:i:s\Z');
 		$priorFormatted = $priorTime->format('Y-m-d\TH:i:s\Z');
 		

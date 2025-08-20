@@ -45,6 +45,9 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 	$discord->getLoop()->addPeriodicTimer(120, function () {
 		checkDota();
 		checkDeadlock();
+	});
+	
+	$discord->getLoop()->addPeriodicTimer(600, function () {
 		Earthquakes();
 	});
 
