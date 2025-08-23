@@ -50,7 +50,7 @@ class Commands {
 			'/^reload$/' => 'Reload',
 			'/^betarl$/' => 'BetaReload',
 			'/^(afl|footy)$/' => 'Footy',
-			'/^test$/' => 'Test',
+			'/^test$/' => 'Earthquakes',
 		];
 		
 		$this->funcLoad();

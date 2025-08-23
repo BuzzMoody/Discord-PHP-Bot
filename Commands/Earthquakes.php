@@ -4,18 +4,18 @@
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
 	
-	function Earthquakes() {
+	function Earthquakes($message) {
 		
-		if (getenv('BETA') === 'true') { return; }
+		// if (getenv('BETA') === 'true') { return; }
 		
 		global $discord;
 		
-		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '232691831090053120');
+		// $guild = $discord->guilds->get('id', '232691831090053120');
+		// $channel = $guild->channels->get('id', '232691831090053120');
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;
-		$priorTime->sub(new DateInterval('PT10M'));
+		$priorTime->sub(new DateInterval('PT1D'));
 		$currentFormatted = $currentTime->format('Y-m-d\TH:i:s\Z');
 		$priorFormatted = $priorTime->format('Y-m-d\TH:i:s\Z');
 		
@@ -63,7 +63,7 @@
 					->addEmbed($embed)
 					->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
 				
-				$channel->sendMessage($builder);
+				$message->channel->sendMessage($builder);
 				
 			}
 			
