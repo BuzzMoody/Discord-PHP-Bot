@@ -8,7 +8,7 @@
 			
 			// put test code here
 			
-			return $message->channel->sendFile("/Media/Images/sydney/test.webp", "sydney.webp");
+			return $message->channel->sendFile("/Media/Images/sydney/test2.webp", "sydney2.webp");
 		
 		}
 		
