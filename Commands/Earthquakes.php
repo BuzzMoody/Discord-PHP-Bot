@@ -51,9 +51,13 @@
 				
 				getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
 				
+				$epiTimeZ = $quakes->properties->epicentral_time;
+				$epiTime = new DateTime($epiTimeZ);
+				$epiTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+				
 				$embed = $discord->factory(Embed::class);
 				$embed->setTitle("⚠️ Earthquake Alert ⚠️")
-					->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **{$quakes->properties->depth} km**\n\nLocation: **{$quakes->properties->description}**")
+					->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **".round($quakes->properties->depth, 1)." km**\n\nLocation: **{$quakes->properties->description}**\nTime: **{$epiTime->format('H:i:s A')}**")
 					->setImage("attachment://map-of-{$quakes->properties->event_id}.png")
 					->setColor(getenv('COLOUR'))
 					->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
