@@ -4,18 +4,18 @@
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
 	
-	function Earthquakes($message) {
+	function Earthquakes() {
 		
-		// if (getenv('BETA') === 'true') { return; }
+		if (getenv('BETA') === 'true') { return; }
 		
 		global $discord;
 		
-		// $guild = $discord->guilds->get('id', '232691831090053120');
-		// $channel = $guild->channels->get('id', '232691831090053120');
+		$guild = $discord->guilds->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '232691831090053120');
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;
-		$priorTime->sub(new DateInterval('P1D'));
+		$priorTime->sub(new DateInterval('PT10M'));
 		$currentFormatted = $currentTime->format('Y-m-d\TH:i:s\Z');
 		$priorFormatted = $priorTime->format('Y-m-d\TH:i:s\Z');
 		
@@ -51,13 +51,13 @@
 				
 				getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
 				
-				$epiTimeZ = $quakes->properties->epicentral_time;
-				$epiTime = new DateTime($epiTimeZ);
+				$epiTimeZ = $quakes->properties->origin_time;
+				$epiTime = new DateTime($epiTimeZ, new DateTimeZone('UTC'));
 				$epiTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 				
 				$embed = $discord->factory(Embed::class);
 				$embed->setTitle("⚠️ Earthquake Alert ⚠️")
-					->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **".round($quakes->properties->depth, 1)." km**\n\nLocation: **{$quakes->properties->description}**\nTime: **{$epiTime->format('H:i:s A')}**")
+					->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **".round($quakes->properties->depth, 1)." km**\n\nLocation: **{$quakes->properties->description}**\nTime: **{$epiTime->format('g:i:s A')}**")
 					->setImage("attachment://map-of-{$quakes->properties->event_id}.png")
 					->setColor(getenv('COLOUR'))
 					->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
@@ -67,7 +67,7 @@
 					->addEmbed($embed)
 					->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
 				
-				$message->channel->sendMessage($builder);
+				$channel->sendMessage($builder);
 				
 			}
 			
