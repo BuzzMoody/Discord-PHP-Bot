@@ -49,7 +49,11 @@
 			
 			foreach ($responseData->features as $quakes) {
 				
-				getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakes->properties->event_id);
+				$quakeID = $quakes->properties->event_id;
+				
+				if (checkEQ($quakeID)) { return; }
+				
+				getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakeID);
 				
 				$epiTimeZ = $quakes->properties->origin_time;
 				$epiTime = new DateTime($epiTimeZ, new DateTimeZone('UTC'));
@@ -58,21 +62,43 @@
 				$embed = $discord->factory(Embed::class);
 				$embed->setTitle("⚠️ Earthquake Alert ⚠️")
 					->setDescription("Magnitude **".round($quakes->properties->preferred_magnitude, 1)."** earthquake detected at a depth of **".round($quakes->properties->depth, 1)." km**\n\nLocation: **{$quakes->properties->description}**\nTime: **{$epiTime->format('g:i:s A')}**")
-					->setImage("attachment://map-of-{$quakes->properties->event_id}.png")
+					->setImage("attachment://map-of-{$quakeID}.png")
 					->setColor(getenv('COLOUR'))
-					->setURL("https://earthquakes.ga.gov.au/event/{$quakes->properties->event_id}")
+					->setURL("https://earthquakes.ga.gov.au/event/{$quakeID}")
 					->setFooter("Geoscience Australia");
 					
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
-					->addFile("/Media/Maps/{$quakes->properties->event_id}.png", "map-of-{$quakes->properties->event_id}.png");
+					->addFile("/Media/Maps/{$quakeID}.png", "map-of-{$quakeID}.png");
 				
 				$channel->sendMessage($builder);
+				
+				writeEQ($quakeID);
 				
 			}
 			
 		}
 	
+	}
+	
+	function checkEQ($id) {
+		
+		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
+		$checkEQDB = $mysqli->query("SELECT * FROM `earthquakes` WHERE quakeid='{$id}'");
+		$mysqli->close();
+		if ($checkEQDB->num_rows > 0) {
+			return true;
+		}
+		else { return false; }
+		
+	}
+	
+	function writeEQ($id) {
+		
+		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
+		$result = $mysqli->query("INSERT INTO `earthquakes` (quakeid) VALUES ('{$id}');");
+		$mysqli->close();
+		
 	}
 
 ?>

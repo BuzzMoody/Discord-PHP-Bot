@@ -315,14 +315,15 @@
 		$checkNewDB = $mysqli->query("SELECT * FROM {$game} WHERE id='{$id}' AND matchid='1'");
 		if ($checkNewDB->num_rows > 0) {
 			updateMatch($id, $matchID, $game);
+			$mysqli->close();
 			return false;
 		}
 		else {
 			$result = $mysqli->query("SELECT * FROM {$game} WHERE id='{$id}' AND matchid='{$matchID}'");
+			$mysqli->close();
 			if ($result->num_rows == 0) { return true; }
 			else { return false; }
 		}
-		$mysqli->close();
 		
 	}
 
