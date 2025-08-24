@@ -6,12 +6,12 @@
 	
 	function Earthquakes() {
 		
-		// if (getenv('BETA') === 'true') { return; }
+		if (getenv('BETA') === 'true') { return; }
 		
 		global $discord;
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '274828566909157377');
+		$channel = $guild->channels->get('id', '232691831090053120');
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;

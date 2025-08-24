@@ -47,7 +47,7 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 		checkDeadlock();
 	});
 	
-	$discord->getLoop()->addPeriodicTimer(600, function () {
+	$discord->getLoop()->addPeriodicTimer(300, function () {
 		Earthquakes();
 	});
 
@@ -94,8 +94,9 @@ function getMemberCount($discord) {
 function checkDatabase() {
 
 	$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
-	$result = $mysqli->query("SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'discord' AND table_name IN ('reminders', 'dota2', 'deadlock')");
+	$result = $mysqli->query("SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'discord' AND table_name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')");
 	if ($result->num_rows != 3) { shell_exec("mariadb -h\"".getenv('DB_HOST')."\" -u\"".getenv('DB_USER')."\" -p\"".getenv('DB_KEY')."\" < \"/init/init.sql\""); }
+	$mysqli->close();
 
 }
 
