@@ -6,16 +6,16 @@
 	
 	function Earthquakes() {
 		
-		if (getenv('BETA') === 'true') { return; }
+		// if (getenv('BETA') === 'true') { return; }
 		
 		global $discord;
 		
 		$guild = $discord->guilds->get('id', '232691831090053120');
-		$channel = $guild->channels->get('id', '232691831090053120');
+		$channel = $guild->channels->get('id', '274828566909157377');
 		
 		$currentTime = new DateTime('now', new DateTimeZone('UTC'));
 		$priorTime = clone $currentTime;
-		$priorTime->sub(new DateInterval('PT10M'));
+		$priorTime->sub(new DateInterval('P1D'));
 		$currentFormatted = $currentTime->format('Y-m-d\TH:i:s\Z');
 		$priorFormatted = $priorTime->format('Y-m-d\TH:i:s\Z');
 		
