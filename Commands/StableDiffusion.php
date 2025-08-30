@@ -7,20 +7,26 @@
 
 	function StableDiffusion($message, $args) { 
 	
-		global $keys;
-		
 		$prompt = $args;
-		$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=".$keys['gemini'];	
+		$url = "https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-preview-06-06:predict";
 		
 		$postData = [
-			"contents" => [["parts" => [["text" => $prompt]]]],
-			"generationConfig" => [
-				"responseModalities" => ["TEXT", "IMAGE"]
+			'instances' => [
+				[
+					'prompt' => $args
+				]
+			],
+			'parameters' => [
+				'sampleCount' => 1,
+				'numberOfImages' => 1,
+				'aspectRatio' => '16:9',
+				'personGeneration' => 'allow_adult'
 			]
 		];
 		$postDataEnc = json_encode($postData);
 		$headers = [
-			'Content-Type' => 'application/json'
+			'Content-Type' => 'application/json',
+			'x-goog-api-key' => getenv('VERTEX_API_KEY'),
 		];
 		
 		$browser = new Browser();
@@ -28,8 +34,9 @@
 			function (ResponseInterface $response) use ($message) {
 				$responseBody = $response->getBody();
 				$responseData = json_decode($responseBody);
-				$base64 = $responseData->candidates[0]->content->parts[1]->inlineData->data;
-				$mimeType = $responseData->candidates[0]->content->parts[1]->inlineData->mimeType;
+				if (!@$responseData->predictions[0]->bytesBase64Encoded) { return $message->channel->sendMessage("No image could be generated"); }
+				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
+				$mimeType = $responseData->predictions[0]->mimeType;
 				$bin = base64_decode($base64);
 				$ext = preg_replace('/[^a-z0-9]/i', '', str_replace('image/', '', $mimeType)) ?: 'png';
 				$filename = 'image_' . time() . '_' . uniqid() . '.' . $ext;

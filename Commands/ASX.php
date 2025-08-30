@@ -6,7 +6,7 @@
 
 	function ASX($message, $args) {
 		
-		global $discord, $keys;
+		global $discord;
 		
 		if (empty($args) || strlen($args) > 4) { return $message->reply("Try !asx DMP"); }
 		
@@ -25,7 +25,7 @@
 		$embed->setTitle($header->data->displayName)
 			->setURL("https://www2.asx.com.au/markets/company/{$args}")
 			->setDescription("ASX : ".strtoupper($args))
-			->setColor($keys['colour'])
+			->setColor(getenv('COLOUR'))
 			->setTimestamp()
 			->setFooter("ASX", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png");
 		

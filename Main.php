@@ -6,7 +6,6 @@ error_reporting(E_ALL);
 date_default_timezone_set('Australia/Melbourne');
 
 include __DIR__.'/vendor/autoload.php';
-include 'config.inc';
 include 'CommandHandler.php';
 
 use Discord\Discord;
@@ -18,16 +17,16 @@ use Discord\Parts\Embed;
 use Discord\Parts\Channel\Message;
 
 $discord = new Discord([
-	'token' => $keys['discord'],
+	'token' => getenv('DISCORD_API_KEY'),
 	'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
 	'logger' => new \Monolog\Logger('New logger'),
 	'loadAllMembers' => true,
 ]);
 
 $uptime = (int)(microtime(true) * 1000);
-$commands = new Commands($keys, $uptime, $discord);
+$commands = new Commands($uptime, $discord);
 
-$discord->on('ready', function (Discord $discord) use ($commands, $keys) {
+$discord->on('ready', function (Discord $discord) use ($commands) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
@@ -36,6 +35,7 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
+	checkDatabase();
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
@@ -46,16 +46,20 @@ $discord->on('ready', function (Discord $discord) use ($commands, $keys) {
 		checkDota();
 		checkDeadlock();
 	});
+	
+	$discord->getLoop()->addPeriodicTimer(300, function () {
+		Earthquakes();
+	});
 
-	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $keys) {
+	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
 		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 		
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			if ($message->channel->id == 274828566909157377 && $keys['beta'] === true) {
+			if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
 				$commands->funcExec($message);
 			}
-			else if ($keys['beta'] === false) {
+			else if (getenv('BETA') !== 'true') {
 				$commands->funcExec($message);
 			}
 		}
@@ -85,6 +89,15 @@ function getMemberCount($discord) {
 	}
 	return $count;
 	
+}
+
+function checkDatabase() {
+
+	$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
+	$result = $mysqli->query("SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'discord' AND table_name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')");
+	if ($result->num_rows != 4) { shell_exec("mariadb -h\"".getenv('DB_HOST')."\" -u\"".getenv('DB_USER')."\" -p\"".getenv('DB_KEY')."\" < \"/init/init.sql\""); }
+	$mysqli->close();
+
 }
 
 ?>

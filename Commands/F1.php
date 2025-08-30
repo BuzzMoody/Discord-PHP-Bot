@@ -8,7 +8,7 @@
 
 	function F1($message) {
 		
-		global $discord, $keys;
+		global $discord;
 		
 		$http = new Browser();
 
@@ -18,13 +18,13 @@
 		);
 
 		$http->get('https://api.formula1.com/v1/event-tracker', $headers)->then(
-			function (ResponseInterface $response) use ($message, $discord, $keys) {
+			function (ResponseInterface $response) use ($message, $discord) {
 				$output = json_decode($response->getBody());
 				$embed = $discord->factory(Embed::class);
 				$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png')
 					->setTitle($output->race->meetingOfficialName)
 					->setURL("https://www.formula1.com{$output->race->url}")
-					->setColor($keys['colour'])
+					->setColor(getenv('COLOUR'))
 					->setDescription("The current location is **{$output->race->meetingLocation}, {$output->race->meetingCountryName}**.");
 				foreach ($output->seasonContext->timetables as $event) {
 					$fieldval = ($event->state == 'completed') ? "~~".toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)."~~ - [Results](https://www.formula1.com/en/results/{$output->seasonContext->seasonYear}/races/{$output->fomRaceId}/F1/".str_replace(' ', '/', strtolower($event->description)).")" : toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)." (Starts <t:".strtotime(toAusTime($event->startTime, 'Y-m-d\TH:i:s', null, $event->gmtOffset, true)).":R>)";
