@@ -26,8 +26,14 @@
 		$embed->setAuthor("{$header->data->displayName} ({$ticker}) - ASX", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "https://www2.asx.com.au/markets/company/{$args}")
 			->setColor(getenv('COLOUR'));
 		
-		foreach ($asx as $key => $value) {		
-			$embed->addFieldValues("{$key}", "{$value}", true);
+		$counter = 1;
+		foreach ($asx as $key => $value) {
+			if ($counter == 3) {
+				$embed->addFieldValues("{$key}", "{$value}", false);
+			} else {
+				$embed->addFieldValues("{$key}", "{$value}", true);
+			}
+			$counter++;
 		}
 		
 		$message->channel->sendEmbed($embed);
