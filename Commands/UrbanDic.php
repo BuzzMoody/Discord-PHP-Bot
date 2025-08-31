@@ -11,6 +11,7 @@
 		global $discord;
 		
 		$http = new Browser();
+		$http = $http->withRejectErrorResponse(false);
 		$http->get("https://unofficialurbandictionaryapi.com/api/search?term={$args}&limit=1")->then(
 			function (ResponseInterface $response) use ($message, $discord) {
 				
