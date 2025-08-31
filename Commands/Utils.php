@@ -46,7 +46,7 @@
 		$place = array(
 			"name" 		=> $results->candidates[0]->name,
 			"state" 	=> $results->candidates[0]->state,
-			"filename"	=> str_replace(' ', '-', $results->candidates[0]->name),
+			"filename"	=> str_replace(array(' ', '(', ')'), array('-', '', ''), $results->candidates[0]->name),
 			"type"		=> $results->candidates[0]->type,
 			"postcode" 	=> $results->candidates[0]->postcode->name,
 			"forecast"	=> $results->candidates[0]->gridcells->forecast->x."/".$results->candidates[0]->gridcells->forecast->y,

@@ -21,9 +21,8 @@
 			function (ResponseInterface $response) use ($message, $discord) {
 				$output = json_decode($response->getBody());
 				$embed = $discord->factory(Embed::class);
-				$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png')
+				$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png', "https://www.formula1.com{$output->race->url}")
 					->setTitle($output->race->meetingOfficialName)
-					->setURL("https://www.formula1.com{$output->race->url}")
 					->setColor(getenv('COLOUR'))
 					->setDescription("The current location is **{$output->race->meetingLocation}, {$output->race->meetingCountryName}**.");
 				foreach ($output->seasonContext->timetables as $event) {
@@ -33,7 +32,7 @@
 				$message->channel->sendEmbed($embed);
 			},
 			function (Exception $e) use ($message) {
-				$message->channel->send("Error: {$e->getMessage()}");
+				$message->channel->sendMessage("Error: {$e->getMessage()}");
 			}
 		);
 	

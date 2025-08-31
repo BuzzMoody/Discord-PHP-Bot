@@ -47,26 +47,22 @@
 		);
 		getMapImg($place);
 		$embed = $discord->factory(Embed::class);
-		$embed->setTitle("{$place['name']}, {$place['state']}")
-			->setDescription("{$place['district']} - {$place['postcode']} - {$temp['stn']}")
-			->addFieldValues("Temp", "{$temp['temp']}°", true)
-			->addFieldValues("Feels", "{$temp['feels']}°", true)
-			->addFieldValues("Max / Min", "{$temp['max']}° / {$temp['min']}°", true)
-			->addFieldValues("Wind", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/', '/^CALM$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘', ''), $temp['direction']), true)
-			->addFieldValues("Gusts", "{$temp['gusts']}kph", true)
-			->addFieldValues("Humidity", "{$temp['humidity']}%", true)
-			->addFieldValues("Rain", "{$temp['rain']}mm ({$temp['rainper']}%)", true)
-			->addFieldValues("UV", $temp['uv'], true)
-			->addFieldValues("Visibility", "{$temp['vis']}km", true)
+		$embed->setAuthor("{$temp['stn']} ({$place['postcode']}) - BOM", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png")
+			->addFieldValues("Temp 🌡", "{$temp['temp']}°", true)
+			->addFieldValues("Feels 🌡", "{$temp['feels']}°", true)
+			->addFieldValues("Max / Min 🌡", "{$temp['max']}° / {$temp['min']}°", true)
+			->addFieldValues("Wind 🍃", "{$temp['wind']}kph ".preg_replace(array('/^N$/', '/^S$/', '/^E$/', '/^W$/', '/^.?NE$/', '/^.?SE$/', '/^.?SW$/', '/^.?NW$/', '/^CALM$/'), array('↓', '↑', '←', '→', '↙', '↖', '↗', '↘', ''), $temp['direction']), true)
+			->addFieldValues("Gusts 💨", "{$temp['gusts']}kph", true)
+			->addFieldValues("Humidity 🧖", "{$temp['humidity']}%", true)
+			->addFieldValues("Rain ☔️", "{$temp['rain']}mm ({$temp['rainper']}%)", true)
+			->addFieldValues("UV ☀️", $temp['uv'], true)
+			->addFieldValues("Visibility 👀", "{$temp['vis']}km", true)
 			->setImage("attachment://map-of-{$place['filename']}.png")
-			->setColor(getenv('COLOUR'))
-			->setTimestamp()
-			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
+			->setColor(getenv('COLOUR'));
 			
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
-			->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png")
-			->addFile("/Media/Maps/BOM.png", "BOM.png");
+			->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png");
 		
 		return $message->channel->sendMessage($builder);
 		

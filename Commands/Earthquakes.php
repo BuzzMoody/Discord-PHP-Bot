@@ -63,12 +63,10 @@
 				$epiTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
 				
 				$embed = $discord->factory(Embed::class);
-				$embed->setTitle("⚠️ Earthquake Alert ⚠️")
+				$embed->setAuthor("Earthquake Alert 🫨", "https://www.ga.gov.au/__data/assets/image/0005/123368/GA_logo_180x180.png", "https://earthquakes.ga.gov.au/event/{$quakeID}")
 					->setDescription("Magnitude **{$magnitude}** earthquake detected at a depth of **{$depth} km**\n\nLocation: **{$location}**\nTime: **{$epiTime->format('g:i:s A')}**")
 					->setImage("attachment://map-of-{$quakeID}.png")
-					->setColor(getenv('COLOUR'))
-					->setURL("https://earthquakes.ga.gov.au/event/{$quakeID}")
-					->setFooter("Geoscience Australia");
+					->setColor(getenv('COLOUR'));
 					
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)

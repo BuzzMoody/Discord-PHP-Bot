@@ -1,12 +1,40 @@
 <?php
 
+	use Discord\Parts\Embed\Embed;
+	use Discord\Parts\Channel\Attachment;
+	use Discord\Builders\MessageBuilder;
+	use React\Http\Browser;
+	use Psr\Http\Message\ResponseInterface;
+
 	function UrbanDic($message, $args) {
 		
-		$getUD = (empty($args)) ? @file_get_contents("https://www.urbandictionary.com/random.php") : @file_get_contents("https://www.urbandictionary.com/define.php?term=".urlencode($args));
-		if (empty($getUD)) { return $message->channel->sendMessage("Word not found"); }
-		preg_match_all("/(:?href=\"\/define\.php\?term=(.+)\" id=\"\d+\">(.+)<\/a><\/h1>|<div class=\"break-words meaning mb-4\">(.+)<\/div>)/mU", $getUD, $matches);
+		global $discord;
 		
-		$message->channel->sendMessage("**".str_replace('+',' ', $matches[2][0])."**: ".html_entity_decode(strip_tags($matches[4][1])));
+		$http = new Browser();
+		$http->get("https://unofficialurbandictionaryapi.com/api/search?term={$args}&limit=1")->then(
+			function (ResponseInterface $response) use ($message, $discord) {
+				$output = json_decode($response->getBody());
+				
+				$embed = $discord->factory(Embed::class);
+				$embed->setAuthor("{$output->data[0]->word} - Urban Dictionary", 'https://www.urbandictionary.com/favicon-32x32.png')
+					->setColor(getenv('COLOUR'))
+					->setDescription($output->data[0]->meaning)
+					->addFieldValues("Example", $output->data[0]->example, true);
+					
+				return $message->channel->sendEmbed($embed);
+			},
+			function (Exception $e) use ($message, $discord, $args) {
+				$embed = $discord->factory(Embed::class);
+				$embed->setAuthor('Urban Dictionary', 'https://www.urbandictionary.com/favicon-32x32.png')
+					->setColor(getenv('COLOUR'))
+					->setDescription("No entries found for *{$args}*");
+					
+				$builder = MessageBuilder::new()
+					->addEmbed($embed);
+					
+				return $message->reply($builder);	
+			}
+		);
 		
 	}
 	

@@ -10,8 +10,9 @@
 		
 		$place = getLocale($args);
 		if (!$place) { return $message->channel->sendMessage("No location found"); }
+		
 		$embed = $discord->factory(Embed::class);
-		$embed->setTitle("{$place['name']}, {$place['state']} ({$place['postcode']})");
+
 		$forecast = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/forecasts/daily/{$place['forecast']}?timezone=Australia%2FMelbourne"));
 		array_shift($forecast->fcst->daily);
 		$i=0;
@@ -21,16 +22,16 @@
 			$embed->addFieldValues(toAusTime($daily->date_utc, 'l jS')." {$icon}", round($daily->atm->surf_air->temp_max_cel, 1)."° / ".round($daily->atm->surf_air->temp_min_cel, 1)."° \n_☔ {$daily->atm->surf_air->precip->any_probability_percent}% {$uv}_", true);
 			$i++;
 		}
+		
 		getMapImg($place);
+		
 		$embed->setColor(getenv('COLOUR'))
-			->setTimestamp()
-			->setImage("attachment://map-of-{$place['filename']}.png")
-			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
+			->setAuthor("{$place['name']}, {$place['state']} ({$place['postcode']}) - Weather Forecast", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png")
+			->setImage("attachment://map-of-{$place['filename']}.png");
 			
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
-			->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png")
-			->addFile("/Media/Maps/BOM.png", "BOM.png");
+			->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png");
 		
 		return $message->channel->sendMessage($builder);
 		
