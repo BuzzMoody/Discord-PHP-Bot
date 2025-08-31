@@ -15,7 +15,7 @@
 		$client = new Browser();
 		$embed = $discord->factory(Embed::class);
 		
-		$embed->setTitle("AFL Round Summary");
+		$embed->setAuthor("AFL Round Summary", "https://www.afl.com.au/resources/v5.37.23/afl/favicon-32x32.png");
 
 		$client->get('https://www.afl.com.au')->then(
 			function (ResponseInterface $response) use ($client, $message, $embed, $keys) {

@@ -13,6 +13,7 @@
 		$header = json_decode(@file_get_contents("https://asx.api.markitdigital.com/asx-research/1.0/etfs/{$args}/header"));
 		if ($header === null) { return $message->reply("Company or ETF not found"); }
 		$stats = json_decode(file_get_contents("https://asx.api.markitdigital.com/asx-research/1.0/etfs/{$args}/key-statistics"));
+		$ticker = strtoupper($args);
 		
 		$asx = [
 			"Current Price" => "$".number_format($header->data->priceLast, 2),
@@ -22,12 +23,8 @@
 		];
 		
 		$embed = $discord->factory(Embed::class);
-		$embed->setTitle($header->data->displayName)
-			->setURL("https://www2.asx.com.au/markets/company/{$args}")
-			->setDescription("ASX : ".strtoupper($args))
-			->setColor(getenv('COLOUR'))
-			->setTimestamp()
-			->setFooter("ASX", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png");
+		$embed->setAuthor("{$header->data->displayName} ({$ticker}) - ASX", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "https://www2.asx.com.au/markets/company/{$args}")
+			->setColor(getenv('COLOUR'));
 		
 		foreach ($asx as $key => $value) {		
 			$embed->addFieldValues("{$key}", "{$value}", true);
