@@ -13,9 +13,8 @@
 		$http = new Browser();
 		$http->get("https://unofficialurbandictionaryapi.com/api/search?term={$args}&limit=1")->then(
 			function (ResponseInterface $response) use ($message, $discord) {
-				$output = json_decode($response->getBody());
 				
-				if ($output->statusCode != 200) {
+				if ($response->getStatusCode() === 404) {
 					
 					$embed = $discord->factory(Embed::class);
 					$embed->setAuthor('Urban Dictionary', 'https://www.urbandictionary.com/favicon-32x32.png')
@@ -28,6 +27,8 @@
 					return $message->reply($builder);		
 					
 				}
+				
+				$output = json_decode($response->getBody());
 				
 				$embed = $discord->factory(Embed::class);
 				$embed->setAuthor("{$output->data[0]->word} - Urban Dictionary", 'https://www.urbandictionary.com/favicon-32x32.png')
