@@ -22,13 +22,11 @@
 		$pingKey = array_rand($responses);
 		
 		$embed = $discord->factory(Embed::class);
-		$embed->setAuthor('Pong', 'attachment://bot.webp')
-			->setColor(getenv('COLOUR'))
+		$embed->setColor(getenv('COLOUR'))
 			->setDescription($responses[$pingKey]);
 		
 		$builder = MessageBuilder::new()
-			->addEmbed($embed)
-			->addFile("/Media/bot.webp", "bot.webp");
+			->addEmbed($embed);
 
 		return $message->reply($builder);
 		

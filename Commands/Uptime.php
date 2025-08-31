@@ -18,13 +18,11 @@
 		$seconds = floor((int)$diff % 60);
 		
 		$embed = $discord->factory(Embed::class);
-		$embed->setAuthor('Uptime', 'attachment://bot.webp')
-			->setColor(getenv('COLOUR'))
+		$embed->setColor(getenv('COLOUR'))
 			->setDescription("{$days} days, {$hours} hrs, {$minutes} mins, {$seconds} secs");
 		
 		$builder = MessageBuilder::new()
-			->addEmbed($embed)
-			->addFile("/Media/bot.webp", "bot.webp");
+			->addEmbed($embed);
 
 		return $message->reply($builder);
 		
