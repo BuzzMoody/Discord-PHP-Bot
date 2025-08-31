@@ -24,7 +24,7 @@
 				$message->channel->sendEmbed($embed);
 			},
 			function (Exception $e) use ($message) {
-				$message->channel->send("Error: {$e->getMessage()}");
+				$message->channel->sendMessage("Error: {$e->getMessage()}");
 			}
 		);
 		
