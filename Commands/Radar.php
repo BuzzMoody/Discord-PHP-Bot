@@ -10,12 +10,9 @@
 		
 		$time = microtime(true);
 		$embed = $discord->factory(Embed::class);
-		$embed->setTitle("Melbourne Weather Radar")
-			->setURL("http://www.bom.gov.au/products/IDR023.loop.shtml")
+		$embed->setAuthor("Melbourne Weather Radar", "attachment://BOM.png", "http://www.bom.gov.au/products/IDR023.loop.shtml")
 			->setImage("attachment://radar-{$time}.gif")
-			->setColor(getenv('COLOUR'))
-			->setTimestamp()
-			->setFooter("Bureau of Meteorology", "attachment://BOM.png");
+			->setColor(getenv('COLOUR'));
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
 			->addFile("/Media/Maps/BOM.png", "BOM.png")
