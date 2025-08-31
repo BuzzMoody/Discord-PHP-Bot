@@ -26,7 +26,7 @@
 			->addEmbed($embed)
 			->addFile("/Media/bot.webp", "bot.webp");
 
-		$message->reply($builder);
+		return $message->reply($builder);
 		
 	}
 
