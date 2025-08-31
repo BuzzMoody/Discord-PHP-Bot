@@ -19,7 +19,7 @@
 				$embed = $discord->factory(Embed::class);
 				$embed->setAuthor('Apex Legends Status', 'https://apexlegendsstatus.com/assets/layout/favicon-dark-scheme-32x32.png', 'https://apexlegendsstatus.com/')
 					->setColor(getenv('COLOUR'))
-					->setDescription("The current map is **{$data[1]}**.\n\nThe next map is **{$next[1][1]}** and starts in **{$data[2]}** minutes")
+					->setDescription("The current map is **{$data[1]}**.\n\nThe next map is **{$next[1][1]}** and starts in **{$data[2]}**")
 					->setImage("https://apexlegendsstatus.com/assets/maps/".str_replace(' ', '_', $data[1]).".png");
 				$message->channel->sendEmbed($embed);
 			},
