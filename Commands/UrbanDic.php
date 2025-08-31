@@ -27,7 +27,7 @@
 				$embed = $discord->factory(Embed::class);
 				$embed->setAuthor('Urban Dictionary', 'https://www.urbandictionary.com/favicon-32x32.png')
 					->setColor(getenv('COLOUR'))
-					->setDescription("No entries found for __{$args}__");
+					->setDescription("No entries found for *{$args}*");
 					
 				$builder = MessageBuilder::new()
 					->addEmbed($embed);
