@@ -276,6 +276,9 @@
 
 			if ($games > 0) {
 				
+				$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
+				$tz->setTimestamp($start);
+				
 				$embed = $discord->factory(Embed::class);
 				$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchid}")
 					->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
@@ -364,7 +367,7 @@
 				$mysqli->query("DELETE FROM reminders WHERE time = '{$row['time']}'");
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $row['channelid']);
-				$message = $channel->messages->fetch($row['messageid'])->then(function ($message) use ($row) {
+				$channel->messages->fetch($row['messageid'])->then(function ($message) use ($row) {
 					simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $message, true, null); 
 				});	
 			}
