@@ -8,7 +8,7 @@
 
 	function SearchFunc($type, $message, $args) {
 	
-		if (empty($args)) { return $message->reply("Maybe give me something to search for??"); }
+		if (empty($args)) { return simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null); }
 		
 		$api_url = ($type == 'google') ? "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args) : "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com%20-site:tiktok.com%20-site:instagram.com";
 		
@@ -21,7 +21,7 @@
 			return null;
 		}
 		
-		if ($return->searchInformation->totalResults == 0) { return $message->reply("No results."); }
+		if ($return->searchInformation->totalResults == 0) { return simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "No results found for *{$args}*.", $message, true, null); }
 		
 		return ($type == 'google') ? $message->channel->sendMessage("{$return->items[0]->title}: {$return->items[0]->link}") : $message->channel->sendMessage($return->items[0]->link);
 	
@@ -258,10 +258,13 @@
 						$details[$i]['hero'] = Commands::DOTA_HEROES[$response[0]->hero_id];
 						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" =>$response[0]->assists);
 						$start = $response[0]->start_time;
-						$length = gmdate("H:i:s", $response[0]->duration);
+						$duration = $response[0]->duration;
+						$hours = floor($duration / 3600);
+						$format = ($hours > 0) ? "G 'hours' i 'mins'" : "i 'mins'";
+						$length = gmdate($format, $duration);
 						$mode = Commands::DOTA_GAMEMODES[$response[0]->game_mode];
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
-						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Yes" : "No";
+						$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Ranked" : "Unranked";
 						$games++;
 						updateMatch($details[$i]['user'], $response[0]->match_id, "dota2");
 						
@@ -274,13 +277,16 @@
 			if ($games > 0) {
 				
 				$embed = $discord->factory(Embed::class);
-				$embed->setTitle("Dota 2 Match Information")
-					->setURL("https://www.opendota.com/matches/".$matchid)
+				$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchid}")
 					->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
-					->setColor(getenv('COLOUR'))
-					->setTimestamp()
-					->setFooter("Powered by OpenDota");
-				$desc = "\n\n";
+					->setColor(getenv('COLOUR'));
+				
+				$embed->addFieldValues("Start Time", $tz->format('G:i A'), true);
+				$embed->addFieldValues("Length", $length, true);
+				$embed->addFieldValues("Game Mode", "{$ranked} {$mode}", true);
+				$embed->addFieldValues("\n", "\n", false);
+				
+				$desc = "";
 				
 				for ($x = 0; $x < count($details); $x++) {
 					if (@$details[$x]['new']) {
@@ -289,10 +295,8 @@
 						$embed->addFieldValues("\n\n".$details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}\n\n\n", true);
 					}
 				}
-				$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-				$tz->setTimestamp($start);
+
 				$embed->setDescription($desc."\n");
-				$embed->addFieldValues("\n\nGame Information", "Start Time: {$tz->format('H:i:s')}\nLength: {$length}\nGame Mode: {$mode}\nRanked: {$ranked}\n", false);
 				
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', '232691831090053120');
@@ -357,14 +361,40 @@
 		
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()) {
+				$mysqli->query("DELETE FROM reminders WHERE time = '{$row['time']}'");
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $row['channelid']);
-				$channel->sendMessage("<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}");
-				$mysqli->query("DELETE FROM reminders WHERE time = '{$row['time']}'");
+				$message = $channel->messages->fetch($row['messageid'])->then(function ($message) use ($row) {
+					simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $message, true, null); 
+				});	
 			}
 		}
 		
 		$mysqli->close();
+		
+	}
+	
+	function simpleEmbed($authName, $authIMG, $text, $message, $reply = false, $authURL = null) {
+		
+		global $discord;
+		
+		$embed = $discord->factory(Embed::class);
+		$embed->setAuthor($authName, $authIMG, $authURL)
+			->setColor(getenv('COLOUR'))
+			->setDescription($text);
+
+		if (!$reply) { return $message->channel->sendEmbed($embed); }
+		
+		$builder = MessageBuilder::new()
+			->addEmbed($embed)
+			->setReplyTo($message);
+			
+		if (str_starts_with($authIMG, "attachment://")) {
+			$fileIMG = substr($authIMG, strlen('attachment://'));
+			$builder->addFile("/Media/{$fileIMG}", $fileIMG);
+		}
+		
+		return $message->channel->sendMessage($builder);
 		
 	}
 	

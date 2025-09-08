@@ -5,7 +5,9 @@
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
 
-	function StableDiffusion($message, $args) { 
+	function StableDiffusion($message, $args) {
+		
+		if (empty($args)) { return; }
 	
 		$prompt = $args;
 		$url = "https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-preview-06-06:predict";
@@ -32,9 +34,8 @@
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(
 			function (ResponseInterface $response) use ($message) {
-				$responseBody = $response->getBody();
-				$responseData = json_decode($responseBody);
-				if (!@$responseData->predictions[0]->bytesBase64Encoded) { return $message->channel->sendMessage("No image could be generated"); }
+				$responseBody = json_decode($response->getBody());
+				if (!@$responseData->predictions[0]->bytesBase64Encoded) { return simpleEmbed("Imagen AI", "attachment://gemini.png", "No image could be generated.", $message, true, null); }
 				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
 				$mimeType = $responseData->predictions[0]->mimeType;
 				$bin = base64_decode($base64);

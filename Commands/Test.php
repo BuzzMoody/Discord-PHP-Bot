@@ -6,10 +6,10 @@
 	
 		if (isAdmin($message->author->id) && getenv('BETA') === 'true') {
 			
-			// put test code here
-			
-			return;
-		
+			// test code here
+
+			return;			
+
 		}
 		
 	}

@@ -9,7 +9,7 @@
 		global $discord;
 		
 		$place = getLocale($args);
-		if (!$place) { return $message->channel->sendMessage("No location found"); }
+		if (!$place) { return simpleEmbed("BOM Weather", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "Location not found. Try using a larger town/city located nearby.", $message, true, "https://bom.gov.au"); }
 		
 		$embed = $discord->factory(Embed::class);
 
