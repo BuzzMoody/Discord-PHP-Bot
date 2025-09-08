@@ -260,7 +260,7 @@
 						$start = $response[0]->start_time;
 						$duration = $response[0]->duration;
 						$hours = floor($duration / 3600);
-						$format = ($hours > 0) ? "g \h\o\u\r\s i \m\i\n\s" : "i \m\i\n\s";
+						$format = ($hours > 0) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s';
 						$length = gmdate($format, $duration);
 						$mode = Commands::DOTA_GAMEMODES[$response[0]->game_mode];
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
