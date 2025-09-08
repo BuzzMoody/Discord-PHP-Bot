@@ -8,10 +8,12 @@
 		
 		global $discord;
 		
-		if (empty($args) || strlen($args) > 4) { return $message->reply("Try !asx DMP"); }
+		if (empty($args) || strlen($args) > 4) { return simpleEmbed("ASX Ticker Data", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "https://asx.com.au", "Invalid ticker supplied. Try *!asx ETHI*.", $message, true); }
 		
 		$header = json_decode(@file_get_contents("https://asx.api.markitdigital.com/asx-research/1.0/etfs/{$args}/header"));
-		if ($header === null) { return $message->reply("Company or ETF not found"); }
+		if ($header === null) { 
+			return simpleEmbed("ASX Ticker Data", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "https://asx.com.au", "The ticker was not found.", $message, true); 
+		}
 		$stats = json_decode(file_get_contents("https://asx.api.markitdigital.com/asx-research/1.0/etfs/{$args}/key-statistics"));
 		$ticker = strtoupper($args);
 		

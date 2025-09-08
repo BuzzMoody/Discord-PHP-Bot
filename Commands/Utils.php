@@ -368,4 +368,23 @@
 		
 	}
 	
+	function simpleEmbed($authName, $authIMG, $authURL, $text, $message, $reply = false) {
+		
+		global $discord;
+		
+		$embed = $discord->factory(Embed::class);
+		$embed->setAuthor($authName, $authIMG, $authURL)
+			->setColor(getenv('COLOUR'))
+			->setDescription($text);
+
+		if (!$reply) { return $message->channel->sendEmbed($embed); }
+		
+		$builder = MessageBuilder::new()
+			->addEmbed($embed)
+			->setReplyTo($message);
+		
+		return $message->channel->sendMessage($builder);
+		
+	}
+	
 ?>
