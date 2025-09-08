@@ -9,9 +9,9 @@
 		global $discord;
 		
 		$place = getLocale($args);
-		if (!$place) { return $message->channel->sendMessage("No location found"); }
+		if (!$place) { return simpleEmbed("Weather Data - BOM", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "https://bom.gov.au", "Location not found. Try using a larger town/city located nearby.", $message, true); }
 		$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$place['id']}?filter=nearby_type:bom_stn"));	
-		if (empty($location->place->location_hierarchy->nearest->id)) { return $message->channel->sendMessage("No weather for location"); }	
+		if (empty($location->place->location_hierarchy->nearest->id)) { return simpleEmbed("Weather Data - BOM", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "https://bom.gov.au", "Location not found. Try using a larger town/city located nearby.", $message, true); }	
 		$place += array (
 			"district" 	=> $location->place->location_hierarchy->public_district->description,
 			"state" 	=> $location->place->location_hierarchy->region[1]->description,
