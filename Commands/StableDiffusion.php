@@ -34,9 +34,7 @@
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(
 			function (ResponseInterface $response) use ($message) {
-				$responseBody = json_decode($response->getBody());
-				$output = print_r($responseBody, true);
-				file_put_contents('/Media/array_output.txt', $output);
+				$responseData = json_decode($response->getBody());
 				if (!isset($responseData->predictions[0]->bytesBase64Encoded)) { return simpleEmbed("Imagen AI", "attachment://gemini.png", "No image could be generated.", $message, true, null); }
 				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
 				$mimeType = $responseData->predictions[0]->mimeType;
