@@ -8,7 +8,7 @@
 
 	function SearchFunc($type, $message, $args) {
 	
-		if (empty($args)) { return $message->reply("Maybe give me something to search for??"); }
+		if (empty($args)) { return simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", null, "Invalid syntax used. Please provide search terms.", $message, true); }
 		
 		$api_url = ($type == 'google') ? "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args) : "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com%20-site:tiktok.com%20-site:instagram.com";
 		
@@ -21,7 +21,7 @@
 			return null;
 		}
 		
-		if ($return->searchInformation->totalResults == 0) { return $message->reply("No results."); }
+		if ($return->searchInformation->totalResults == 0) { return simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", null, "No results found for *{$args}*.", $message, true); }
 		
 		return ($type == 'google') ? $message->channel->sendMessage("{$return->items[0]->title}: {$return->items[0]->link}") : $message->channel->sendMessage($return->items[0]->link);
 	
@@ -368,7 +368,7 @@
 		
 	}
 	
-	function simpleEmbed($authName, $authIMG, $authURL, $text, $message, $reply = false) {
+	function simpleEmbed($authName, $authIMG, $authURL = null, $text, $message, $reply = false) {
 		
 		global $discord;
 		
