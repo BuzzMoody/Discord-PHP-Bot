@@ -32,8 +32,7 @@
 		$browser = new Browser();
 		$browser->post($url, $headers, $postDataEnc)->then(
 			function (ResponseInterface $response) use ($message) {
-				$responseBody = $response->getBody();
-				$responseData = json_decode($responseBody);
+				$responseBody = json_decode($response->getBody());
 				if (!@$responseData->predictions[0]->bytesBase64Encoded) { return $message->channel->sendMessage("No image could be generated"); }
 				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
 				$mimeType = $responseData->predictions[0]->mimeType;
