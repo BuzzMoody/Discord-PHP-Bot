@@ -382,8 +382,18 @@
 		$builder = MessageBuilder::new()
 			->addEmbed($embed)
 			->setReplyTo($message);
+			
+		if (str_starts_with($authIMG, "attachment://")) {
+			$fileIMG = substr($authIMG, strlen('attachment://'));
+			$builder->addFile("/Media/{$fileIMG}", $fileIMG);
+		}
 		
 		return $message->channel->sendMessage($builder);
+		
+			
+		$builder = MessageBuilder::new()
+			->addEmbed($embed)
+			->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png");
 		
 	}
 	
