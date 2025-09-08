@@ -365,7 +365,7 @@
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $row['channelid']);
 				$remindermsg = $channel->messages->fetch('1414434587677032499')->then(function ($remindermsg) {
-					return simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $message, true, null); 
+					return simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $remindermsg, true, null); 
 				});	
 
 			}
