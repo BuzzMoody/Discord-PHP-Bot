@@ -358,18 +358,16 @@
 		$time = time();
 		$mysqli = mysqli_connect(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_KEY'), getenv('DB_NAME'));
 		$result = $mysqli->query("SELECT * FROM reminders WHERE time < {$time}");
-		$mysqli->close();
 		
 		if ($result->num_rows > 0) {
+			$mysqli->query("DELETE FROM reminders WHERE time = '{$row['time']}'");
+			$mysqli->close();
 			while($row = $result->fetch_assoc()) {
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $row['channelid']);
-				$remindermsg = $channel->messages->fetch('1414434587677032499')->then(function ($remindermsg) use ($row, $mysqli) {
-					$mysqli->query("DELETE FROM reminders WHERE time = '{$row['time']}'");
-					$mysqli->close();
+				$message = $channel->messages->fetch($row['messageid'])->then(function ($message) use ($row) {
 					return simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $remindermsg, true, null); 
 				});	
-
 			}
 		}
 		
