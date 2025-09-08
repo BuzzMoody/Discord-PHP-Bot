@@ -62,7 +62,7 @@
 		
 		if (@$response->error->message || @$response->blockReason) { 
 			$reason = ($response->error->message) ? $response->error->message : $response->blockReason;
-			return $message->channel->sendMessage("Gemini API Error: ".$reason);
+			return simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true, null);
 		}
 
 		$string = $response->candidates[0]->content->parts[0]->text;
