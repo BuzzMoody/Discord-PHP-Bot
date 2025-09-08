@@ -260,7 +260,7 @@
 						$start = $response[0]->start_time;
 						$duration = $response[0]->duration;
 						$hours = floor($duration / 3600);
-						$format = ($hours > 0) ? "G 'hours' i 'mins'" : "i 'mins'";
+						$format = ($hours > 0) ? "g \h\o\u\r\s i \m\i\n\s" : "i \m\i\n\s";
 						$length = gmdate($format, $duration);
 						$mode = Commands::DOTA_GAMEMODES[$response[0]->game_mode];
 						@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
@@ -284,10 +284,9 @@
 					->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
 					->setColor(getenv('COLOUR'));
 				
-				$embed->addFieldValues("Start Time", $tz->format('G:i A'), true);
+				$embed->addFieldValues("Start Time", $tz->format('g:i A'), true);
 				$embed->addFieldValues("Length", $length, true);
 				$embed->addFieldValues("Game Mode", "{$ranked} {$mode}", true);
-				$embed->addFieldValues("\n", "\n", false);
 				
 				$desc = "";
 				
@@ -301,10 +300,14 @@
 
 				$embed->setDescription($desc."\n");
 				
+				$builder = MessageBuilder::new()
+					->addEmbed($embed)
+					->addFile("/Media/dota.png", "dota.png");
+				
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', '232691831090053120');
 
-				$channel->sendEmbed($embed);
+				return $channel->sendMessage($builder);
 			
 			}
 			
