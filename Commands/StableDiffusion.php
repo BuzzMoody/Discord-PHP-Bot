@@ -37,7 +37,7 @@
 				$responseBody = json_decode($response->getBody());
 				$output = print_r($responseBody, true);
 				file_put_contents('/Media/array_output.txt', $output);
-				if (!@$responseData->predictions[0]->bytesBase64Encoded) { return simpleEmbed("Imagen AI", "attachment://gemini.png", "No image could be generated.", $message, true, null); }
+				if (!isset($responseData->predictions[0]->bytesBase64Encoded)) { return simpleEmbed("Imagen AI", "attachment://gemini.png", "No image could be generated.", $message, true, null); }
 				$base64 = $responseData->predictions[0]->bytesBase64Encoded;
 				$mimeType = $responseData->predictions[0]->mimeType;
 				$bin = base64_decode($base64);
