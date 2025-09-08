@@ -8,9 +8,9 @@
 			
 				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', '274828566909157377');
-				$message = $channel->messages->fetch('1414434587677032499');
-				print_r($message);
-				return $message->reply("Replying to message");
+				$message2 = $channel->messages->fetch('1414434587677032499');
+				print_r($message2);
+				return $message2->reply("Replying to message");
 				
 		
 		}
