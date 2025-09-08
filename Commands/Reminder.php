@@ -18,7 +18,7 @@
 		$result = $mysqli->query("SELECT * FROM reminders WHERE userid = '{$message->author->id}'");
 		
 		if ($result->num_rows > 4) {
-			 return simpleEmbed("Chat Reminders", "attachment://bot.webp", "Cannot set a new reminder for you as you already have 5 set.", $message, true, null); 
+			return simpleEmbed("Chat Reminders", "attachment://bot.webp", "Cannot set a new reminder for you as you already have 5 set.", $message, true, null); 
 		}
 		
 		if ($mysqli->query("INSERT INTO reminders (userid, time, messageid, channelid) VALUES ({$message->author->id}, {$time}, {$message->id}, {$message->channel->id})")) {
