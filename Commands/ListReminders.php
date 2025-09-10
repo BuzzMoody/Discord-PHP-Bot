@@ -33,7 +33,7 @@
 					$dateTime = new DateTime($timestamp, new DateTimeZone('Australia/Melbourne'));
 					$offset = $dateTime->getOffset();
 					$timestamp = $timestamp + $offset;
-					$embed->addFieldValues("Created <t:{$timestamp}:R>", "*{$msg->content}* https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", false);
+					$embed->addFieldValues("Created <t:{$timestamp}:R> in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
