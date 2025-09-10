@@ -21,7 +21,7 @@
 				$channel = $guild->channels->get('id', $row['channelid']);
 				$messagePromises[] = $channel->messages->fetch($messageid);
 			}
-			\React\Promise\all($messagePromises)->then(function ($fetchedMessages) use ($message, $discord, $row) {
+			\React\Promise\all($messagePromises)->then(function ($fetchedMessages) use ($message, $discord) {
 				
 				$embed = $discord->factory(Embed::class);
 				$embed->setColor(getenv('COLOUR'))
@@ -29,7 +29,7 @@
 					->setDescription("Here are your reminders:");
 
 				foreach ($fetchedMessages as $msg) {
-					$embed->addFieldValues("<t:{$row['time']}:R>", "*{$msg->content}*\nhttps://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", false);
+					$embed->addFieldValues("<t:{$msg->timestamp}:R>", "*{$msg->content}*\nhttps://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", false);
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
