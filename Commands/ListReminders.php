@@ -30,10 +30,9 @@
 
 				foreach ($fetchedMessages as $msg) {
 					$timestamp = strtotime($msg->timestamp);
-					$dateTime = new DateTime("@$timestamp", new DateTimeZone('Australia/Melbourne'));
-					$offset = $dateTime->getOffset();
-					$timestamp = $timestamp + $offset;
-					$embed->addFieldValues("Created <t:{$timestamp}:R> in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
+					$dateTime = new DateTime("@$timestamp");
+					$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+					$embed->addFieldValues("Created <t:{$dateTime->getTimestamp()}:R> in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
