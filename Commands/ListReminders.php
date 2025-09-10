@@ -29,9 +29,10 @@
 					->setDescription("Here are your reminders:");
 
 				foreach ($fetchedMessages as $msg) {
-					$dateTime = new DateTime(strtotime($msg->timestamp));
-					$timeZone = new DateTimeZone('Australia/Melbourne');
-					$dateTime->setTimezone($timeZone);
+					$timestamp = strtotime($msg->timestamp);
+					$dateTime = new DateTime($timestamp, new DateTimeZone('Australia/Melbourne'));
+					$offset = $dateTime->getOffset();
+					$timestamp = $timestamp + $offset;
 					$embed->addFieldValues("Created <t:{$dateTime}:R>", "*{$msg->content}* https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", false);
 				}
 				$builder = MessageBuilder::new()
