@@ -21,7 +21,7 @@
 				$channel = $guild->channels->get('id', $row['channelid']);
 				$messagePromises[] = $channel->messages->fetch($messageid);
 			}
-			\React\Promise\all($messagePromises)->then(function ($fetchedMessages) use ($message, $discord) {
+			\React\Promise\all($messagePromises)->then(function ($fetchedMessages) use ($message, $discord, $row) {
 				
 				$embed = $discord->factory(Embed::class);
 				$embed->setColor(getenv('COLOUR'))
