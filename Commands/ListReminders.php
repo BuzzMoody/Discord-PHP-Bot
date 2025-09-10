@@ -4,6 +4,7 @@
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
+	use Carbon\Carbon;
 	
 	function ListReminders($message) {
 		
@@ -29,10 +30,9 @@
 					->setDescription("Here are your reminders:");
 
 				foreach ($fetchedMessages as $msg) {
-					$timestamp = strtotime($msg->timestamp);
-					$dateTime = new DateTime("@$timestamp");
-					$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
-					$embed->addFieldValues("Created <t:{$dateTime->getTimestamp()}:R> in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
+					$carbonTimestamp = Carbon::createFromTimestamp($msg->timestamp);
+					$newTimestamp = $carbonTimestamp->addHours(10);
+					$embed->addFieldValues("Created <t:{$newTimestamp->getTimestamp()}:R> in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
