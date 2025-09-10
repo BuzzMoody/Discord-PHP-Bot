@@ -17,6 +17,7 @@
 		if ($result->num_rows > 0) {
 			while ($row = $result->fetch_assoc()) {
 				$messageid = $row['messageid'];
+				$guild = $discord->guilds->get('id', '232691831090053120');
 				$channel = $guild->channels->get('id', $row['channelid']);
 				$messagePromises[] = $channel->messages->fetch($messageid);
 			}
