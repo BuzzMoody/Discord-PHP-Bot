@@ -29,7 +29,7 @@
 					->setDescription("Here are your reminders:");
 
 				foreach ($fetchedMessages as $msg) {
-					$embed->addFieldValues("<t:{$msg->timestamp}:R>", "*{$msg->content}*\nhttps://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", false);
+					$embed->addFieldValues("<t:".strtotime($msg->timestamp).":R>", "*{$msg->content}*\nhttps://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", false);
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
