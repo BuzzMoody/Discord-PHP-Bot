@@ -30,7 +30,9 @@
 					->setDescription("Here are your reminders:");
 
 				foreach ($fetchedMessages as $msg) {
-					$embed->addFieldValues("Created {$msg->timestamp} in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
+					$carbonUTC = Carbon::createFromFormat('Y-m-d H:i:s', $msg->timestamp, 'UTC');
+					$carbonMelb = $carbonUTC->setTimezone('Australia/Melbourne');
+					$embed->addFieldValues("Created {$carbonMelb->timestamp} in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$msg->content}*", false);
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
