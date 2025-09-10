@@ -412,6 +412,7 @@
 		
 		$filtered = preg_replace_callback('/<@(\d+)>/', function ($matches) use ($guild) {
 			$member = $guild->members->get('id', $matches[1]);
+			print_r($member);
 			return "@{$member->nick()}";		
 		}, $content);
 
