@@ -411,7 +411,7 @@
 		$guild = $discord->guilds->get('id', '232691831090053120');
 		
 		$filtered = preg_replace_callback('/<@(\d+)>/', function ($matches) use ($guild) {
-			$member = $guild->members->fetch($matches[1])->then(function ($member) {
+			return $guild->members->fetch($matches[1])->then(function ($member) {
 				print_r($member);
 				if (!empty($member->nick)) { return "@{$member->nick}";	}
 				else { return "@{$member->user->username}";	}
