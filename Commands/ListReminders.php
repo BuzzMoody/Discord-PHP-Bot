@@ -37,7 +37,7 @@
 				}
 				$builder = MessageBuilder::new()
 					->addEmbed($embed)
-					->setReplyTo($msg)
+					->setReplyTo($message)
 					->addFile("/Media/bot.webp", "bot.webp");
 					
 				$message->channel->sendMessage($builder);
