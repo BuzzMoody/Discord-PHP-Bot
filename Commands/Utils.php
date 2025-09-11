@@ -411,7 +411,7 @@
 		$content = $message->content;
 		
 		if ($message->mentions->count() > 0) {	
-			foreach ($message->mentions as $mentions) {
+			foreach ($message->mentions as $mention) {
 				$member = $message->guild->members->get('id', $mention->id);
 				if ($member) {
 					$displayName = (empty($member->nick)) ? $member->user->username : $member->nick;
