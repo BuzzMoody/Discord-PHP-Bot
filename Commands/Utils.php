@@ -404,4 +404,24 @@
 		
 	}
 	
+	function filterUsers($message) {
+		
+		global $discord;
+		
+		$content = $message->content;
+		
+		if ($message->mentions->count() > 0) {	
+			foreach ($message->mentions as $mention) {
+				$member = $message->guild->members->get('id', $mention->id);
+				if ($member) {
+					$displayName = (empty($member->nick)) ? $member->user->username : $member->nick;
+					$content = str_replace("<@{$mention->id}>", "@{$displayName}", $content);
+				}
+			}
+		}
+
+		return $content;
+		
+	}
+	
 ?>
