@@ -404,21 +404,23 @@
 		
 	}
 	
-	function filterUsers($content) {
+	function filterUsers($message) {
 		
 		global $discord;
 		
-		$guild = $discord->guilds->get('id', '232691831090053120');
+		$content = $message->content;
 		
-		$filtered = preg_replace_callback('/<@(\d+)>/', function ($matches) use ($guild) {
-			return $guild->members->fetch($matches[1])->then(function ($member) {
-				print_r($member);
-				if (!empty($member->nick)) { return "@{$member->nick}";	}
-				else { return "@{$member->user->username}";	}
-			});
-		}, $content);
+		if ($message->mentions->count() > 0) {	
+			foreach ($message->mentions as $mentions) {
+				$member = $message->guild->members->get('id', $mention->id);
+				if ($member) {
+					$displayName = (empty($member->nick)) ? $member->user->username : $member->nick;
+					$content = str_replace("<@{$mention->id}>", "@{$displayName}", $content);
+				}
+			}
+		}
 
-		return $filtered;
+		return $content;
 		
 	}
 	

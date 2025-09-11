@@ -32,7 +32,7 @@
 				foreach ($fetchedMessages as $msg) {
 					$carbonUTC = Carbon::createFromFormat('Y-m-d H:i:s', $msg->timestamp, 'UTC');
 					$carbonMelb = $carbonUTC->setTimezone('Australia/Melbourne');
-					$content = filterUsers($msg->content);
+					$content = filterUsers($msg);
 					$embed->addFieldValues("Created <t:{$carbonMelb->timestamp}:R> in https://discord.com/channels/232691831090053120/{$msg->channel_id}/{$msg->id}", "*{$content}*", false);
 				}
 				$builder = MessageBuilder::new()
