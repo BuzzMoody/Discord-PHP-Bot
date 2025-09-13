@@ -321,7 +321,7 @@
 		
 		for ($level = count(Commands::DOTA_LEVELS) - 1; $level >= 1; $level--) {
 			if ($exp >= Commands::DOTA_LEVELS[$level]) {
-				return $level;
+				return ($level+1);
 			}
 		}
 		
