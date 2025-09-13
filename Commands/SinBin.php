@@ -20,9 +20,8 @@
 			}
 			$time = (is_numeric(@$matches[2])) ? @$matches[2] : 2;
 			$reason = (empty($matches[3])) ? "no reason given." : trim(@$matches[3]);
-			
-			$mem->timeoutMember(new Carbon("{$time} minutes"));
-			return simpleEmbed("Sin Bin", "attachment://bot.webp", "<@{$id}> has been given a **{$time}** minute timeout: ***{$reason}***", $message, false, null);
+			simpleEmbed("Sin Bin", "attachment://bot.webp", "<@{$id}> has been given a **{$time}** minute timeout: ***{$reason}***", $message, false, null);
+			$mem->timeoutMember(new Carbon("{$time} minutes"));	
 			
 		}
 		
