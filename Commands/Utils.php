@@ -296,7 +296,7 @@
 						$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**";
 						$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
 						$embed->addFieldValues("Damage", "{$details[$x]['HeroDMG']} hero\n{$details[$x]['stats']['TowerDMG']} tower", true);
-						$embed->addFieldValues("Stats", "{$details[$x]['XPM']} xpm (Lvl ".getLevel(($details[$x]['XPM'] * ($duration / 60)))})."\n{$details[$x]['stats']['GPM']} gpm", true);
+						$embed->addFieldValues("Stats", "{$details[$x]['XPM']} xpm (Lvl ".getLevel(($details[$x]['XPM'] * ($duration / 60))).")\n{$details[$x]['stats']['GPM']} gpm", true);
 					}
 				}
 
