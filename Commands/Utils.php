@@ -256,7 +256,7 @@
 						$team = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
 						$details[$i]['win'] = ($response[0]->radiant_win == true && $team == "Radiant" || $response[0]->radiant_win == false && $team == "Dire") ? "Won" : "Lost";
 						$details[$i]['hero'] = Commands::DOTA_HEROES[$response[0]->hero_id];
-						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => $response[0]->hero_damage, "TowerDMG" => $response[0]->tower_damage, "XPM" => $response[0]->xp_per_min, "GPM" => $response[0]->gold_per_min);
+						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => number_format($response[0]->hero_damage), "TowerDMG" => number_format($response[0]->tower_damage), "XPM" => $response[0]->xp_per_min, "GPM" => number_format($response[0]->gold_per_min));
 						$start = $response[0]->start_time;
 						$duration = $response[0]->duration;
 						$hours = floor($duration / 3600);
@@ -296,7 +296,7 @@
 						$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**";
 						$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}", true);
 						$embed->addFieldValues("Damage", "{$details[$x]['stats']['HeroDMG']} hero\n{$details[$x]['stats']['TowerDMG']} tower", true);
-						$embed->addFieldValues("Stats", "{$details[$x]['stats']['XPM']} xpm (Lvl ".getLevel(($details[$x]['stats']['XPM'] * ($duration / 60))).")\n{$details[$x]['stats']['GPM']} gpm", true);
+						$embed->addFieldValues("Stats", number_format($details[$x]['stats']['XPM'])." xpm (Lvl ".getLevel(($details[$x]['stats']['XPM'] * ($duration / 60))).")\n{$details[$x]['stats']['GPM']} gpm", true);
 					}
 				}
 
