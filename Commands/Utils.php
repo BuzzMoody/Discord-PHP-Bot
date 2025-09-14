@@ -253,10 +253,10 @@
 						$details[$i]['new'] = true;
 						$details[$i]['discord'] = $ids[$i][0];
 						$details[$i]['name'] = $ids[$i][2];
-						$team = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
-						$details[$i]['win'] = ($response[0]->radiant_win == true && $team == "Radiant" || $response[0]->radiant_win == false && $team == "Dire") ? "Won" : "Lost";
+						$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
+						$details[$i]['win'] = ($response[0]->radiant_win == true && details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && details[$i]['team'] == "Dire") ? "Won" : "Lost";
 						$details[$i]['hero'] = Commands::DOTA_HEROES[$response[0]->hero_id];
-						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => number_format($response[0]->hero_damage), "TowerDMG" => number_format($response[0]->tower_damage), "XPM" => $response[0]->xp_per_min, "GPM" => number_format($response[0]->gold_per_min));
+						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => number_format($response[0]->hero_damage), "TowerDMG" => number_format($response[0]->tower_damage), "XPM" => $response[0]->xp_per_min, "GPM" => number_format($response[0]->gold_per_min), "Heal" => number_format($response[0]->hero_healing));
 						$start = $response[0]->start_time;
 						$duration = $response[0]->duration;
 						$hours = floor($duration / 3600);
@@ -286,7 +286,7 @@
 				
 				$embed->addFieldValues("Start Time", $tz->format('g:i A'), true);
 				$embed->addFieldValues("Length", $length, true);
-				$embed->addFieldValues("Game Mode", "{$ranked} {$mode} ({$team})", true);
+				$embed->addFieldValues("Game Mode", "{$ranked} {$mode}", true);
 				
 				$desc = "";
 				
@@ -294,9 +294,9 @@
 					if (@$details[$x]['new']) {
 						$id = $x;
 						$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**";
-						$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}", true);
-						$embed->addFieldValues("Damage", "{$details[$x]['stats']['HeroDMG']} hero\n{$details[$x]['stats']['TowerDMG']} tower", true);
-						$embed->addFieldValues("Stats", number_format($details[$x]['stats']['XPM'])." xpm (Lvl ".getLevel(($details[$x]['stats']['XPM'] * ($duration / 60))).")\n{$details[$x]['stats']['GPM']} gpm", true);
+					$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
+						$embed->addFieldValues("Damage / Heal", "{$details[$x]['stats']['HeroDMG']} hero\n{$details[$x]['stats']['TowerDMG']} tower\n{$details[$x]['stats']['Heal']} heal\n", true);
+						$embed->addFieldValues("Stats", "Lvl ".getLevel(($details[$x]['stats']['XPM'] * ($duration / 60)))."\n".number_format($details[$x]['stats']['XPM'])." xpm (Lvl )\n{$details[$x]['stats']['GPM']} gpm", true);
 					}
 				}
 
