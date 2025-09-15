@@ -10,8 +10,10 @@
 		
 		global $discord;
 		
+		$url = (empty($args)) ? "https://unofficialurbandictionaryapi.com/api/random?limit=1" : "https://unofficialurbandictionaryapi.com/api/search?term={$args}&limit=1";
+		
 		$http = new Browser();
-		$http->get("https://unofficialurbandictionaryapi.com/api/search?term={$args}&limit=1")->then(
+		$http->get($url)->then(
 			function (ResponseInterface $response) use ($message, $discord) {
 				$output = json_decode($response->getBody());
 				
