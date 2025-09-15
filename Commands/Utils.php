@@ -254,7 +254,7 @@
 						$details[$i]['discord'] = $ids[$i][0];
 						$details[$i]['name'] = $ids[$i][2];
 						$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
-						$details[$i]['win'] = ($response[0]->radiant_win == true && details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && details[$i]['team'] == "Dire") ? "Won" : "Lost";
+						$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && $details[$i]['team'] == "Dire") ? "Won" : "Lost";
 						$details[$i]['hero'] = Commands::DOTA_HEROES[$response[0]->hero_id];
 						$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => number_format($response[0]->hero_damage), "TowerDMG" => number_format($response[0]->tower_damage), "XPM" => $response[0]->xp_per_min, "GPM" => number_format($response[0]->gold_per_min), "Heal" => number_format($response[0]->hero_healing));
 						$start = $response[0]->start_time;
