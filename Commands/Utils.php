@@ -295,8 +295,8 @@
 						$id = $x;
 						$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**";
 					$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
-						$embed->addFieldValues("Damage / Heal", "{$details[$x]['stats']['HeroDMG']} hero\n{$details[$x]['stats']['TowerDMG']} tower\n{$details[$x]['stats']['Heal']} heal\n", true);
-						$embed->addFieldValues("Stats", "Lvl ".getLevel(($details[$x]['stats']['XPM'] * ($duration / 60)))."\n".number_format($details[$x]['stats']['XPM'])." xpm (Lvl )\n{$details[$x]['stats']['GPM']} gpm", true);
+						$embed->addFieldValues("Damage / Heal", "{$details[$x]['stats']['HeroDMG']} dmg\n{$details[$x]['stats']['TowerDMG']} tower\n{$details[$x]['stats']['Heal']} heal\n", true);
+						$embed->addFieldValues("Stats", "Lvl ".getLevel(($details[$x]['stats']['XPM'] * ($duration / 60)))."\n".number_format($details[$x]['stats']['XPM'])." xpm\n{$details[$x]['stats']['GPM']} gpm", true);
 					}
 				}
 
