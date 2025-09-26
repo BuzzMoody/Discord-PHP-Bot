@@ -39,7 +39,8 @@ $discord->on('ready', function (Discord $discord) use ($commands) {
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
-		updateActivity($discord);	
+		updateActivity($discord);
+		file_put_contents('/tmp/bot_alive', time());
 	});
 	
 	$discord->getLoop()->addPeriodicTimer(120, function () {
