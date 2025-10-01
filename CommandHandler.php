@@ -83,7 +83,7 @@ class Commands {
 	private function funcCall($func_name, $message, $args, $matches) {
 		
 		if (isset(self::$functions[$func_name]) && function_exists($func_name)) {
-			$func_name($message, $args, $matches);
+			$func_name($this, $message, $args, $matches);
 		}
 		
 	}

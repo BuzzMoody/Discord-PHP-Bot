@@ -1,6 +1,6 @@
 <?php
 
-	function Test($message) {
+	function Test($this, $message) {
 	
 		if (isAdmin($message->author->id) && getenv('BETA') === 'true') {
 			

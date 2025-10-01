@@ -29,7 +29,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $uptime = (int)(microtime(true) * 1000);
 $commands = new Commands($uptime, $discord, $pdo);
 
-$discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
+$discord->on('ready', function (Discord $discord) use ($commands, PDO $pdo) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
@@ -40,8 +40,8 @@ $discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
 	$discord->updatePresence($activity);
 	checkDatabase($pdo);
 
-	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
-		checkReminders();
+	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord, PDO $pdo) {
+		checkReminders($discord, $pdo);
 		updateActivity($discord);
 	});
 	
