@@ -23,8 +23,11 @@ $discord = new Discord([
 	'loadAllMembers' => true,
 ]);
 
+$pdo = new PDO('sqlite:/Media/discord.db');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
 $uptime = (int)(microtime(true) * 1000);
-$commands = new Commands($uptime, $discord);
+$commands = new Commands($uptime, $discord, $pdo);
 
 $discord->on('ready', function (Discord $discord) use ($commands) {
 	
@@ -98,6 +101,13 @@ function checkDatabase() {
 	$result = $mysqli->query("SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = 'discord' AND table_name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')");
 	if ($result->num_rows != 4) { shell_exec("mariadb -h\"".getenv('DB_HOST')."\" -u\"".getenv('DB_USER')."\" -p\"".getenv('DB_KEY')."\" < \"/init/init.sql\""); }
 	$mysqli->close();
+
+}
+
+function checkDatabase() {
+
+	$tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')")->fetchAll();
+	if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
 
 }
 

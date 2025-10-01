@@ -5,6 +5,7 @@ class Commands {
 	public $uptime;
 	public $patterns;
 	public $discord;
+	private $pdo;
 	
 	private static $functions = [];
 	
@@ -28,10 +29,12 @@ class Commands {
 		0 => "Invalid", 1 => "Unranked", 2 => "Private Lobby", 3 => "Co-Op Bots", 4 => "Ranked", 5 => "Server Test", 6 => "Tutorial"
 	];
 	
-	public function __construct($uptime, $discord) {
+	public function __construct($uptime, $discord, PDO $pdo) {
 
 		$this->uptime = $uptime;
 		$this->discord = $discord;
+		$this->pdo = $pdo;
+
 		$this->patterns = [
 			'/^(kate|t(?:ay(?:lor)?|swizzle)|emma|e?liz(?:abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)$/' => 'BabeImages',
 			'/^(search|google|bing|find|siri)/' => 'SearchGoogle',
