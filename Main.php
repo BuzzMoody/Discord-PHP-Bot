@@ -38,7 +38,7 @@ $discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
 		'type' => Activity::TYPE_LISTENING,
 	]);
 	$discord->updatePresence($activity);
-	checkDatabase();
+	checkDatabase($pdo);
 
 	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord) {
 		checkReminders();
@@ -95,7 +95,7 @@ function getMemberCount($discord) {
 	
 }
 
-function checkDatabase() {
+function checkDatabase(PDO $pdo) {
 
 	$tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')")->fetchAll();
 	if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
