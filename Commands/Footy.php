@@ -18,13 +18,13 @@
 		$embed->setAuthor("AFL Round Summary", "https://www.afl.com.au/resources/v5.37.23/afl/favicon-32x32.png");
 
 		$client->get('https://www.afl.com.au')->then(
-			function (ResponseInterface $response) use ($client, $message, $embed, $keys) {
+			function (ResponseInterface $response) use ($client, $message, $embed) {
 			
 				$responseBody = $response->getBody();
 				preg_match("/data-round-number=\"(\d+)\"/", $responseBody, $round);
 				
 				$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=73&pageSize=10&roundNumber='.$round[1])->then(
-					function (ResponseInterface $response) use ($message, $embed, $keys) {
+					function (ResponseInterface $response) use ($message, $embed) {
 						
 						$responseBody = $response->getBody();
 						$responseData = json_decode($responseBody);

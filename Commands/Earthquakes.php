@@ -45,7 +45,7 @@
 		$result = curl_exec($ch);
 		$responseData = json_decode($result);
 
-		if ($responseData->totalFeatures >= 1) {
+		if (@$responseData->totalFeatures >= 1) {
 			
 			foreach ($responseData->features as $quakes) {
 				
