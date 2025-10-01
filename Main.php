@@ -29,7 +29,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $uptime = (int)(microtime(true) * 1000);
 $commands = new Commands($uptime, $discord, $pdo);
 
-$discord->on('ready', function (Discord $discord) use ($commands) {
+$discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
