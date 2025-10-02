@@ -8,6 +8,7 @@
 	include __DIR__.'/vendor/autoload.php';
 	include 'CommandHandler.php';
 	include 'Services.php';
+	include 'Utils/BotUtils.php'; 
 
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
@@ -26,9 +27,10 @@
 		'loadAllMembers' => true,
 	]);
 
-	$commands = new Commands($discord, $pdo, $uptime);
+	$utils = new BotUtils($discord, $pdo);
+	$commands = new Commands($discord, $pdo, $uptime, $utils);
 	$services = new Services($discord, $pdo, $uptime, $commands);
-
+	
 	$discord->on('ready', function (Discord $discord) use ($commands, $services) {
 		
 		echo "(".date("d/m h:i:sA").") Bot is ready!\n";

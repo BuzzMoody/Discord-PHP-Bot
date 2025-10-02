@@ -51,12 +51,9 @@ class Commands {
 			// '/^(roll|dice)/' => 'Dice',
 			// '/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
 			// '/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
-			// '/^ping$/' => 'Ping',
 			// '/^radar$/' => 'Radar',
 			// '/^apex$/' => 'Apex',
-			// '/^uptime$/' => 'Uptime',
 			// '/^reload$/' => 'Reload',
-			// '/^betarl$/' => 'BetaReload',
 			// '/^(afl|footy)$/' => 'Footy',
 			// '/^test$/' => 'Test',
 		// ];

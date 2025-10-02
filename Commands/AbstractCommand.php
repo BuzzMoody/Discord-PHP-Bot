@@ -5,12 +5,14 @@ abstract class AbstractCommand implements CommandInterface {
 	protected $discord;
 	protected $pdo;
 	protected $uptime;
+	protected $utils;
 	protected $functions; 
 
-	public function __construct($discord, PDO $pdo, $uptime) {	
+	public function __construct($discord, PDO $pdo, $uptime, BotUtils $utils) {	
 		$this->discord = $discord;
 		$this->pdo = $pdo;
 		$this->uptime = $uptime;
+		$this->utils = $utils;
 	}
 
 	public function setFunctions(array $functions) {

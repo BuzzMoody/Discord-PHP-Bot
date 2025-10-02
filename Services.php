@@ -20,17 +20,6 @@
 			$tables = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')")->fetchAll();
 			if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
 		}
-
-		// private function getMemberCount(): int {
-			// $countGuild = $this->discord->guilds->get('id', '232691831090053120');
-			// $count = -1;
-			// foreach ($countGuild->members as $countMember) {
-				// if ($countMember->status !== null && $countMember->status !== "offline") { 
-					// @$count++; 
-				// }
-			// }
-			// return $count;
-		// }
 		
 		private function getMemberCount(): int {
 			$countGuild = $this->discord->guilds->get('id', '232691831090053120');
