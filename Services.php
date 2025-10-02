@@ -8,6 +8,8 @@
 		private $pdo;
 		private $commands;
 		private $uptime;
+		
+		private const PLAYFUL_INSULTS = ["Degenerates", "Scoundrels", "Rascals", "Ruffians", "Miscreants", "Reprobates", "Villains", "Knaves", "Lowlifes", "Scallywags", "Numbskulls", "Nincompoops", "Rapscallions", "Delinquents", "Ne'er-do-wells", "Wastrels", "Fools", "Buffoons", "Loons", "Cads", "Creeps", "Charlatans", "Twits", "Scamps", "Weasels", "Goons", "Clowns", "Bozos", "Doofuses", "Louts", "Boneheads", "Dingbats", "Meatheads", "Dunces", "Blockheads", "Muttonheads", "Simpletons"];
 
 		public function __construct($discord, PDO $pdo, $uptime, Commands $commands) {
 			$this->discord = $discord;
@@ -31,7 +33,7 @@
 
 		public function updateActivity() {
 			$activity = $this->discord->factory(Activity::class, [
-				'name' => $this->getMemberCount($this->discord) . " Incels",
+				'name' => $this->getMemberCount($this->discord)." ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)],
 				'type' => Activity::TYPE_LISTENING,
 			]);
 			$this->discord->updatePresence($activity);

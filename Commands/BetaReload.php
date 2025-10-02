@@ -17,7 +17,6 @@
 		public function execute($message, $args, $matches) {
 		
 			if ($this->utils->isAdmin($message->author->id) && getenv('BETA') === 'true') {
-				$message->reply("Reloading...");
 				die();
 			}
 		

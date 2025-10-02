@@ -5,6 +5,17 @@
 
 	class Ping extends AbstractCommand {
 		
+		private const RESPONSES = [
+			"Pong! Right back at ya.",
+			"Ping received. Pong!",
+			"Got it!",
+			"Ping received, initiating pong sequence... Pong!",
+			"Did someone say ping? Pong!",
+			"You rang? Pong!",
+			"Copy that. Pong!",
+			"The answer is always... pong."
+		];
+		
 		public function getName(): string {
 			return 'Ping';
 		}
@@ -18,23 +29,10 @@
 		}
 		
 		public function execute($message, $args, $matches) {
-		
-			$responses = [
-				"Pong! Right back at ya.",
-				"Ping received. Pong!",
-				"Got it!",
-				"Ping received, initiating pong sequence... Pong!",
-				"Did someone say ping? Pong!",
-				"You rang? Pong!",
-				"Copy that. Pong!",
-				"The answer is always... pong."
-			];
-			
-			$pingKey = array_rand($responses);
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setColor(getenv('COLOUR'))
-				->setDescription($responses[$pingKey]);
+				->setDescription(self::RESPONSES[array_rand(self::RESPONSES)]);
 			
 			$builder = MessageBuilder::new()
 				->addEmbed($embed);
