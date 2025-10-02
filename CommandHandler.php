@@ -29,74 +29,76 @@ class Commands {
 		0 => "Invalid", 1 => "Unranked", 2 => "Private Lobby", 3 => "Co-Op Bots", 4 => "Ranked", 5 => "Server Test", 6 => "Tutorial"
 	];
 	
-	public function __construct($uptime, $discord, PDO $pdo) {
+	public function __construct( discord, PDO $pdo, $uptime) {
 
-		$this->uptime = $uptime;
 		$this->discord = $discord;
 		$this->pdo = $pdo;
+		$this->uptime = $uptime;
 
-		$this->patterns = [
-			'/^(kate|t(?:ay(?:lor)?|swizzle)|emma|e?liz(?:abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)$/' => 'BabeImages',
-			'/^(search|google|bing|find|siri)/' => 'SearchGoogle',
-			'/^(image|img|photo|pic)/' => 'SearchImage',
-			'/^(ban|kick|sb|sinbin)/' => 'SinBin',
-			'/^(bard|gemini|(?:open)?ai)/' => 'Vertex',
-			'/^(asx|share(?:s)?|stock(?:s)?|etf)/' => 'ASX',
-			'/^(weather|temp(?:erature)?)/' => 'Weather',
-			'/^forecast$/' => 'Forecast',
-			'/^(shell|bash|cli|cmd)/' => 'RunCLI',
-			'/^remind(?:me|er)$/' => 'Reminder',
-			'/^reminders$/' => 'ListReminders',
-			'/^f(?:ormula)?1$/' => 'F1',
-			'/^(roll|dice)/' => 'Dice',
-			'/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
-			'/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
-			'/^ping$/' => 'Ping',
-			'/^radar$/' => 'Radar',
-			'/^apex$/' => 'Apex',
-			'/^uptime$/' => 'Uptime',
-			'/^reload$/' => 'Reload',
-			'/^betarl$/' => 'BetaReload',
-			'/^(afl|footy)$/' => 'Footy',
-			'/^test$/' => 'Test',
-		];
+		// $this->patterns = [
+			// '/^(kate|t(?:ay(?:lor)?|swizzle)|emma|e?liz(?:abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)$/' => 'BabeImages',
+			// '/^(search|google|bing|find|siri)/' => 'SearchGoogle',
+			// '/^(image|img|photo|pic)/' => 'SearchImage',
+			// '/^(ban|kick|sb|sinbin)/' => 'SinBin',
+			// '/^(bard|gemini|(?:open)?ai)/' => 'Vertex',
+			// '/^(asx|share(?:s)?|stock(?:s)?|etf)/' => 'ASX',
+			// '/^(weather|temp(?:erature)?)/' => 'Weather',
+			// '/^forecast$/' => 'Forecast',
+			// '/^(shell|bash|cli|cmd)/' => 'RunCLI',
+			// '/^remind(?:me|er)$/' => 'Reminder',
+			// '/^reminders$/' => 'ListReminders',
+			// '/^f(?:ormula)?1$/' => 'F1',
+			// '/^(roll|dice)/' => 'Dice',
+			// '/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
+			// '/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
+			// '/^ping$/' => 'Ping',
+			// '/^radar$/' => 'Radar',
+			// '/^apex$/' => 'Apex',
+			// '/^uptime$/' => 'Uptime',
+			// '/^reload$/' => 'Reload',
+			// '/^betarl$/' => 'BetaReload',
+			// '/^(afl|footy)$/' => 'Footy',
+			// '/^test$/' => 'Test',
+		// ];
 		
-		$this->funcLoad();
+		$this->loadCommands();
 		
 	}
 	
-	public function funcExec($message) {
+	public function execCommand($message) {
 	
 		$content = trim($message->content);
 		preg_match('/^!(\w+)(?:\s+(.*))?$/is', $content, $matches);
 		$command = strtolower($matches[1]);
 		$args = $matches[2] ?? '';		
-		foreach ($this->patterns as $pattern => $func_name) {
+		foreach ($this->functions as $pattern => $function_obj) {
 			if (preg_match($pattern, $command, $matches)) {
-				$this->funcCall($func_name, $message, $args, $matches);
+				$function_obj->execute($message, $args, $matches);
 				break;
 			}
 		}
 		
 	}
 	
-	private function funcCall($func_name, $message, $args, $matches) {
+	public function loadCommands($dir = "Commands") {
 		
-		if (isset(self::$functions[$func_name]) && function_exists($func_name)) {
-			$func_name($this, $message, $args, $matches);
-		}
-		
-	}
-	
-	private function funcLoad($dir = "Commands") {
-		
+		require_once("{$dir}/CommandInterface.php");
+        require_once("{$dir}/AbstractCommand.php");
 		$files = scandir($dir);
 		foreach ($files as $file) {
-			if (substr($file, -3) === 'php') {
-				$func_name = pathinfo($file, PATHINFO_FILENAME);
+			$func_name = pathinfo($file, PATHINFO_FILENAME);
+			if (substr($file, -3) === 'php' && $func_name !== 'CommandInterface' && $func_name !== 'AbstractCommand') {				
 				include_once("{$dir}/{$file}");
-				self::$functions[$func_name] = $func_name;
-			}
+				$function_obj = new $func_name($this->discord, $this->pdo, $this->uptime);				
+				if ($function_obj instanceof CommandInterface) {
+					$this->functions[$function_obj->getPattern()] = $function_obj;
+				}				
+			}			
+		}
+		foreach ($this->functions as $function_obj) {
+			if (method_exists($function_obj, 'setCommands')) {
+				$function_obj->setCommands($this->functions));
+			}	
 		}
 
 	}

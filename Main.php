@@ -27,7 +27,7 @@ $pdo = new PDO('sqlite:/Media/discord.db');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $uptime = (int)(microtime(true) * 1000);
-$commands = new Commands($uptime, $discord, $pdo);
+$commands = new Commands($discord, $pdo, $uptime);
 
 $discord->on('ready', function (Discord $discord) use ($commands, PDO $pdo) {
 	
@@ -60,10 +60,10 @@ $discord->on('ready', function (Discord $discord) use ($commands, PDO $pdo) {
 		
 		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
 			if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
-				$commands->funcExec($message);
+				$commands->execCommand($message);
 			}
 			else if (getenv('BETA') !== 'true') {
-				$commands->funcExec($message);
+				$commands->execCommand($message);
 			}
 		}
 		
