@@ -21,15 +21,23 @@
 			if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
 		}
 
+		// private function getMemberCount(): int {
+			// $countGuild = $this->discord->guilds->get('id', '232691831090053120');
+			// $count = -1;
+			// foreach ($countGuild->members as $countMember) {
+				// if ($countMember->status !== null && $countMember->status !== "offline") { 
+					// @$count++; 
+				// }
+			// }
+			// return $count;
+		// }
+		
 		private function getMemberCount(): int {
 			$countGuild = $this->discord->guilds->get('id', '232691831090053120');
-			$count = -1;
-			foreach ($countGuild->members as $countMember) {
-				if ($countMember->status !== null && $countMember->status !== "offline") { 
-					@$count++; 
-				}
-			}
-			return $count;
+			$onlineMembers = $countGuild->members->filter(function ($member) {
+				return $member->status !== null && $member->status !== 'offline';
+			});
+			return $onlineMembers->count() - 1;
 		}
 
 		public function updateActivity() {
