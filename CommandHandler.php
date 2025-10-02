@@ -29,7 +29,7 @@ class Commands {
 		0 => "Invalid", 1 => "Unranked", 2 => "Private Lobby", 3 => "Co-Op Bots", 4 => "Ranked", 5 => "Server Test", 6 => "Tutorial"
 	];
 	
-	public function __construct( discord, PDO $pdo, $uptime) {
+	public function __construct($discord, PDO $pdo, $uptime) {
 
 		$this->discord = $discord;
 		$this->pdo = $pdo;

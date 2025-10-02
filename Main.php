@@ -29,7 +29,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $uptime = (int)(microtime(true) * 1000);
 $commands = new Commands($discord, $pdo, $uptime);
 
-$discord->on('ready', function (Discord $discord) use ($commands, PDO $pdo) {
+$discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
@@ -40,19 +40,19 @@ $discord->on('ready', function (Discord $discord) use ($commands, PDO $pdo) {
 	$discord->updatePresence($activity);
 	checkDatabase($pdo);
 
-	$discord->getLoop()->addPeriodicTimer(15, function () use ($discord, PDO $pdo) {
-		checkReminders($discord, $pdo);
-		updateActivity($discord);
-	});
+	// $discord->getLoop()->addPeriodicTimer(15, function () use ($discord, PDO $pdo) {
+		// checkReminders($discord, $pdo);
+		// updateActivity($discord);
+	// });
 	
-	$discord->getLoop()->addPeriodicTimer(120, function () {
-		checkDota();
-		checkDeadlock();
-	});
+	// $discord->getLoop()->addPeriodicTimer(120, function () {
+		// checkDota();
+		// checkDeadlock();
+	// });
 	
-	$discord->getLoop()->addPeriodicTimer(300, function () {
-		Earthquakes();
-	});
+	// $discord->getLoop()->addPeriodicTimer(300, function () {
+		// Earthquakes();
+	// });
 
 	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
 		
@@ -94,7 +94,7 @@ function getMemberCount($discord) {
 	
 }
 
-function checkDatabase(PDO $pdo) {
+function checkDatabase($pdo) {
 
 	$tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')")->fetchAll();
 	if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
