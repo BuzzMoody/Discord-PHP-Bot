@@ -9,6 +9,10 @@
 			return 'Uptime';
 		}
 		
+		public function getDesc(): string {
+			return 'Provides the current uptime for bot.';
+		}
+		
 		public function getPattern(): string {
 			return '/^uptime$/';
 		}
