@@ -7,11 +7,11 @@ class Services {
 	private $commands;
 	private $uptime;
 
-	public function __construct($discord, PDO $pdo, Commands $commands, $uptime) {
+	public function __construct($discord, PDO $pdo, $uptime, Commands $commands) {
 		$this->discord = $discord;
 		$this->pdo = $pdo;
-		$this->commands = $commands;
 		$this->uptime = $uptime;
+		$this->commands = $commands;
 	}
 
 	public function checkDatabase() {

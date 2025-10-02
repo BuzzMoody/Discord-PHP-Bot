@@ -27,7 +27,7 @@ $discord = new Discord([
 ]);
 
 $commands = new Commands($discord, $pdo, $uptime);
-$services = new Services($discord, $commands, $pdo, $uptime);
+$services = new Services($discord, $pdo, $uptime, $commands);
 
 $discord->on('ready', function (Discord $discord) use ($commands, $services) {
 	
