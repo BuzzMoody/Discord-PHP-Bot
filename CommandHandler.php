@@ -97,8 +97,8 @@ class Commands {
 		}
 		foreach ($this->functions as $function_obj) {
 			if (method_exists($function_obj, 'setCommands')) {
-				$function_obj->setCommands($this->functions));
-			}	
+				$function_obj->setCommands($this->functions);
+			}
 		}
 
 	}
