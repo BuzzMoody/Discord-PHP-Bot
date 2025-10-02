@@ -1,72 +1,72 @@
 <?php
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	error_reporting(E_ALL);
 
-date_default_timezone_set('Australia/Melbourne');
+	date_default_timezone_set('Australia/Melbourne');
 
-include __DIR__.'/vendor/autoload.php';
-include 'CommandHandler.php';
-include 'Services.php';
+	include __DIR__.'/vendor/autoload.php';
+	include 'CommandHandler.php';
+	include 'Services.php';
 
-use Discord\Discord;
-use Discord\WebSockets\Intents;
-use Discord\WebSockets\Event;
-use Discord\Parts\User\Activity;
-use Discord\Parts\Channel\Message;
+	use Discord\Discord;
+	use Discord\WebSockets\Intents;
+	use Discord\WebSockets\Event;
+	use Discord\Parts\User\Activity;
+	use Discord\Parts\Channel\Message;
 
-$pdo = new PDO('sqlite:/Media/discord.db');
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$uptime = (int)(microtime(true) * 1000);
+	$pdo = new PDO('sqlite:/Media/discord.db');
+	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$uptime = (int)(microtime(true) * 1000);
 
-$discord = new Discord([
-	'token' => getenv('DISCORD_API_KEY'),
-	'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
-	'logger' => new \Monolog\Logger('New logger'),
-	'loadAllMembers' => true,
-]);
+	$discord = new Discord([
+		'token' => getenv('DISCORD_API_KEY'),
+		'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
+		'logger' => new \Monolog\Logger('New logger'),
+		'loadAllMembers' => true,
+	]);
 
-$commands = new Commands($discord, $pdo, $uptime);
-$services = new Services($discord, $pdo, $uptime, $commands);
+	$commands = new Commands($discord, $pdo, $uptime);
+	$services = new Services($discord, $pdo, $uptime, $commands);
 
-$discord->on('ready', function (Discord $discord) use ($commands, $services) {
-	
-	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
-	
-	$services->updateActivity();
-	$services->checkDatabase();
-
-	$discord->getLoop()->addPeriodicTimer(15, function () use ($services) {
-		// checkReminders($discord, $pdo);
+	$discord->on('ready', function (Discord $discord) use ($commands, $services) {
+		
+		echo "(".date("d/m h:i:sA").") Bot is ready!\n";
+		
 		$services->updateActivity();
-	});
-	
-	// $discord->getLoop()->addPeriodicTimer(120, function () {
-		// checkDota();
-		// checkDeadlock();
-	// });
-	
-	// $discord->getLoop()->addPeriodicTimer(300, function () {
-		// Earthquakes();
-	// });
+		$services->checkDatabase();
 
-	$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
+		$discord->getLoop()->addPeriodicTimer(15, function () use ($services) {
+			// checkReminders($discord, $pdo);
+			$services->updateActivity();
+		});
 		
-		echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
+		// $discord->getLoop()->addPeriodicTimer(120, function () {
+			// checkDota();
+			// checkDeadlock();
+		// });
 		
-		if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-			if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
-				$commands->execCommand($message);
+		// $discord->getLoop()->addPeriodicTimer(300, function () {
+			// Earthquakes();
+		// });
+
+		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
+			
+			echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
+			
+			if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
+				if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
+					$commands->execCommand($message);
+				}
+				else if (getenv('BETA') !== 'true') {
+					$commands->execCommand($message);
+				}
 			}
-			else if (getenv('BETA') !== 'true') {
-				$commands->execCommand($message);
-			}
-		}
+			
+		});
 		
 	});
-	
-});
 
-$discord->run();
+	$discord->run();
 
 ?>
