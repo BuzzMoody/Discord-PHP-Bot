@@ -7,14 +7,17 @@ date_default_timezone_set('Australia/Melbourne');
 
 include __DIR__.'/vendor/autoload.php';
 include 'CommandHandler.php';
+include 'Services.php';
 
 use Discord\Discord;
 use Discord\WebSockets\Intents;
 use Discord\WebSockets\Event;
-use Discord\Parts\User\Game;
 use Discord\Parts\User\Activity;
-use Discord\Parts\Embed;
 use Discord\Parts\Channel\Message;
+
+$pdo = new PDO('sqlite:/Media/discord.db');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$uptime = (int)(microtime(true) * 1000);
 
 $discord = new Discord([
 	'token' => getenv('DISCORD_API_KEY'),
@@ -23,27 +26,20 @@ $discord = new Discord([
 	'loadAllMembers' => true,
 ]);
 
-$pdo = new PDO('sqlite:/Media/discord.db');
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-$uptime = (int)(microtime(true) * 1000);
 $commands = new Commands($discord, $pdo, $uptime);
+$services = new Services($discord, $commands, $pdo, $uptime);
 
-$discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
+$discord->on('ready', function (Discord $discord) use ($commands, $services) {
 	
 	echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 	
-	$activity = $discord->factory(Activity::class, [
-		'name' => getMemberCount($discord)." Incels",
-		'type' => Activity::TYPE_LISTENING,
-	]);
-	$discord->updatePresence($activity);
-	checkDatabase($pdo);
+	$services->updateActivity();
+	$services->checkDatabase();
 
-	// $discord->getLoop()->addPeriodicTimer(15, function () use ($discord, PDO $pdo) {
+	$discord->getLoop()->addPeriodicTimer(15, function () use ($services) {
 		// checkReminders($discord, $pdo);
-		// updateActivity($discord);
-	// });
+		$services->updateActivity();
+	});
 	
 	// $discord->getLoop()->addPeriodicTimer(120, function () {
 		// checkDota();
@@ -72,33 +68,5 @@ $discord->on('ready', function (Discord $discord) use ($commands, $pdo) {
 });
 
 $discord->run();
-
-function updateActivity($discord) {
-	
-	$activity = $discord->factory(Activity::class, [
-		'name' => getMemberCount($discord)." Incels",
-		'type' => Activity::TYPE_LISTENING,
-	]);
-	$discord->updatePresence($activity);
-	
-}
-
-function getMemberCount($discord) {
-	
-	$countGuild = $discord->guilds->get('id', '232691831090053120');
-	$count = -1;
-	foreach ($countGuild->members as $countMember) {
-		if ($countMember->status != NULL && $countMember->status != "offline") { @$count++; }
-	}
-	return $count;
-	
-}
-
-function checkDatabase($pdo) {
-
-	$tables = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')")->fetchAll();
-	if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
-
-}
 
 ?>
