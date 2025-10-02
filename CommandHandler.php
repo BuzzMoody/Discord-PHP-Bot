@@ -88,7 +88,7 @@ class Commands {
 			$func_name = pathinfo($file, PATHINFO_FILENAME);
 			if (substr($file, -3) === 'php' && $func_name !== 'CommandInterface' && $func_name !== 'AbstractCommand') {				
 				include_once("{$dir}/{$file}");
-				$function_obj = new $func_name($this->discord, $this->pdo, $this->uptime);				
+				$function_obj = new $func_name($this->discord, $this->pdo, $this->uptime, $this->utils);				
 				if ($function_obj instanceof CommandInterface) {
 					$this->functions[$function_obj->getPattern()] = $function_obj;
 				}				
