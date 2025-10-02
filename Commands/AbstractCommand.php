@@ -20,7 +20,7 @@ abstract class AbstractCommand implements CommandInterface {
 	abstract public function getName(): string;
 	abstract public function getDesc(): string;
 	abstract public function getPattern(): string;
-	abstract public function execute($message, $args = null $matches = null);
+	abstract public function execute($message, $args = null, $matches = null);
 	
 }
 
