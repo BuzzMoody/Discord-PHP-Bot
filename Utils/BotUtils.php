@@ -427,7 +427,7 @@
 				'matchid' => $matchID
 			]);
 			$results = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows: ".$stmt1->rowCount()."\n";
+			echo "Rows: ".$stmt2->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt2->rowCount() == 0) { return true; }
