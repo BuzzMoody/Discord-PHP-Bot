@@ -413,7 +413,7 @@
 			$stmt1 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = '1'");
 			$stmt1->execute(['id' => (string)$id]);
 			$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows checking MatchID = 1: ".$stmt1->rowCount()."\n";
+			echo "Rows checking MatchID = 1 for {$id}: ".$stmt1->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt1->rowCount() > 0) {
@@ -427,7 +427,7 @@
 				'matchid' => (string)$matchID
 			]);
 			$results = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows checking if latest MatchID = current MatchID: ".$stmt2->rowCount()."\n";
+			echo "Rows checking if {$matchID} = current MatchID for {$id}: ".$stmt2->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt2->rowCount() == 0) { return true; }
