@@ -448,7 +448,7 @@
 		
 		public function checkTrades() {
 			
-			// if (getenv('BETA') === 'true') { return; }
+			if (getenv('BETA') === 'true') { return; }
 			
 			$ids = file_exists('/Media/trades.txt') ? file('/Media/trades.txt',  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
