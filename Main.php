@@ -31,7 +31,7 @@
 	$commands = new Commands($discord, $pdo, $uptime, $utils);
 	$services = new Services($discord, $pdo, $uptime, $commands);
 	
-	$discord->on('ready', function (Discord $discord) use ($commands, $services) {
+	$discord->on('ready', function (Discord $discord) use ($commands, $services, $utils) {
 		
 		echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 		
