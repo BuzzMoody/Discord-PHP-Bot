@@ -1,7 +1,6 @@
 <?php
 
 	use Discord\Parts\Embed\Embed;
-	use Discord\Parts\Channel\Attachment;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 

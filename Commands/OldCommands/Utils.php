@@ -27,17 +27,6 @@
 	
 	}
 	
-	function isAdmin($userID) {
-		
-		global $discord;
-		
-		if ($userID == 232691181396426752) { return true; }
-		$testGuild = $discord->guilds->get('id', '232691831090053120');
-		$testMember = $testGuild->members->get('id', $userID);
-		return $testMember->roles->has('232692759557832704');
-		
-	}
-	
 	function getLocale($locale) {
 		
 		$locale = (empty($locale)) ? "Highett" : str_replace(' ', '+', trim($locale));
@@ -397,30 +386,6 @@
 			$pdo->commit(); 
 			
 		}
-		
-	}
-	
-	function simpleEmbed($authName, $authIMG, $text, $message, $reply = false, $authURL = null) {
-		
-		global $discord;
-		
-		$embed = $discord->factory(Embed::class);
-		$embed->setAuthor($authName, $authIMG, $authURL)
-			->setColor(getenv('COLOUR'))
-			->setDescription($text);
-
-		if (!$reply) { return $message->channel->sendEmbed($embed); }
-		
-		$builder = MessageBuilder::new()
-			->addEmbed($embed)
-			->setReplyTo($message);
-			
-		if (str_starts_with($authIMG, "attachment://")) {
-			$fileIMG = substr($authIMG, strlen('attachment://'));
-			$builder->addFile("/Media/{$fileIMG}", $fileIMG);
-		}
-		
-		return $message->channel->sendMessage($builder);
 		
 	}
 	
