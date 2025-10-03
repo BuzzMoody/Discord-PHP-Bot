@@ -26,9 +26,9 @@
 			print_r($tables);
 			if (count($tables) != 3) { 
 				shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); 
-				echo "Database has been initiated";
+				echo "Database has been initiated\n";
 			}
-			echo "Database already contains valid data";
+			echo "Database already contains valid data\n";
 			
 		}
 		
