@@ -16,7 +16,7 @@
 		
 		public function execute($message, $args, $matches) {
 		
-			if (isAdmin($message->author->id) && getenv('BETA') !== 'true') {
+			if ($this->utils->isAdmin($message->author->id) && getenv('BETA') !== 'true') {
 				die();
 			}
 		
