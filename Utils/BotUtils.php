@@ -424,7 +424,8 @@
 				':matchid' => $matchID
 			]);
 
-			return $stmt2->rowCount() === 0;
+			if ($stmt2->rowCount() == 0) { return true; }
+			else { return false; }
 			
 		}
 		
