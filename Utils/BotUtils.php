@@ -410,7 +410,7 @@
 		
 		private function checkNew($id, $matchID) {
 			
-			$stmt1 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = '1'");
+			$stmt1 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = '1'");
 			$stmt1->execute([':id' => $id]);
 
 			if ($stmt1->rowCount() > 0) {
@@ -418,7 +418,7 @@
 				return false; 
 			}
 
-			$stmt2 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = :matchid");
+			$stmt2 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = :matchid");
 			$stmt2->execute([
 				':id' => $id, 
 				':matchid' => $matchID
