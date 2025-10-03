@@ -44,31 +44,6 @@
 		return $place;
 		
 	}
-	
-	function toAusTime($time, $format = 'jS F: G:i', $countdown = false, $offset = 'UTC', $relative = false) {
-		
-		if ($relative) {
-			$dateTimeWithOffset = $time . $offset;
-			$dateTime = new DateTime($dateTimeWithOffset);
-			$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
-			return $dateTime->format($format);	
-		}
-		else if ($countdown) {
-			$currTime = new DateTime();
-			$diffTime = $currTime->diff($dateTime);
-			$countTime = "";
-			if ($diffTime->days > 0) { $countTime .= "{$diffTime->days} days, "; }
-			if ($diffTime->h > 0) { $countTime .= "{$diffTime->h} hrs, "; }
-			if ($diffTime->i > 0) { $countTime .= "{$diffTime->i} mins"; }
-			return $dateTime->format($format)." ({$countTime})";
-		}
-		else {
-			$dateTime = new DateTime($time, new DateTimeZone($offset));
-			$dateTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
-			return $dateTime->format($format);	
-		}
-		
-	}
 
 	function checkDeadlock() {
 
