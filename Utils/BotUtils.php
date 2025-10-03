@@ -11,6 +11,18 @@
 		private $discord;
 		private $pdo;
 		
+		const DOTA_LEVELS = [
+			0, 0, 240, 640, 1160, 1760, 2440, 3200, 4000, 4900, 5900, 7000, 8200, 9500, 10900, 12400, 14000, 15700, 17500, 19400, 21400, 23600, 26000, 28600, 31400, 34400, 38400, 43400, 49400, 56400, 63900
+		];
+		
+		const DOTA_HEROES = [
+			1 => "Anti-Mage", 2 => "Axe", 3 => "Bane", 4 => "Bloodseeker", 5 => "Crystal Maiden", 6 => "Drow Ranger", 7 => "Earthshaker", 8 => "Juggernaut", 9 => "Mirana", 11 => "Shadow Fiend", 10 => "Morphling", 12 => "Phantom Lancer", 13 => "Puck", 14 => "Pudge", 15 => "Razor", 16 => "Sand King", 17 => "Storm Spirit", 18 => "Sven", 19 => "Tiny", 20 => "Vengeful Spirit", 21 => "Windranger", 22 => "Zeus", 23 => "Kunkka", 25 => "Lina", 31 => "Lich", 26 => "Lion", 27 => "Shadow Shaman", 28 => "Slardar", 29 => "Tidehunter", 30 => "Witch Doctor", 32 => "Riki", 33 => "Enigma", 34 => "Tinker", 35 => "Sniper", 36 => "Necrophos", 37 => "Warlock", 38 => "Beastmaster", 39 => "Queen of Pain", 40 => "Venomancer", 41 => "Faceless Void", 42 => "Skeleton King", 43 => "Death Prophet", 44 => "Phantom Assassin", 45 => "Pugna", 46 => "Templar Assassin", 47 => "Viper", 48 => "Luna", 49 => "Dragon Knight", 50 => "Dazzle", 51 => "Clockwerk", 52 => "Leshrac", 53 => "Nature's Prophet", 54 => "Lifestealer", 55 => "Dark Seer", 56 => "Clinkz", 57 => "Omniknight", 58 => "Enchantress", 59 => "Huskar", 60 => "Night Stalker", 61 => "Broodmother", 62 => "Bounty Hunter", 63 => "Weaver", 64 => "Jakiro", 65 => "Batrider", 66 => "Chen", 67 => "Spectre", 69 => "Doom", 68 => "Ancient Apparition", 70 => "Ursa", 71 => "Spirit Breaker", 72 => "Gyrocopter", 73 => "Alchemist", 74 => "Invoker", 75 => "Silencer", 76 => "Outworld Devourer", 77 => "Lycanthrope", 78 => "Brewmaster", 79 => "Shadow Demon", 80 => "Lone Druid", 81 => "Chaos Knight", 82 => "Meepo", 83 => "Treant Protector", 84 => "Ogre Magi", 85 => "Undying", 86 => "Rubick", 87 => "Disruptor", 88 => "Nyx Assassin", 89 => "Naga Siren", 90 => "Keeper of the Light", 91 => "IO", 92 => "Visage", 93 => "Slark", 94 => "Medusa", 95 => "Troll Warlord", 96 => "Centaur Warrunner", 97 => "Magnus", 98 => "Timbersaw", 99 => "Bristleback", 100 => "Tusk", 101 => "Skywrath Mage", 102 => "Abaddon", 103 => "Elder Titan", 104 => "Legion Commander", 106 => "Ember Spirit", 107 => "Earth Spirit", 108 => "Abyssal Underlord", 109 => "Terrorblade", 110 => "Phoenix", 105 => "Techies", 111 => "Oracle", 112 => "Winter Wyvern", 113 => "Arc Warden", 114 => "Monkey King", 119 => "Dark Willow", 120 => "Pangolier", 121 => "Grimstroke", 123 => "Hoodwink", 126 => "Void Spirit", 128 => "Snapfire", 129 => "Mars", 131 => "Ringmaster", 135 => "Dawnbreaker", 136 => "Marci", 137 => "Primal Beast", 138 => "Muerta", 145 => "Kez"
+		];
+		
+		const DOTA_GAMEMODES = [
+			0 => "Unknown", 1 => "All Pick", 2 => "Captains Mode", 3 => "Random Draft", 4 => "Single Draft", 5 => "All Random", 6 => "Intro", 7 => "Diretide", 8 => "Reverse Captains Mode", 9 => "Greeviling", 10 => "Tutorial", 11 => "Mid Only", 12 => "Least Played", 13 => "Limited Heroes", 14 => "Compendium Matchmaking", 15 => "Custom", 16 => "Captains Draft", 17 => "Balanced Draft", 18 => "Ability Draft", 19 => "Event", 20 => "All Random Death Match", 21 => "1v1 Mid", 22 => "All Draft", 23 => "Turbo", 24 => "Mutation", 25 => "Coaches Challenge"
+		];
+		
 		public function __construct($discord, PDO $pdo) {
 			
 			$this->discord = $discord;
@@ -217,6 +229,221 @@
 			
 			return ($type == 'google') ? $message->channel->sendMessage("{$return->items[0]->title}: {$return->items[0]->link}") : $message->channel->sendMessage($return->items[0]->link);
 		
+		}
+		
+		public function checkReminders() {
+	
+			$time = time();
+			$stmt = $this->pdo->prepare("SELECT userid, channelid, messageid, time FROM reminders WHERE time < :time");
+			$stmt->execute([':time' => $time]);
+			$reminders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		
+			if (count($reminders) > 0) {
+				
+				$this->pdo->beginTransaction();
+				$deleteStmt = $this->pdo->prepare("DELETE FROM reminders WHERE time = :time");
+				
+				foreach ($reminders as $row) {
+
+					$guild = $this->discord->guilds->get('id', '232691831090053120');
+					$channel = $guild->channels->get('id', $row['channelid']);
+					$channel->messages->fetch($row['messageid'])->then(function ($message) use ($row) {
+						$this->simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $message, true, null); 
+					});
+					$deleteStmt->execute([':time' => $row['time']]);
+				
+				}
+				
+				$pdo->commit(); 
+				
+			}
+		
+		}
+		
+		public function filterUsers($message): string {
+
+			$content = $message->content;
+			
+			if ($message->mentions->count() > 0) {	
+				foreach ($message->mentions as $mention) {
+					$member = $message->guild->members->get('id', $mention->id);
+					if ($member) {
+						$displayName = (empty($member->nick)) ? $member->user->username : $member->nick;
+						$content = str_replace("<@{$mention->id}>", "@{$displayName}", $content);
+					}
+				}
+			}
+
+			return $content;
+			
+		}
+		
+		public function checkDota() {
+		
+			if (getenv('BETA') === 'true') { return; }
+			
+			$date = new DateTime('now');
+			$current_hour = (int)$date->format('G');
+
+			if ($current_hour >= 10 || $current_hour <= 2) {
+
+				$ids = array(
+					array("232691181396426752", "54716121", "Buzz"), 
+					array("381596223435702282", "33939542", "Dan"), 
+					array("276222661515018241", "77113202", "Hassler"), 
+				);
+				
+				$games = 0;
+
+				for ($i = 0; $i < count($ids); $i++) {
+
+					$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/recentMatches";
+					
+					$content = @file_get_contents($url);
+					
+					if ($content === FALSE) { return; }
+
+					$response = json_decode($content);
+
+					$details[$i]['user'] = $ids[$i][1];
+					$details[$i]['matchid'] = '';
+
+					if ($this->checkNew($details[$i]['user'], $response[0]->match_id)) {
+
+						$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
+						$details[$i]['matchid'] = $response[0]->match_id;
+						
+						if (
+							$i == 0 || 
+							$i > 0 && @$keyz[0] == 1 && $response[0]->match_id == $details[($i-1)]['matchid'] && count($details[($i-1)]) > 2 || 
+							$i > 0 && @!$keyz[0] && $response[0]->match_id == $details[($i-1)]['matchid'] ||
+							$i > 0 && @!$keyz[0] && $details[($i-1)]['matchid'] == null
+						) {
+						
+							$details[$i]['matchid'] = $response[0]->match_id;
+							$details[$i]['new'] = true;
+							$details[$i]['discord'] = $ids[$i][0];
+							$details[$i]['name'] = $ids[$i][2];
+							$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
+							$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && $details[$i]['team'] == "Dire") ? "Won" : "Lost";
+							$details[$i]['hero'] = self::DOTA_HEROES[$response[0]->hero_id];
+							$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => number_format($response[0]->hero_damage), "TowerDMG" => number_format($response[0]->tower_damage), "XPM" => $response[0]->xp_per_min, "GPM" => number_format($response[0]->gold_per_min), "Heal" => number_format($response[0]->hero_healing));
+							$start = $response[0]->start_time;
+							$duration = $response[0]->duration;
+							$hours = floor($duration / 3600);
+							$format = ($hours > 0) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s';
+							$length = gmdate($format, $duration);
+							$mode = self::DOTA_GAMEMODES[$response[0]->game_mode];
+							@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
+							$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Ranked" : "Unranked";
+							$games++;
+							$this->updateMatch($details[$i]['user'], $response[0]->match_id);
+							
+						}
+						
+					}
+					
+				}
+
+				if ($games > 0) {
+					
+					$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
+					$tz->setTimestamp($start);
+					
+					$embed = $this->discord->factory(Embed::class);
+					$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchid}")
+						->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
+						->setColor(getenv('COLOUR'));
+					
+					$embed->addFieldValues("Start Time", $tz->format('g:i A'), true);
+					$embed->addFieldValues("Length", $length, true);
+					$embed->addFieldValues("Game Mode", "{$ranked} {$mode}", true);
+					
+					$desc = "";
+					
+					for ($x = 0; $x < count($details); $x++) {
+						if (@$details[$x]['new']) {
+							$id = $x;
+							$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**";
+						$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
+							$embed->addFieldValues("Damage / Heal", "{$details[$x]['stats']['HeroDMG']} dmg\n{$details[$x]['stats']['TowerDMG']} tower\n{$details[$x]['stats']['Heal']} heal\n", true);
+							$embed->addFieldValues("Stats", "Lvl ".$this->getLevel(($details[$x]['stats']['XPM'] * ($duration / 60)))."\n".number_format($details[$x]['stats']['XPM'])." xpm\n{$details[$x]['stats']['GPM']} gpm", true);
+						}
+					}
+
+					$embed->setDescription($desc."\n");
+					
+					$builder = MessageBuilder::new()
+						->addEmbed($embed)
+						->addFile("/Media/dota.png", "dota.png");
+					
+					$guild = $this->discord->guilds->get('id', '232691831090053120');
+					$channel = $guild->channels->get('id', '232691831090053120');
+
+					return $channel->sendMessage($builder);
+				
+				}
+				
+			}
+		
+		}
+	
+		private function getLevel($exp): int {
+			
+			for ($level = count(self::DOTA_LEVELS) - 1; $level >= 1; $level--) {
+				if ($exp >= self::DOTA_LEVELS[$level]) {
+					return $level;
+				}
+			}
+			
+			return 1;
+			
+		}
+		
+		private function updateMatch($id, $matchID): void {
+			
+			$stmt = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
+			$stmt->execute([
+				':matchid' => $matchID, 
+				':id' => $id
+			]);
+			
+		}
+		
+		private function checkNew($id, $matchID): bool {
+			
+			$stmt1 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = '1'");
+			$stmt1->execute([':id' => $id]);
+
+			if ($stmt1->rowCount() > 0) {
+				$this->updateMatch($id, $matchID);
+				return false; 
+			}
+
+			$stmt2 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = :matchid");
+			$stmt2->execute([
+				':id' => $id, 
+				':matchid' => $matchID
+			]);
+
+			return $stmt2->rowCount() === 0;
+			
+		}
+		
+		private function allMatchIDsMatch($details): bool {
+			
+			$first = $details[0]['matchid'];
+			
+			foreach ($details as $item) {
+				
+				if (!isset($item['matchid']) || $item['matchid'] !== $first) {
+					return false;
+				}
+				
+			}
+			
+			return true;
+			
 		}
 	
 	}

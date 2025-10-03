@@ -38,15 +38,14 @@
 		$services->updateActivity();
 		$services->checkDatabase();
 
-		$discord->getLoop()->addPeriodicTimer(15, function () use ($services) {
-			// checkReminders($discord, $pdo);
+		$discord->getLoop()->addPeriodicTimer(15, function () use ($services, $utils) {
+			$utils->checkReminders();
 			$services->updateActivity();
 		});
 		
-		// $discord->getLoop()->addPeriodicTimer(120, function () {
-			// checkDota();
-			// checkDeadlock();
-		// });
+		$discord->getLoop()->addPeriodicTimer(120, function () use ($utils) {
+			$utils->checkDota();
+		});
 		
 		$discord->getLoop()->addPeriodicTimer(300, function () use ($utils) {
 			$utils->Earthquakes();
