@@ -408,7 +408,7 @@
 			
 		}
 		
-		private function checkNew($id, $matchID): bool {
+		private function checkNew($id, $matchID) {
 			
 			$stmt1 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = '1'");
 			$stmt1->execute([':id' => $id]);
@@ -428,7 +428,7 @@
 			
 		}
 		
-		private function allMatchIDsMatch($details): bool {
+		private function allMatchIDsMatch($details) {
 			
 			$first = $details[0]['matchid'];
 			
