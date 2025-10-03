@@ -38,7 +38,6 @@ class Commands {
 		$this->utils = $utils;
 
 		// $this->patterns = [
-			// '/^(ban|kick|sb|sinbin)/' => 'SinBin',
 			// '/^(bard|gemini|(?:open)?ai)/' => 'Vertex',
 			// '/^(weather|temp(?:erature)?)/' => 'Weather',
 			// '/^remind(?:me|er)$/' => 'Reminder',

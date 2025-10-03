@@ -12,15 +12,19 @@
 		private $pdo;
 		
 		public function __construct($discord, PDO $pdo) {
+			
 			$this->discord = $discord;
 			$this->pdo = $pdo;
+			
 		}
 		
 		public function isAdmin(string $userID): bool {
+			
 			if ($userID == '232691181396426752') { return true; }
 			$testGuild = $this->discord->guilds->get('id', '232691831090053120');
 			$testMember = $testGuild->members->get('id', $userID);
 			return $testMember->roles->has('232692759557832704');
+			
 		}
 		
 		public function simpleEmbed($authName, $authIMG, $text, $message, $reply = false, $authURL = null) {
