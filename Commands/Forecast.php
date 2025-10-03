@@ -35,7 +35,7 @@
 				$i++;
 			}
 			
-			getMapImg($place);
+			$this->utils->getMapImg($place);
 			
 			$embed->setColor(getenv('COLOUR'))
 				->setAuthor("{$place['name']}, {$place['state']} ({$place['postcode']}) - Weather Forecast", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png")
