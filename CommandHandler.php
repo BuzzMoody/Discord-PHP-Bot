@@ -38,7 +38,6 @@ class Commands {
 		$this->utils = $utils;
 
 		// $this->patterns = [
-			// '/^(kate|t(?:ay(?:lor)?|swizzle)|emma|e?liz(?:abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)$/' => 'BabeImages',
 			// '/^(search|google|bing|find|siri)/' => 'SearchGoogle',
 			// '/^(image|img|photo|pic)/' => 'SearchImage',
 			// '/^(ban|kick|sb|sinbin)/' => 'SinBin',
