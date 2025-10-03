@@ -402,36 +402,26 @@
 			
 			$stmt = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
 			$stmt->execute([
-				'matchid' => $matchID, 
-				'id' => $id
+				'matchid' => (string)$matchID, 
+				'id' => (string)$id
 			]);
 			
 		}
 		
 		private function checkNew($id, $matchID) {
 			
-			$stmt1 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = '1'");
+			$stmt1 = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
 			$stmt1->execute(['id' => (string)$id]);
-			$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows checking MatchID = 1 for {$id}: ".$stmt1->rowCount()."\n";
-			print_r($results);
+			$row = $stmt1->fetch(PDO::FETCH_ASSOC);
+			print_r($row);
 
-			if ($stmt1->rowCount() > 0) {
+			if ($row['matchid'] == 1) {
 				$this->updateMatch($id, $matchID);
 				return false; 
 			}
-
-			$stmt2 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = :matchid");
-			$stmt2->execute([
-				'id' => (string)$id, 
-				'matchid' => (string)$matchID
-			]);
-			$results = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows checking if {$matchID} = current MatchID for {$id}: ".$stmt2->rowCount()."\n";
-			print_r($results);
-
-			if ($stmt2->rowCount() == 0) { return true; }
-			else { return false; }
+			elseif ($row['matchid'] !== $matchID) {
+				return true;
+			}
 			
 		}
 		
