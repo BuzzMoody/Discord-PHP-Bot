@@ -26,24 +26,6 @@
 		return ($type == 'google') ? $message->channel->sendMessage("{$return->items[0]->title}: {$return->items[0]->link}") : $message->channel->sendMessage($return->items[0]->link);
 	
 	}
-	
-	function getLocale($locale) {
-		
-		$locale = (empty($locale)) ? "Highett" : str_replace(' ', '+', trim($locale));
-		$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
-		if (empty($results)) { return false; }
-		$place = array(
-			"name" 		=> $results->candidates[0]->name,
-			"state" 	=> $results->candidates[0]->state,
-			"filename"	=> str_replace(array(' ', '(', ')'), array('-', '', ''), $results->candidates[0]->name),
-			"type"		=> $results->candidates[0]->type,
-			"postcode" 	=> $results->candidates[0]->postcode->name,
-			"forecast"	=> $results->candidates[0]->gridcells->forecast->x."/".$results->candidates[0]->gridcells->forecast->y,
-			"id"		=> $results->candidates[0]->id
-		);
-		return $place;
-		
-	}
 
 	function checkDeadlock() {
 

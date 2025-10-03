@@ -43,16 +43,12 @@ class Commands {
 			// '/^(ban|kick|sb|sinbin)/' => 'SinBin',
 			// '/^(bard|gemini|(?:open)?ai)/' => 'Vertex',
 			// '/^(weather|temp(?:erature)?)/' => 'Weather',
-			// '/^forecast$/' => 'Forecast',
 			// '/^(shell|bash|cli|cmd)/' => 'RunCLI',
 			// '/^remind(?:me|er)$/' => 'Reminder',
 			// '/^reminders$/' => 'ListReminders',
 			// '/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
 			// '/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
 			// '/^radar$/' => 'Radar',
-			// '/^reload$/' => 'Reload',
-			// '/^(afl|footy)$/' => 'Footy',
-			// '/^test$/' => 'Test',
 		// ];
 		
 		$this->loadCommands();

@@ -1,9 +1,9 @@
 <?php
 
-	class BetaReload extends AbstractCommand {
+	class Reload extends AbstractCommand {
 		
 		public function getName(): string {
-			return 'BetaReload';
+			return 'Reload';
 		}
 		
 		public function getDesc(): string {
@@ -16,7 +16,7 @@
 		
 		public function execute($message, $args, $matches) {
 		
-			if ($this->utils->isAdmin($message->author->id) && getenv('BETA') === 'true') {
+			if (isAdmin($message->author->id) && getenv('BETA') !== 'true') {
 				die();
 			}
 		
