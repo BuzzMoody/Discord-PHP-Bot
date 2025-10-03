@@ -22,8 +22,13 @@
 
 		public function checkDatabase() {
 			
-			$tables = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'deadlock', 'earthquakes')")->fetchAll();
-			if (count($tables) != 4) { shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); }
+			$tables = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'earthquakes')")->fetchAll();
+			print_r($tables);
+			if (count($tables) != 3) { 
+				shell_exec('sqlite3 /Media/discord.db < /init/init.sql'); 
+				return echo "Database has been initiated";
+			}
+			return echo "Database already contains valid data";
 			
 		}
 		

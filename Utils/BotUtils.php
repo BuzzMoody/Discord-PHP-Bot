@@ -279,8 +279,6 @@
 		}
 		
 		public function checkDota() {
-		
-			if (getenv('BETA') === 'true') { return; }
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
@@ -378,7 +376,7 @@
 						->addFile("/Media/dota.png", "dota.png");
 					
 					$guild = $this->discord->guilds->get('id', '232691831090053120');
-					$channel = $guild->channels->get('id', '232691831090053120');
+					$channel = $guild->channels->get('id', '274828566909157377');
 
 					return $channel->sendMessage($builder);
 				
