@@ -140,7 +140,7 @@
 		private function checkEQ(string $id): bool {
 			
 			$stmt = $this->pdo->prepare("SELECT EXISTS(SELECT 1 FROM earthquakes WHERE quakeid = :id)");
-			$stmt->execute([':id' => $id]);
+			$stmt->execute([':id' => (string)$id]);
 			return (bool) $stmt->fetchColumn();
 			
 		}
@@ -148,7 +148,7 @@
 		private function writeEQ(string $id) {
 
 			$stmt = $this->pdo->prepare("INSERT INTO earthquakes (quakeid) VALUES (:id)");
-			$stmt->execute([':id' => $id]);
+			$stmt->execute([':id' => (string)$id]);
 
 		}
 		
@@ -279,7 +279,7 @@
 		}
 		
 		public function checkDota() {
-		
+			
 			if (getenv('BETA') === 'true') { return; }
 			
 			$date = new DateTime('now');
@@ -309,6 +309,8 @@
 					$details[$i]['matchid'] = '';
 
 					if ($this->checkNew($details[$i]['user'], $response[0]->match_id)) {
+						
+						echo "User: {$ids[$i][2]} has a new game\n";
 
 						$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 						$details[$i]['matchid'] = $response[0]->match_id;
@@ -378,7 +380,7 @@
 						->addFile("/Media/dota.png", "dota.png");
 					
 					$guild = $this->discord->guilds->get('id', '232691831090053120');
-					$channel = $guild->channels->get('id', '232691831090053120');
+					$channel = $guild->channels->get('id', '274828566909157377');
 
 					return $channel->sendMessage($builder);
 				
@@ -404,33 +406,29 @@
 			
 			$stmt = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
 			$stmt->execute([
-				':matchid' => $matchID, 
-				':id' => $id
+				'matchid' => (string)$matchID, 
+				'id' => (string)$id
 			]);
 			
 		}
 		
-		private function checkNew($id, $matchID): bool {
+		private function checkNew($id, $matchID) {
 			
-			$stmt1 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = '1'");
-			$stmt1->execute([':id' => $id]);
+			$stmt1 = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
+			$stmt1->execute(['id' => (string)$id]);
+			$row = $stmt1->fetch(PDO::FETCH_ASSOC);
 
-			if ($stmt1->rowCount() > 0) {
+			if ($row['matchid'] == 1) {
 				$this->updateMatch($id, $matchID);
 				return false; 
 			}
-
-			$stmt2 = $this->pdo->prepare("SELECT 1 FROM dota2 WHERE id = :id AND matchid = :matchid");
-			$stmt2->execute([
-				':id' => $id, 
-				':matchid' => $matchID
-			]);
-
-			return $stmt2->rowCount() === 0;
+			elseif ($row['matchid'] != $matchID) {
+				return true;
+			}
 			
 		}
 		
-		private function allMatchIDsMatch($details): bool {
+		private function allMatchIDsMatch($details) {
 			
 			$first = $details[0]['matchid'];
 			
