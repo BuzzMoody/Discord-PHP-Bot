@@ -307,6 +307,8 @@
 					$details[$i]['matchid'] = '';
 
 					if ($this->checkNew($details[$i]['user'], $response[0]->match_id)) {
+						
+						echo "User: {$ids[$i][2]} has a new game\n";
 
 						$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
 						$details[$i]['matchid'] = $response[0]->match_id;
@@ -419,7 +421,8 @@
 				$this->updateMatch($id, $matchID);
 				return false; 
 			}
-			elseif ($row['matchid'] !== $matchID) {
+			elseif ($row['matchid'] != $matchID) {
+				echo "{$row['matchid']} does not equal {$matchID}\n";
 				return true;
 			}
 			
