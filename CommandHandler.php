@@ -38,17 +38,13 @@ class Commands {
 		$this->utils = $utils;
 
 		// $this->patterns = [
-			// '/^(search|google|bing|find|siri)/' => 'SearchGoogle',
-			// '/^(image|img|photo|pic)/' => 'SearchImage',
 			// '/^(ban|kick|sb|sinbin)/' => 'SinBin',
 			// '/^(bard|gemini|(?:open)?ai)/' => 'Vertex',
 			// '/^(weather|temp(?:erature)?)/' => 'Weather',
-			// '/^(shell|bash|cli|cmd)/' => 'RunCLI',
 			// '/^remind(?:me|er)$/' => 'Reminder',
 			// '/^reminders$/' => 'ListReminders',
 			// '/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
 			// '/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
-			// '/^radar$/' => 'Radar',
 		// ];
 		
 		$this->loadCommands();
