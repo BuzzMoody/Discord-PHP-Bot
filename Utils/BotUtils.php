@@ -413,6 +413,7 @@
 			$stmt1 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = '1'");
 			$stmt1->execute(['id' => $id]);
 			$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
+			echo "Rows: ".$stmt1->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt1->rowCount() > 0) {
@@ -426,6 +427,7 @@
 				'matchid' => $matchID
 			]);
 			$results = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+			echo "Rows: ".$stmt1->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt2->rowCount() == 0) { return true; }
