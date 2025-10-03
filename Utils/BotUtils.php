@@ -415,7 +415,6 @@
 			$stmt1 = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
 			$stmt1->execute(['id' => (string)$id]);
 			$row = $stmt1->fetch(PDO::FETCH_ASSOC);
-			print_r($row);
 
 			if ($row['matchid'] == 1) {
 				$this->updateMatch($id, $matchID);
