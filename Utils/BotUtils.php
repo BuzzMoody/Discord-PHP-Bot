@@ -402,8 +402,8 @@
 			
 			$stmt = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
 			$stmt->execute([
-				':matchid' => $matchID, 
-				':id' => $id
+				'matchid' => $matchID, 
+				'id' => $id
 			]);
 			
 		}
@@ -411,7 +411,7 @@
 		private function checkNew($id, $matchID) {
 			
 			$stmt1 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = '1'");
-			$stmt1->execute([':id' => $id]);
+			$stmt1->execute(['id' => $id]);
 
 			if ($stmt1->rowCount() > 0) {
 				$this->updateMatch($id, $matchID);
@@ -420,8 +420,8 @@
 
 			$stmt2 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = :matchid");
 			$stmt2->execute([
-				':id' => $id, 
-				':matchid' => $matchID
+				'id' => $id, 
+				'matchid' => $matchID
 			]);
 
 			if ($stmt2->rowCount() == 0) { return true; }
