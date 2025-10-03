@@ -37,6 +37,7 @@
 		
 		$services->updateActivity();
 		$services->checkDatabase();
+		$utils->checkDota();
 
 		$discord->getLoop()->addPeriodicTimer(15, function () use ($services, $utils) {
 			$utils->checkReminders();
