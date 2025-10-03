@@ -42,8 +42,6 @@ class Commands {
 			// '/^(weather|temp(?:erature)?)/' => 'Weather',
 			// '/^remind(?:me|er)$/' => 'Reminder',
 			// '/^reminders$/' => 'ListReminders',
-			// '/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
-			// '/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
 		// ];
 		
 		$this->loadCommands();
