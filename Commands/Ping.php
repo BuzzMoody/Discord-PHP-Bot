@@ -1,14 +1,11 @@
 <?php
 
 	use Discord\Parts\Embed\Embed;
-	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
 
-	function Ping($message) {
+	class Ping extends AbstractCommand {
 		
-		global $discord;
-		
-		$responses = [
+		private const RESPONSES = [
 			"Pong! Right back at ya.",
 			"Ping received. Pong!",
 			"Got it!",
@@ -19,16 +16,30 @@
 			"The answer is always... pong."
 		];
 		
-		$pingKey = array_rand($responses);
+		public function getName(): string {
+			return 'Ping';
+		}
 		
-		$embed = $discord->factory(Embed::class);
-		$embed->setColor(getenv('COLOUR'))
-			->setDescription($responses[$pingKey]);
+		public function getDesc(): string {
+			return 'Returns a pong to your ping. A marco to your polo.';
+		}
 		
-		$builder = MessageBuilder::new()
-			->addEmbed($embed);
+		public function getPattern(): string {
+			return '/^ping$/';
+		}
+		
+		public function execute($message, $args, $matches) {
+			
+			$embed = $this->discord->factory(Embed::class);
+			$embed->setColor(getenv('COLOUR'))
+				->setDescription(self::RESPONSES[array_rand(self::RESPONSES)]);
+			
+			$builder = MessageBuilder::new()
+				->addEmbed($embed);
 
-		return $message->reply($builder);
+			return $message->reply($builder);
+			
+		}
 		
 	}
 

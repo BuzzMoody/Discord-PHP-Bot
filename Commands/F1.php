@@ -1,41 +1,53 @@
 <?php
 
 	use Discord\Parts\Embed\Embed;
-	use Discord\Parts\Channel\Attachment;
-	use Discord\Builders\MessageBuilder;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 
-	function F1($message) {
+	class F1 extends AbstractCommand {
 		
-		global $discord;
+		public function getName(): string {
+			return 'F1';
+		}
 		
-		$http = new Browser();
+		public function getDesc(): string {
+			return 'Details for the next Formula 1 race event';
+		}
+		
+		public function getPattern(): string {
+			return '/^f(?:ormula)?1$/';
+		}
+		
+		public function execute($message, $args, $matches) {
+		
+			$http = new Browser();
 
-		$headers = array(
-		  'apikey' => 'BQ1SiSmLUOsp460VzXBlLrh689kGgYEZ',
-		  'locale' => 'en',
-		);
+			$headers = array(
+			  'apikey' => 'BQ1SiSmLUOsp460VzXBlLrh689kGgYEZ',
+			  'locale' => 'en',
+			);
 
-		$http->get('https://api.formula1.com/v1/event-tracker', $headers)->then(
-			function (ResponseInterface $response) use ($message, $discord) {
-				$output = json_decode($response->getBody());
-				$embed = $discord->factory(Embed::class);
-				$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png', "https://www.formula1.com{$output->race->url}")
-					->setTitle($output->race->meetingOfficialName)
-					->setColor(getenv('COLOUR'))
-					->setDescription("The current location is **{$output->race->meetingLocation}, {$output->race->meetingCountryName}**.");
-				foreach ($output->seasonContext->timetables as $event) {
-					$fieldval = ($event->state == 'completed') ? "~~".toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)."~~ - [Results](https://www.formula1.com/en/results/{$output->seasonContext->seasonYear}/races/{$output->fomRaceId}/F1/".str_replace(' ', '/', strtolower($event->description)).")" : toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)." (Starts <t:".strtotime(toAusTime($event->startTime, 'Y-m-d\TH:i:s', null, $event->gmtOffset, true)).":R>)";
-					$embed->addFieldValues($event->description, $fieldval, false);
+			$http->get('https://api.formula1.com/v1/event-tracker', $headers)->then(
+				function (ResponseInterface $response) use ($message) {
+					$output = json_decode($response->getBody());
+					$embed = $this->discord->factory(Embed::class);
+					$embed->setAuthor('Formula 1 - Race Weekend', 'https://media.formula1.com/etc/designs/fom-website/icon192x192.png', "https://www.formula1.com{$output->race->url}")
+						->setTitle($output->race->meetingOfficialName)
+						->setColor(getenv('COLOUR'))
+						->setDescription("The current location is **{$output->race->meetingLocation}, {$output->race->meetingCountryName}**.");
+					foreach ($output->seasonContext->timetables as $event) {
+						$fieldval = ($event->state == 'completed') ? "~~".$this->utils->toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".$this->utils->toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)."~~ - [Results](https://www.formula1.com/en/results/{$output->seasonContext->seasonYear}/races/{$output->fomRaceId}/F1/".str_replace(' ', '/', strtolower($event->description)).")" : $this->utils->toAusTime($event->startTime, 'G:i', null, $event->gmtOffset)." - ".$this->utils->toAusTime($event->endTime, 'G:i', null, $event->gmtOffset)." (Starts <t:".strtotime($this->utils->toAusTime($event->startTime, 'Y-m-d\TH:i:s', null, $event->gmtOffset, true)).":R>)";
+						$embed->addFieldValues($event->description, $fieldval, false);
+					}
+					$message->channel->sendEmbed($embed);
+				},
+				function (Exception $e) use ($message) {
+					$message->channel->sendMessage("Error: {$e->getMessage()}");
 				}
-				$message->channel->sendEmbed($embed);
-			},
-			function (Exception $e) use ($message) {
-				$message->channel->sendMessage("Error: {$e->getMessage()}");
-			}
-		);
-	
+			);
+		
+		}
+		
 	}
 
 ?>
