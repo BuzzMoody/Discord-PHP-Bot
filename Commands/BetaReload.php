@@ -11,7 +11,7 @@
 		}
 		
 		public function getPattern(): string {
-			return '/^reload$/';
+			return '/^betarl$/';
 		}
 		
 		public function execute($message, $args, $matches) {
