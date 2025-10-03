@@ -139,7 +139,7 @@
 	
 		private function checkEQ(string $id): bool {
 			
-			$stmt = $this->pdo->prepare("SELECT EXISTS(SELECT 1 FROM earthquakes WHERE quakeid = :id)");
+			$stmt = $this->pdo->prepare("SELECT COUNT(*) FROM earthquakes WHERE quakeid = :id)");
 			$stmt->execute([':id' => (string)$id]);
 			return (bool) $stmt->fetchColumn();
 			
