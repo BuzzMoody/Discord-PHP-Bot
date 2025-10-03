@@ -23,7 +23,7 @@
 			
 			$http = new Browser();
 			$http->get('https://apexlegendsstatus.com/current-map/battle_royale/pubs')->then(
-				function (ResponseInterface $response) use ($message, $this->discord) {
+				function (ResponseInterface $response) use ($message) {
 					$output = $response->getBody();
 					preg_match('/<h3 .*>(.+)<\/h3>.+ ends in (.+)<\/p>/U', $output, $data);
 					preg_match_all('/<h3 .*>(.+)<\/h3>/U', $output, $next);
