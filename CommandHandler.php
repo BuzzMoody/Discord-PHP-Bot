@@ -47,8 +47,6 @@ class Commands {
 			// '/^(shell|bash|cli|cmd)/' => 'RunCLI',
 			// '/^remind(?:me|er)$/' => 'Reminder',
 			// '/^reminders$/' => 'ListReminders',
-			// '/^f(?:ormula)?1$/' => 'F1',
-			// '/^(roll|dice)/' => 'Dice',
 			// '/^s(?:table)?d(?:iffusion)?/' => 'StableDiffusion',
 			// '/^u(?:rban)?d(?:ictionary)?/' => 'UrbanDic',
 			// '/^radar$/' => 'Radar',
