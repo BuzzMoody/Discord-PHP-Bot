@@ -411,9 +411,9 @@
 		private function checkNew($id, $matchID) {
 			
 			$stmt1 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = '1'");
-			$stmt1->execute(['id' => $id]);
+			$stmt1->execute(['id' => (string)$id]);
 			$results = $stmt1->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows: ".$stmt1->rowCount()."\n";
+			echo "Rows checking MatchID = 1: ".$stmt1->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt1->rowCount() > 0) {
@@ -423,11 +423,11 @@
 
 			$stmt2 = $this->pdo->prepare("SELECT * FROM dota2 WHERE id = :id AND matchid = :matchid");
 			$stmt2->execute([
-				'id' => $id, 
-				'matchid' => $matchID
+				'id' => (string)$id, 
+				'matchid' => (string)$matchID
 			]);
 			$results = $stmt2->fetchAll(PDO::FETCH_ASSOC);
-			echo "Rows: ".$stmt2->rowCount()."\n";
+			echo "Rows checking if latest MatchID = current MatchID: ".$stmt2->rowCount()."\n";
 			print_r($results);
 
 			if ($stmt2->rowCount() == 0) { return true; }
