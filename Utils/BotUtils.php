@@ -140,7 +140,7 @@
 		private function checkEQ(string $id): bool {
 			
 			$stmt = $this->pdo->prepare("SELECT EXISTS(SELECT 1 FROM earthquakes WHERE quakeid = :id)");
-			$stmt->execute([':id' => $id]);
+			$stmt->execute([':id' => (string)$id]);
 			return (bool) $stmt->fetchColumn();
 			
 		}
@@ -148,7 +148,7 @@
 		private function writeEQ(string $id) {
 
 			$stmt = $this->pdo->prepare("INSERT INTO earthquakes (quakeid) VALUES (:id)");
-			$stmt->execute([':id' => $id]);
+			$stmt->execute([':id' => (string)$id]);
 
 		}
 		
@@ -279,6 +279,8 @@
 		}
 		
 		public function checkDota() {
+			
+			if (getenv('BETA') === 'true') { return; }
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
@@ -421,7 +423,6 @@
 				return false; 
 			}
 			elseif ($row['matchid'] != $matchID) {
-				echo "{$row['matchid']} does not equal {$matchID}\n";
 				return true;
 			}
 			
