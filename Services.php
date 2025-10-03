@@ -6,8 +6,8 @@
 
 		private $discord;
 		private $pdo;
-		private $commands;
 		private $uptime;
+		private $commands;
 		
 		private const PLAYFUL_INSULTS = ["Degenerates", "Scoundrels", "Rascals", "Ruffians", "Miscreants", "Reprobates", "Villains", "Knaves", "Lowlifes", "Scallywags", "Numbskulls", "Nincompoops", "Rapscallions", "Delinquents", "Ne'er-do-wells", "Wastrels", "Fools", "Buffoons", "Loons", "Cads", "Creeps", "Charlatans", "Twits", "Scamps", "Weasels", "Goons", "Clowns", "Bozos", "Doofuses", "Louts", "Boneheads", "Dingbats", "Meatheads", "Dunces", "Blockheads", "Muttonheads", "Simpletons"];
 
