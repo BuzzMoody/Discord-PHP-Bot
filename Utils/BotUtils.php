@@ -61,7 +61,7 @@
 		
 		}
 		
-		public function Earthquakes(): Message|MessageBuilder {
+		public function Earthquakes(): ?Message|MessageBuilder {
 		
 			if (getenv('BETA') === 'true') { return; }
 			
