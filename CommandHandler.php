@@ -10,7 +10,7 @@ class Commands {
 	
 	private $functions = [];
 	
-	public function __construct(Discord $discord, PDO $pdo, $uptime, BotUtils $utils) {
+	public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, BotUtils $utils) {
 
 		$this->discord = $discord;
 		$this->pdo = $pdo;
