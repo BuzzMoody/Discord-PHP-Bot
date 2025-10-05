@@ -11,7 +11,7 @@
 		
 		private const PLAYFUL_INSULTS = ["Degenerates", "Scoundrels", "Rascals", "Ruffians", "Miscreants", "Reprobates", "Villains", "Knaves", "Lowlifes", "Scallywags", "Numbskulls", "Nincompoops", "Rapscallions", "Delinquents", "Ne'er-do-wells", "Wastrels", "Fools", "Buffoons", "Loons", "Cads", "Creeps", "Charlatans", "Twits", "Scamps", "Weasels", "Goons", "Clowns", "Bozos", "Doofuses", "Louts", "Boneheads", "Dingbats", "Meatheads", "Dunces", "Blockheads", "Muttonheads", "Simpletons"];
 
-		public function __construct($discord, PDO $pdo, $uptime, Commands $commands) {
+		public function __construct(Discord $discord, PDO $pdo, $uptime, Commands $commands) {
 			
 			$this->discord = $discord;
 			$this->pdo = $pdo;
