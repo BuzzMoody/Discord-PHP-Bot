@@ -61,7 +61,7 @@
 		
 		}
 		
-		public function Earthquakes() {
+		public function checkEarthquakes(): void {
 		
 			if (getenv('BETA') === 'true') { return; }
 			
@@ -113,9 +113,8 @@
 					
 					$this->getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakeID);
 					
-					$epiTimeZ = $quakes->properties->origin_time;
-					$epiTime = new DateTime($epiTimeZ, new DateTimeZone('UTC'));
-					$epiTime->setTimezone(new DateTimeZone('Australia/Melbourne'));
+					$epiTime = (new DateTimeImmutable($quake->properties->origin_time, new DateTimeZone('UTC')))
+        ->setTimezone(new DateTimeZone('Australia/Melbourne'));
 					
 					$embed = $this->discord->factory(Embed::class);
 					$embed->setAuthor("Earthquake Alert 🫨", "https://www.ga.gov.au/__data/assets/image/0005/123368/GA_logo_180x180.png", "https://earthquakes.ga.gov.au/event/{$quakeID}")

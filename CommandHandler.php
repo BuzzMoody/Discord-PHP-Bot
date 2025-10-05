@@ -21,7 +21,7 @@ class Commands {
 		
 	}
 	
-	public function execCommand($message) {
+	public function execCommand($message): void {
 	
 		$content = trim($message->content);
 		preg_match('/^!(\w+)(?:\s+(.*))?$/is', $content, $matches);
@@ -36,7 +36,7 @@ class Commands {
 		
 	}
 	
-	public function loadCommands($dir = "Commands") {
+	public function loadCommands($dir = "Commands"): void {
 		
 		require_once("{$dir}/CommandInterface.php");
         require_once("{$dir}/AbstractCommand.php");

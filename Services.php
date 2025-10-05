@@ -20,7 +20,7 @@
 			
 		}
 
-		public function checkDatabase() {
+		public function checkDatabase(): void {
 			
 			$tables = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'earthquakes')")->fetchAll();
 			if (count($tables) != 3) { 
@@ -39,7 +39,7 @@
 			
 		}
 
-		public function updateActivity() {
+		public function updateActivity(): void {
 			
 			$activity = $this->discord->factory(Activity::class, [
 				'name' => $this->getMemberCount($this->discord)." ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)],
