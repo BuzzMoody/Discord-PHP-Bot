@@ -18,7 +18,7 @@
 			return '/^radar$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute($message, $args, $matches): Message|MessageBuilder {
 		
 			$time = microtime(true);
 			$embed = $this->discord->factory(Embed::class);
