@@ -39,10 +39,12 @@
 			
 		}
 
-		public function updateActivity(): void {
+		public function updateActivity($status = null): void {
+			
+			$status = (is_null($status)) ? "{$this->getMemberCount($this->discord)} ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)] : $status;
 			
 			$activity = $this->discord->factory(Activity::class, [
-				'name' => $this->getMemberCount($this->discord)." ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)],
+				'name' =>  $status,
 				'type' => Activity::TYPE_LISTENING,
 			]);
 			$this->discord->updatePresence($activity);

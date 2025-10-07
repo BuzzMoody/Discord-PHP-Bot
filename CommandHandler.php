@@ -2,10 +2,9 @@
 
 class Commands {
 	
-	private $uptime;
-	private $patterns;
 	private $discord;
 	private $pdo;
+	private $uptime;
 	private $utils;
 	
 	private $functions = [];
@@ -36,7 +35,7 @@ class Commands {
 		
 	}
 	
-	public function loadCommands($dir = "Commands"): void {
+	private function loadCommands($dir = "Commands"): void {
 		
 		require_once("{$dir}/CommandInterface.php");
         require_once("{$dir}/AbstractCommand.php");
