@@ -456,7 +456,7 @@
 				function (ResponseInterface $response) use ($ids, $channel) {
 					$output = json_decode($response->getBody());
 					foreach ($output->entries as $article) {
-						if (!in_array($article->id, $ids)) {
+						if (!in_array($article->id, $ids) && !is_null($article->comment)) {
 							file_put_contents('/Media/trades.txt', $article->id . PHP_EOL, FILE_APPEND);
 							preg_match("/<p class=\"live-blog-post-trade__heading-section__label\">(.+)<p>/m", $article->comment, $trade_type);
 							preg_match_all("/<h2 class=\"live-blog-post-trade__title\">\s*(.*?)\s*<span.+?> (receive|give)s?:<\/span>/ms", $article->comment, $receives_team);
