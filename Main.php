@@ -13,7 +13,6 @@
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
 	use Discord\WebSockets\Event;
-	use Discord\Parts\User\Activity;
 	use Discord\Parts\Channel\Message;
 
 	$pdo = new PDO('sqlite:/Media/discord.db');
@@ -35,9 +34,8 @@
 		
 		echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 		
-		$services->updateActivity();
+		$services->updateActivity("Starting up...");
 		$services->checkDatabase();
-		$utils->checkDota();
 
 		$discord->getLoop()->addPeriodicTimer(15, function () use ($services, $utils) {
 			$utils->checkReminders();
