@@ -2,10 +2,9 @@
 
 class Commands {
 	
-	private $uptime;
-	private $patterns;
 	private $discord;
 	private $pdo;
+	private $uptime;
 	private $utils;
 	
 	private $functions = [];
