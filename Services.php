@@ -11,7 +11,7 @@
 		
 		private const PLAYFUL_INSULTS = ["Degenerates", "Scoundrels", "Rascals", "Ruffians", "Miscreants", "Reprobates", "Villains", "Knaves", "Lowlifes", "Scallywags", "Numbskulls", "Nincompoops", "Rapscallions", "Delinquents", "Ne'er-do-wells", "Wastrels", "Fools", "Buffoons", "Loons", "Cads", "Creeps", "Charlatans", "Twits", "Scamps", "Weasels", "Goons", "Clowns", "Bozos", "Doofuses", "Louts", "Boneheads", "Dingbats", "Meatheads", "Dunces", "Blockheads", "Muttonheads", "Simpletons"];
 
-		public function __construct($discord, PDO $pdo, $uptime, Commands $commands) {
+		public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, Commands $commands) {
 			
 			$this->discord = $discord;
 			$this->pdo = $pdo;
@@ -20,7 +20,7 @@
 			
 		}
 
-		public function checkDatabase() {
+		public function checkDatabase(): void {
 			
 			$tables = $this->pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('reminders', 'dota2', 'earthquakes')")->fetchAll();
 			if (count($tables) != 3) { 
@@ -39,7 +39,7 @@
 			
 		}
 
-		public function updateActivity() {
+		public function updateActivity(): void {
 			
 			$activity = $this->discord->factory(Activity::class, [
 				'name' => $this->getMemberCount($this->discord)." ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)],

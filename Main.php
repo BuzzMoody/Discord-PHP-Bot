@@ -50,7 +50,7 @@
 		});
 		
 		$discord->getLoop()->addPeriodicTimer(300, function () use ($utils) {
-			$utils->Earthquakes();
+			$utils->checkEarthquakes();
 		});
 
 		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
