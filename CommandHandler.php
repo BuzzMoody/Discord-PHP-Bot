@@ -36,7 +36,7 @@ class Commands {
 		
 	}
 	
-	public function loadCommands($dir = "Commands"): void {
+	private function loadCommands($dir = "Commands"): void {
 		
 		require_once("{$dir}/CommandInterface.php");
         require_once("{$dir}/AbstractCommand.php");
