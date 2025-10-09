@@ -209,7 +209,7 @@
 		
 		}
 		
-		public function SearchFunc($type, $message, $args): void {
+		public function SearchFunc($type, $message, $args) {
 	
 			if (empty($args)) { return $this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null); }
 			
@@ -277,7 +277,7 @@
 			
 		}
 		
-		public function checkDota(): void {
+		public function checkDota() {
 			
 			if (getenv('BETA') === 'true') { return; }
 			
@@ -443,7 +443,7 @@
 			
 		}
 		
-		public function checkTrades(): void {
+		public function checkTrades() {
 			
 			if (getenv('BETA') === 'true') { return; }
 			
