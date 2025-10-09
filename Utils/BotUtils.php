@@ -291,7 +291,7 @@
 			
 		}
 		
-		public function checkDota(): Message|MessageBuilder {
+		public function checkDota(): void {
 			
 			if ($this->betaCheck()) { return; }
 			
