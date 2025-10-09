@@ -20,7 +20,7 @@
 		
 			if (empty($args)) { return; }
 		
-			$tokens = ($this->utils->isAdmin($message->author->id)) ? 2500 : 1500;
+			$tokens = ($this->utils->isAdmin($message->author->id)) ? 1000 : 500;
 			
 			$safetySettings = [
 				["category" => "HARM_CATEGORY_HATE_SPEECH", "threshold" => "OFF"],
@@ -75,6 +75,10 @@
 			if (@$response->error->message || @$response->blockReason) { 
 				$reason = ($response->error->message) ? $response->error->message : $response->blockReason;
 				return $this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true, null);
+			}
+			
+			if (@$response->candidates[0]->finishReason == "MAX_TOKENS") {
+				return $this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Maximum token limit hit for this request. Try something simpler.", $message, true, null);
 			}
 
 			$string = $response->candidates[0]->content->parts[0]->text;
