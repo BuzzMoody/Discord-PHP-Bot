@@ -67,8 +67,6 @@
 			));
 
 			$response = json_decode(curl_exec($curl));
-			
-			print_r($response);
 
 			curl_close($curl);
 			
