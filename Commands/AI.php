@@ -20,7 +20,7 @@
 		
 			if (empty($args)) { return; }
 		
-			$tokens = ($this->utils->isAdmin($message->author->id)) ? 1000 : 500;
+			$tokens = ($this->utils->isAdmin($message->author->id)) ? 10000 : 3500;
 			
 			$safetySettings = [
 				["category" => "HARM_CATEGORY_HATE_SPEECH", "threshold" => "OFF"],
