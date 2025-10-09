@@ -11,13 +11,24 @@
 		}
 		
 		public function getPattern(): string {
-			return '/^reload$/';
+			return '/^(?:(reload)|(betarl))$/';
 		}
 		
 		public function execute($message, $args, $matches) {
-		
-			if ($this->utils->isAdmin($message->author->id) && getenv('BETA') !== 'true') {
-				die();
+			
+			if ($this->utils->isAdmin($message->author->id)) {
+				
+				if (!empty($matches[1]) && !$this->utils->betaCheck()) {
+					
+					die();
+					
+				} 
+				elseif (!empty($matches[2]) && $this->utils->betaCheck()) {
+					
+					die();
+					
+				}
+				
 			}
 		
 		}
