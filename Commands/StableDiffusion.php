@@ -23,7 +23,7 @@
 			if (empty($args)) { return; }
 	
 			$prompt = $args;
-			$url = "https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-preview-06-06:predict";
+			$url = "https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict";
 			
 			$postData = [
 				'instances' => [
