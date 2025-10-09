@@ -30,7 +30,12 @@
 			
 		}
 		
-		public function betaCheck(): bool 
+		public function betaCheck(): bool {
+			
+			if (getenv('BETA') === 'true') { return 1; }
+			return 0;
+
+		}
 		
 		public function isAdmin(string $userID): bool {
 			
