@@ -191,7 +191,7 @@
 			
 		}
 		
-		public function getLocale($locale): string {
+		public function getLocale($locale): array {
 		
 			$locale = (empty($locale)) ? "Highett" : str_replace(' ', '+', trim($locale));
 			$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
@@ -209,7 +209,7 @@
 		
 		}
 		
-		public function SearchFunc($type, $message, $args) {
+		public function SearchFunc($type, $message, $args): void {
 	
 			if (empty($args)) { return $this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null); }
 			
@@ -230,7 +230,7 @@
 		
 		}
 		
-		public function checkReminders() {
+		public function checkReminders(): void {
 	
 			$time = time();
 			$stmt = $this->pdo->prepare("SELECT userid, channelid, messageid, time FROM reminders WHERE time < :time");
@@ -277,7 +277,7 @@
 			
 		}
 		
-		public function checkDota() {
+		public function checkDota(): void {
 			
 			if (getenv('BETA') === 'true') { return; }
 			
@@ -411,7 +411,7 @@
 			
 		}
 		
-		private function checkNew($id, $matchID) {
+		private function checkNew($id, $matchID): bool {
 			
 			$stmt1 = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
 			$stmt1->execute(['id' => (string)$id]);
@@ -427,7 +427,7 @@
 			
 		}
 		
-		private function allMatchIDsMatch($details) {
+		private function allMatchIDsMatch($details): bool {
 			
 			$first = $details[0]['matchid'];
 			
@@ -443,7 +443,7 @@
 			
 		}
 		
-		public function checkTrades() {
+		public function checkTrades(): void {
 			
 			if (getenv('BETA') === 'true') { return; }
 			
