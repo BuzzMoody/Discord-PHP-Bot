@@ -29,10 +29,16 @@
 			array_shift($forecast->fcst->daily);
 			$i=0;
 			foreach ($forecast->fcst->daily as $daily) {
+				
+				if (empty($daily->atm?->surf_air?->temp_max_cel) ||
+					empty($daily->atm?->surf_air?->weather?->icon_code) ||
+					empty($daily->atm?->surf_air?->precip?->any_probability_percent)) { continue; }
+				
 				$uv = (!empty($daily->atm->surf_air->radiation->uv_clear_sky_max_code) && $i < 3) ? ", uv ".round(@$daily->atm->surf_air->radiation->uv_clear_sky_max_code, 1) : "";
 				$icon = preg_replace(array('/^1$/', '/^2$/', '/^3$/', '/^4$/', '/^5$/', '/^6$/', '/^7$/', '/^8$/', '/^9$/', '/^10$/', '/^11$/'), array('☀️', '2', '🌤', ':cloud:', '5', '6', '7', '8', '9', '🌫️', '🌦️'), $daily->atm->surf_air->weather->icon_code);
 				$embed->addFieldValues($this->utils->toAusTime($daily->date_utc, 'l jS')." {$icon}", round($daily->atm->surf_air->temp_max_cel, 1)."° / ".round($daily->atm->surf_air->temp_min_cel, 1)."° \n_☔ {$daily->atm->surf_air->precip->any_probability_percent}% {$uv}_", true);
 				$i++;
+				
 			}
 			
 			$this->utils->getMapImg($place);
@@ -45,7 +51,7 @@
 				->addEmbed($embed)
 				->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png");
 			
-			return $message->channel->sendMessage($builder);
+			$message->channel->sendMessage($builder);
 		
 		}
 		

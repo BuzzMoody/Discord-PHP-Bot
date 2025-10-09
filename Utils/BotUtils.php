@@ -30,6 +30,12 @@
 			
 		}
 		
+		public function betaCheck(): bool {
+			
+			return getenv('BETA') === 'true';
+
+		}
+		
 		public function isAdmin(string $userID): bool {
 			
 			if ($userID == '232691181396426752') { return true; }
@@ -63,7 +69,7 @@
 		
 		public function checkEarthquakes(): void {
 		
-			if (getenv('BETA') === 'true') { return; }
+			if ($this->betaCheck()) { return; }
 			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
 			$channel = $guild->channels->get('id', '232691831090053120');
@@ -191,7 +197,7 @@
 			
 		}
 		
-		public function getLocale($locale): string {
+		public function getLocale($locale): array {
 		
 			$locale = (empty($locale)) ? "Highett" : str_replace(' ', '+', trim($locale));
 			$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
@@ -209,28 +215,36 @@
 		
 		}
 		
-		public function SearchFunc($type, $message, $args) {
+		public function SearchFunc($type, $message, $args): void {
 	
-			if (empty($args)) { return $this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null); }
+			if (empty($args)) { 
+				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null);
+				return;
+			}
 			
 			$api_url = ($type == 'google') ? "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:hlos9qn_wvc&googlehost=google.com.au&num=1&q=".str_replace(' ', '%20', $args) : "https://customsearch.googleapis.com/customsearch/v1?key=".getenv('SEARCH_API_KEY')."&cx=017877399714631144452:0j02gfgipjq&googlehost=google.com.au&searchType=image&excludeTerms=youtube&imgSize=xxlarge&safe=off&num=1&fileType=jpg,png,gif&q=".str_replace(' ', '%20', $args)."%20-site:facebook.com%20-site:tiktok.com%20-site:instagram.com";
 			
 			try {
 				$search = file_get_contents($api_url);
-				if ($search === false) { return null; }
+				if ($search === false) { return; }
 				$return = json_decode($search);		
-				if ($return === null) { return null; }	
+				if ($return === null) { return; }	
 			} catch (Exception $e) {
-				return null;
+				return;
 			}
 			
-			if ($return->searchInformation->totalResults == 0) { return $this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "No results found for *{$args}*.", $message, true, null); }
+			if ($return->searchInformation->totalResults == 0) { 
+				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "No results found for *{$args}*.", $message, true, null);
+				return;
+			}
 			
-			return ($type == 'google') ? $message->channel->sendMessage("{$return->items[0]->title}: {$return->items[0]->link}") : $message->channel->sendMessage($return->items[0]->link);
+			$content = ($type == 'google') ? "{$return->items[0]->title}: {$return->items[0]->link}" : $return->items[0]->link;
+
+			$message->channel->sendMessage($content);
 		
 		}
 		
-		public function checkReminders() {
+		public function checkReminders(): void {
 	
 			$time = time();
 			$stmt = $this->pdo->prepare("SELECT userid, channelid, messageid, time FROM reminders WHERE time < :time");
@@ -277,9 +291,9 @@
 			
 		}
 		
-		public function checkDota() {
+		public function checkDota(): void {
 			
-			if (getenv('BETA') === 'true') { return; }
+			if ($this->betaCheck()) { return; }
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
@@ -381,7 +395,7 @@
 					$guild = $this->discord->guilds->get('id', '232691831090053120');
 					$channel = $guild->channels->get('id', '232691831090053120');
 
-					return $channel->sendMessage($builder);
+					$channel->sendMessage($builder);
 				
 				}
 				
@@ -411,7 +425,7 @@
 			
 		}
 		
-		private function checkNew($id, $matchID) {
+		private function checkNew($id, $matchID): bool {
 			
 			$stmt1 = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
 			$stmt1->execute(['id' => (string)$id]);
@@ -427,7 +441,7 @@
 			
 		}
 		
-		private function allMatchIDsMatch($details) {
+		private function allMatchIDsMatch($details): bool {
 			
 			$first = $details[0]['matchid'];
 			
@@ -443,9 +457,9 @@
 			
 		}
 		
-		public function checkTrades() {
+		public function checkTrades(): void {
 			
-			if (getenv('BETA') === 'true') { return; }
+			if ($this->betaCheck()) { return; }
 			
 			$ids = file_exists('/Media/trades.txt') ? file('/Media/trades.txt',  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
@@ -455,38 +469,40 @@
 			$http->get("https://aflapi.afl.com.au/liveblog/afl/164/EN?maxResults=3")->then(
 				function (ResponseInterface $response) use ($ids, $channel) {
 					$output = json_decode($response->getBody());
+					
 					foreach ($output->entries as $article) {
-						if (!in_array($article->id, $ids) && !is_null($article->comment)) {
-							file_put_contents('/Media/trades.txt', $article->id . PHP_EOL, FILE_APPEND);
-							preg_match("/<p class=\"live-blog-post-trade__heading-section__label\">(.+)<p>/m", $article->comment, $trade_type);
-							preg_match_all("/<h2 class=\"live-blog-post-trade__title\">\s*(.*?)\s*<span.+?> (receive|give)s?:<\/span>/ms", $article->comment, $receives_team);
-							preg_match_all("/<p class=\"live-blog-post-trade__text\">\s*(.*?)\s*<\/p>/ms", $article->comment, $receives_item);
-							preg_match("/<h2 class=\"live-blog-post-article__title\">(.+?)<\/h2>.+<p class=\"live-blog-post-article__text\">(.+?)<\/p>/ms", $article->comment, $article_text);
-							preg_match("/, (https:\/\/resources\.afl\.com\.au\/photo-resources\/.+\.(jpg|png)\?width=2128&height=1200)/", $article->comment, $image);
-							preg_match("/href=\"(\/news\/(.+?))\".*target=\"_blank\"/s", $article->comment, $url);
-							
-							$embed = $this->discord->factory(Embed::class);
-							$embed->setTitle($article->title)
-								->setAuthor("AFL Trade Radio", "https://www.afl.com.au/resources/v5.37.23/afl/favicon-32x32.png")
-								->setDescription($article_text[1].". ".$article_text[2])
-								->setURL("https://www.afl.com.au{$url[1]}")
-								->setColor(getenv('COLOUR'))
-								->setImage($image[1])
-								->setFooter($trade_type[1])
-								->setTimestamp();
-							
-							for ($x=0;$x<count($receives_team[1]);$x++) {
-							
-								$embed->addFieldValues("{$receives_team[1][$x]} {$receives_team[2][$x]}:", $receives_item[1][$x]);
-								
-							}
-							
-							$channel->sendEmbed($embed);
+						if (in_array($article->id, $ids) || is_null($article->comment)) {
+							continue;
 						}
+						
+						file_put_contents('/Media/trades.txt', $article->id . PHP_EOL, FILE_APPEND);
+						
+						preg_match("/<p class=\"live-blog-post-trade__heading-section__label\">(.+)<p>/m", $article->comment, $trade_type);
+						preg_match_all("/<h2 class=\"live-blog-post-trade__title\">\s*(.*?)\s*<span.+?> (receive|give)s?:<\/span>/ms", $article->comment, $teams);
+						preg_match_all("/<p class=\"live-blog-post-trade__text\">\s*(.*?)\s*<\/p>/ms", $article->comment, $items);
+						preg_match("/<h2 class=\"live-blog-post-article__title\">(.+?)<\/h2>.+<p class=\"live-blog-post-article__text\">(.+?)<\/p>/ms", $article->comment, $article_text);
+						preg_match("/, (https:\/\/resources\.afl\.com\.au\/photo-resources\/.+\.(jpg|png)\?width=2128&height=1200)/", $article->comment, $image);
+						preg_match("/href=\"(\/news\/(.+?))\".*target=\"_blank\"/s", $article->comment, $url);
+						
+						$embed = $this->discord->factory(Embed::class);
+						$embed->setTitle($article->title)
+							->setAuthor("AFL Trade Radio", "https://www.afl.com.au/resources/v5.37.23/afl/favicon-32x32.png")
+							->setDescription($article_text[1].". ".$article_text[2])
+							->setURL("https://www.afl.com.au{$url[1]}")
+							->setColor(getenv('COLOUR'))
+							->setImage($image[1])
+							->setFooter($trade_type[1])
+							->setTimestamp();
+						
+						foreach ($teams[1] as $i => $team) {
+							$embed->addFieldValues("{$team} {$teams[2][$i]}:", $items[1][$i]);
+						}
+						
+						$channel->sendEmbed($embed);
 					}
 					
 				},
-				function (Exception $e) use ($channel) {
+				function (Exception $e) {
 					echo $e->getMessage()."\n";
 				}
 			);
