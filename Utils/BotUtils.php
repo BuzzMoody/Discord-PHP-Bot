@@ -487,7 +487,7 @@
 					
 				},
 				function (Exception $e) use ($channel) {
-					$channel->sendMessage("Error: {$e->getMessage()}");
+					echo $e->getMessage()."\n";
 				}
 			);
 			
