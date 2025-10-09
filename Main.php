@@ -51,15 +51,15 @@
 			$utils->checkEarthquakes();
 		});
 
-		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands) {
+		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $utils) {
 			
 			echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 			
 			if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-				if ($message->channel->id == 274828566909157377 && getenv('BETA') === 'true') {
+				if ($message->channel->id == 274828566909157377 && $utils->betaCheck()) {
 					$commands->execCommand($message);
 				}
-				else if (getenv('BETA') !== 'true') {
+				else if (!$utils->betaCheck()) {
 					$commands->execCommand($message);
 				}
 			}
