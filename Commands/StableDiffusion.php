@@ -41,7 +41,7 @@
 			$postDataEnc = json_encode($postData);
 			$headers = [
 				'Content-Type' => 'application/json',
-				'x-goog-api-key' => getenv('VERTEX_API_KEY'),
+				'x-goog-api-key' => getenv('IMAGEN_API_KEY'),
 			];
 			
 			$browser = new Browser();

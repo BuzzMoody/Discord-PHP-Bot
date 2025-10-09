@@ -52,7 +52,7 @@
 
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
-				CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=".getenv('VERTEX_API_KEY'),
+				CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=".getenv('GEMINI_API_KEY'),
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING => '',
 				CURLOPT_MAXREDIRS => 10,
