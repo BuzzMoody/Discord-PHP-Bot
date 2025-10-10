@@ -439,6 +439,8 @@
 				return true;
 			}
 			
+			return false;
+			
 		}
 		
 		private function allMatchIDsMatch($details): bool {
