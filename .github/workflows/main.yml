@@ -15,15 +15,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install dos2unix
+        # Install the system utility dos2unix using apt-get
+        run: sudo apt-get install -y dos2unix
+
       - name: Setup PHP Environment
         # Installs the specified PHP version and enables the curl and json extensions.
-        # Ensure '8.3' matches the version you are targeting.
+        # NOTE: Removed 'tools: dos2unix' as we installed it above.
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
           extensions: curl, json 
-          # We need dos2unix to sanitize line endings before linting.
-          tools: dos2unix
 
       - name: List PHP Files Found for Debugging
         id: list_files
@@ -45,8 +47,7 @@ jobs:
               dos2unix "$file" 
               
               # 2. Run the linter. This will now check the clean file content.
-              # The -v (verbose) flag forces output, confirming execution.
-              php -l -v "$file"
+              php -l "$file"
           done
           
           echo "PHP syntax check passed successfully."
