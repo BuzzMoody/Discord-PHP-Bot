@@ -8,7 +8,7 @@
 	include __DIR__.'/vendor/autoload.php';
 	include 'CommandHandler.php';
 	include 'Services.php';
-	include 'Utils/BotUtils.php'; 
+	include 'Utils/BotUtils.php';
 
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
@@ -54,11 +54,11 @@
 			
 			echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 			
-			if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-				if ($message->channel->id == 274828566909157377 && $utils->betaCheck()) {
+			if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2){ 
+				if ($message->channel->id == 274828566909157377 && $utils->betaCheck()){
 					$commands->execCommand($message);
 				}
-				else if (!$utils->betaCheck()) {
+				else if (!$utils->betaCheck()){
 					$commands->execCommand($message);
 				}
 			}
