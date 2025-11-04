@@ -1,0 +1,35 @@
+name: PHP Syntax Check Only
+
+# This workflow only runs on push events targeting the 'beta' branch.
+on:
+  push:
+    branches:
+      - beta
+      - main
+
+jobs:
+  lint:
+    name: Check PHP Syntax
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        # Installs the specified PHP version and enables the curl and json extensions.
+        # Ensure '8.3' matches the version you are targeting.
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: curl, json 
+
+      - name: Run PHP Syntax Check on all files
+        # Runs the 'php -l' (lint) command recursively on all .php files in the project.
+        # This step will fail the entire job if any syntax error is found.
+        run: |
+          echo "Starting PHP syntax linting..."
+          # Uses find to locate all PHP files and xargs to pass them to 'php -l'
+          # We exclude the 'vendor' directory from the check
+          find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n 1 php -l
+          echo "PHP syntax check passed successfully."
