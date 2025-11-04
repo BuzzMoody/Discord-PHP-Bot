@@ -1,10 +1,10 @@
 name: PHP Syntax Check Only
 
-# This workflow only runs on push events targeting the 'beta' branch.
 on:
   push:
     branches:
       - beta
+      - main
 
 jobs:
   lint:
@@ -15,13 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dos2unix
-        # Install the system utility dos2unix using apt-get
-        run: sudo apt-get install -y dos2unix
-
       - name: Setup PHP Environment
-        # Installs the specified PHP version and enables the curl and json extensions.
-        # NOTE: Removed 'tools: dos2unix' as we installed it above.
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
@@ -31,22 +25,13 @@ jobs:
         id: list_files
         run: |
           echo "--- LISTING ALL PHP FILES FOUND FOR LINTING ---"
-          # Find all files but exclude the vendor directory
           find . -name "*.php" -not -path "./vendor/*" | sort
           
       - name: Run PHP Syntax Check on all files
-        # Runs the 'php -l' (lint) command recursively on all .php files in the project.
-        # This step will fail the entire job if any syntax error is found.
         run: |
           echo "Starting PHP syntax linting with file sanitization."
           
           find . -name "*.php" -not -path "./vendor/*" -print0 | while IFS= read -r -d $'\0' file; do
-              echo "Checking: $file"
-              
-              # 1. Sanitize the file: Force Unix line endings (LF) to eliminate CRLF issues.
-              dos2unix "$file" 
-              
-              # 2. Run the linter. This will now check the clean file content.
               php -l "$file"
           done
           
