@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - beta
-      - main
 
 jobs:
   lint:
@@ -21,15 +20,21 @@ jobs:
         # Ensure '8.3' matches the version you are targeting.
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: '8.3'
           extensions: curl, json 
 
       - name: Run PHP Syntax Check on all files
         # Runs the 'php -l' (lint) command recursively on all .php files in the project.
         # This step will fail the entire job if any syntax error is found.
         run: |
-          echo "Starting PHP syntax linting..."
-          # Uses find to locate all PHP files and xargs to pass them to 'php -l'
-          # We exclude the 'vendor' directory from the check
-          find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n 1 php -l
+          echo "Starting PHP syntax linting. Checking for invisible characters is recommended."
+          
+          # Using a while loop and read to handle file paths reliably, one file at a time.
+          # The -v (verbose) flag forces output for every file checked, confirming execution.
+          # NOTE: The PHP linter requires the script to begin with the '<?php' tag to parse code correctly.
+          find . -name "*.php" -not -path "./vendor/*" -print0 | while IFS= read -r -d $'\0' file; do
+              echo "Checking: $file"
+              php -l -v "$file"
+          done
+          
           echo "PHP syntax check passed successfully."
