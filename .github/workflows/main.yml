@@ -20,20 +20,32 @@ jobs:
         # Ensure '8.3' matches the version you are targeting.
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           extensions: curl, json 
+          # We need dos2unix to sanitize line endings before linting.
+          tools: dos2unix
 
+      - name: List PHP Files Found for Debugging
+        id: list_files
+        run: |
+          echo "--- LISTING ALL PHP FILES FOUND FOR LINTING ---"
+          # Find all files but exclude the vendor directory
+          find . -name "*.php" -not -path "./vendor/*" | sort
+          
       - name: Run PHP Syntax Check on all files
         # Runs the 'php -l' (lint) command recursively on all .php files in the project.
         # This step will fail the entire job if any syntax error is found.
         run: |
-          echo "Starting PHP syntax linting. Checking for invisible characters is recommended."
+          echo "Starting PHP syntax linting with file sanitization."
           
-          # Using a while loop and read to handle file paths reliably, one file at a time.
-          # The -v (verbose) flag forces output for every file checked, confirming execution.
-          # NOTE: The PHP linter requires the script to begin with the '<?php' tag to parse code correctly.
           find . -name "*.php" -not -path "./vendor/*" -print0 | while IFS= read -r -d $'\0' file; do
               echo "Checking: $file"
+              
+              # 1. Sanitize the file: Force Unix line endings (LF) to eliminate CRLF issues.
+              dos2unix "$file" 
+              
+              # 2. Run the linter. This will now check the clean file content.
+              # The -v (verbose) flag forces output, confirming execution.
               php -l -v "$file"
           done
           
