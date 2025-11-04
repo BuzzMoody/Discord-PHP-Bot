@@ -8,7 +8,10 @@
 	include __DIR__.'/vendor/autoload.php';
 	include 'CommandHandler.php';
 	include 'Services.php';
-	include 'Utils/BotUtils.php'; 
+	include 'Utils/BotUtils.php';
+	
+	# testing automated workflows
+	echo "lol";;
 
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
