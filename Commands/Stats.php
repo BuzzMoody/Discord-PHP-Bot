@@ -38,13 +38,13 @@
 						->setColor(getenv('COLOUR'));
 						
 					$skillsByName = [];
-					foreach ($output->skill as $skill) {
+					foreach ($output->skills as $skill) {
 						$skillsByName[$skill->name] = $skill;
 					}
 					print_r($skillsByName);
 					
 					foreach (self::OSRS_SKILLS as $name) {
-						$embed->addFieldValues(self::OSRS_SKILL_ICONS[name], $skillsByName[$name]->level, true);
+						$embed->addFieldValues(self::OSRS_SKILL_ICONS[$name], $skillsByName[$name]->level, true);
 					}
 
 					$message->channel->sendEmbed($embed);
