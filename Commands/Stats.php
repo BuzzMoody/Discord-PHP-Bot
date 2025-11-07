@@ -27,12 +27,12 @@
 		
 			$http = new Browser();
 
-			$http->get('https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=Ferking')->then(
+			$http->get("https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player={$player}")->then(
 				function (ResponseInterface $response) use ($message) {
 					$output = json_decode($response->getBody());
 					
 					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor("OldSchool RuneScape - Hiscores - {$output["name"]}", 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output["name"]}")
+					$embed->setAuthor("OldSchool RuneScape - Hiscores - {$output->name}", 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
 						->setColor(getenv('COLOUR'));
 		
 					foreach ($output['skills'] as $skill) {
