@@ -21,6 +21,9 @@
 		}
 		
 		public function execute($message, $args, $matches) {
+			
+			$player = $args;
+			if (!$player) { return $this->utils->simpleEmbed('OldSchool RuneScape - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', 'Give me a player to look up!', $message, true, 'https://oldschool.runescape.com/'); }
 		
 			$http = new Browser();
 
@@ -29,7 +32,7 @@
 					$output = json_decode($response->getBody());
 					
 					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor("OldSchool RuneScape - Hiscores- {$output["name"]}", 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output["name"]}")
+					$embed->setAuthor("OldSchool RuneScape - Hiscores - {$output["name"]}", 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output["name"]}")
 						->setColor(getenv('COLOUR'));
 		
 					foreach ($output['skills'] as $skill) {
