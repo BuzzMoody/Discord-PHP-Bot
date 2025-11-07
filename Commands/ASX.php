@@ -32,7 +32,7 @@
 				"Current Price" => "$".number_format($header->data->priceLast, 2),
 				"Change Today" => number_format($header->data->priceChangePercent, 2)."%",
 				"52W ↑ / ↓" => "$".$stats->data->shareInformation->priceFiftyTwoWeekHigh." / $".$stats->data->shareInformation->priceFiftyTwoWeekLow,
-				"Annuel Yield" => number_format($stats->data->dividends->yieldAnnualPercent, 2)."%"
+				"Annual Yield" => number_format($stats->data->dividends->yieldAnnualPercent, 2)."%"
 			];
 			
 			$embed = $this->discord->factory(Embed::class);
