@@ -35,8 +35,8 @@
 					$embed->setAuthor("OldSchool RuneScape - Hiscores - {$output->name}", 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
 						->setColor(getenv('COLOUR'));
 		
-					foreach ($output['skills'] as $skill) {
-						$embed->addFieldValues(self::OSRS_SKILLS[$skill['name']], $skill['level'], true);
+					foreach ($output->skills as $skill) {
+						$embed->addFieldValues(self::OSRS_SKILLS[$skill->name], $skill->level, true);
 					}
 
 					$message->channel->sendEmbed($embed);
