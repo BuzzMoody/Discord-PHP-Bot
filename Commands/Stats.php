@@ -11,7 +11,7 @@
 		const OSRS_SKILL_ICONS = ['Attack'=>'⚔️','Defence'=>'🛡️','Strength'=>'💪','Hitpoints'=>'❤️','Ranged'=>'🏹','Prayer'=>'🙏','Magic'=>'🧙‍','Cooking'=>'🧑‍🍳','Woodcutting'=>'🌲','Fletching'=>'🪶','Fishing'=>'🎣','Firemaking'=>'🔥','Crafting'=>'💎','Smithing'=>'⚒️','Mining'=>'⛏️','Herblore'=>'🌿','Agility'=>'🤸‍♂️','Thieving'=>'🕵️‍♂️','Slayer'=>'☠️','Farming'=>'🌾','Runecraft'=>'🌀','Hunter'=>'🐾','Construction'=>'🪚','Overall'=>'🏆'];
 
 		public function getName(): string {
-			return 'F1';
+			return 'OSRS Stats';
 		}
 		
 		public function getDesc(): string {
@@ -41,8 +41,6 @@
 					foreach ($output->skills as $skill) {
 						$skillsByName[$skill->name] = $skill;
 					}
-					print_r($skillsByName);
-					
 					foreach (self::OSRS_SKILLS as $name) {
 						$embed->addFieldValues(self::OSRS_SKILL_ICONS[$name], $skillsByName[$name]->level, true);
 					}
