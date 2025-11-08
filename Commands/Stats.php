@@ -41,12 +41,13 @@
 					}
 					foreach (self::OSRS_SKILLS as $name) {
 						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($skillsByName[$name]->level, 2).'	';
+						if ($name == 'Overall') { $levels .= "\n\nTotal Exp: ".number_format($skillsByName[$name]->xp)." (#".number_format($skillsByName[$name]->rank).")"; }
 						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
 						$x++;
 					}
 					
 					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor("OldSchool RuneScape - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
+					$embed->setAuthor("OSRS - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
 						->setColor(getenv('COLOUR'))
 						->setDescription("```{$levels}```");
 					
