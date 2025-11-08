@@ -32,16 +32,23 @@
 			$http->get("https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player={$player}")->then(
 				function (ResponseInterface $response) use ($message) {
 					$output = json_decode($response->getBody());
+						
+					$skillsByName = [];
+					$levels = '';
+					$x = 0;
+					foreach ($output->skills as $skill) {
+						$skillsByName[$skill->name] = $skill;
+					}
+					foreach (self::OSRS_SKILLS as $name) {
+						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($level, 2).'	';
+						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
+						$x++;
+					}
 					
-					$skills = array_column($output->skills, null, 'name');
-					$levels = array_map(fn($s) => self::OSRS_SKILL_ICONS[$s].' '.str_pad($skills[$s]->level, 2, ' ', STR_PAD_RIGHT), self::OSRS_SKILLS);
-					$levels = implode("   ", array_map(null, ...array_chunk($levels, 3))) . "\n";
-
 					$embed = $this->discord->factory(Embed::class);
 					$embed->setAuthor("OldSchool RuneScape - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
 						->setColor(getenv('COLOUR'));
-					
-					$embed->setDescription("```{$levels}```");
+						->setDescription("```{$levels}```");
 					
 					$message->channel->sendEmbed($embed);
 				},
