@@ -24,13 +24,13 @@
 		
 		public function execute($message, $args, $matches) {
 			
-			$player = $args;
+			$player = str_replace(' ', '+', $args);
 			if (!$player) { return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', 'Give me a player to look up!', $message, true, 'https://oldschool.runescape.com/'); }
 		
 			$http = new Browser();
 
-			$http->get("https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=".str_replace(' ', '+', $player))->then(
-				function (ResponseInterface $response) use ($message) {
+			$http->get("https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=".$player)->then(
+				function (ResponseInterface $response) use ($message, $player) {
 					$output = json_decode($response->getBody());
 						
 					$skillsByName = [];
@@ -47,14 +47,14 @@
 					}
 					
 					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor("OSRS - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
+					$embed->setAuthor("OSRS - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$player}")
 						->setColor(getenv('COLOUR'))
 						->setDescription("```{$levels}```");
 					
 					$message->channel->sendEmbed($embed);
 				},
 				function (Exception $e) use ($message, $player) {
-					return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "The player **{$player}** was not found on the hiscores.", $message, true, 'https://oldschool.runescape.com/');
+					return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "The player **".str_replace('+', ' ', $player)."** was not found on the hiscores.", $message, true, 'https://oldschool.runescape.com/');
 				}
 			);
 		
