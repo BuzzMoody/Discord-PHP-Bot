@@ -54,7 +54,7 @@
 					$message->channel->sendEmbed($embed);
 				},
 				function (Exception $e) use ($message, $player) {
-					return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "The player **{$player}** was not found on the hiscores", $message, true, 'https://oldschool.runescape.com/');
+					return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "The player **{$player}** was not found on the hiscores.", $message, true, 'https://oldschool.runescape.com/');
 				}
 			);
 		
