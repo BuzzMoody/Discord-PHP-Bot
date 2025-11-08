@@ -41,7 +41,7 @@
 					}
 					foreach (self::OSRS_SKILLS as $name) {
 						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($skillsByName[$name]->level, 2).'	';
-						if ($name == 'Overall') { $levels .= "\n\nTotal Exp: ".number_format($skillsByName[$name]->xp)." (#".number_format($skillsByName[$name]->rank).")"; }
+						if ($name == 'Overall') { $levels .= "\n\n📊 ".number_format($skillsByName[$name]->xp)."\n\n🏅 ".number_format($skillsByName[$name]->rank); }
 						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
 						$x++;
 					}
