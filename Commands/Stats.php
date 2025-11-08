@@ -29,7 +29,7 @@
 		
 			$http = new Browser();
 
-			$http->get("https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=".urlencode($player))->then(
+			$http->get("https://secure.runescape.com/m=hiscore_oldschool/index_lite.json?player=".str_replace(' ', '+', $player))->then(
 				function (ResponseInterface $response) use ($message) {
 					$output = json_decode($response->getBody());
 						
