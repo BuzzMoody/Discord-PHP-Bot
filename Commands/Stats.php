@@ -40,7 +40,7 @@
 						$skillsByName[$skill->name] = $skill;
 					}
 					foreach (self::OSRS_SKILLS as $name) {
-						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($level, 2).'	';
+						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($skillsByName[$name]->level, 2).'	';
 						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
 						$x++;
 					}
