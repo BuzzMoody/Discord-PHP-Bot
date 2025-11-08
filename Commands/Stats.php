@@ -46,7 +46,7 @@
 					foreach (self::OSRS_SKILLS as $name) {
 						// $embed->addFieldValues(self::OSRS_SKILL_ICONS[$name], $skillsByName[$name]->level, true);
 						$levels .= self::OSRS_SKILL_ICONS[$name]." {$skillsByName[$name]->level}	";
-						if (($x + 1) % 3 === 0) { $levels .= "\n"; }
+						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
 						$x++;
 					}
 					$embed->setDescription("```{$levels}```");
