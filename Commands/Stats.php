@@ -33,22 +33,14 @@
 				function (ResponseInterface $response) use ($message) {
 					$output = json_decode($response->getBody());
 					
+					$skills = array_column($output->skills, null, 'name');
+					$levels = array_map(fn($s) => self::OSRS_SKILL_ICONS[$s].' '.str_pad($skills[$s]->level, 2, ' ', STR_PAD_RIGHT), self::OSRS_SKILLS);
+					$levels = implode("   ", array_map(null, ...array_chunk($levels, 3))) . "\n";
+
 					$embed = $this->discord->factory(Embed::class);
 					$embed->setAuthor("OldSchool RuneScape - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$output->name}")
 						->setColor(getenv('COLOUR'));
-						
-					$skillsByName = [];
-					$levels = '';
-					$x = 0;
-					foreach ($output->skills as $skill) {
-						$skillsByName[$skill->name] = $skill;
-					}
-					foreach (self::OSRS_SKILLS as $name) {
-						$level = (strlen($skillsByName[$name]->level) < 2) ? $skillsByName[$name]->level." " : $skillsByName[$name]->level;
-						$levels .= self::OSRS_SKILL_ICONS[$name]." {$level}	";
-						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
-						$x++;
-					}
+					
 					$embed->setDescription("```{$levels}```");
 					
 					$message->channel->sendEmbed($embed);
