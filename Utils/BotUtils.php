@@ -32,7 +32,15 @@
 		
 		public function betaCheck(): bool {
 			
-			return getenv('BETA') === 'true';
+			if (getenv('BETA') !== 'true') { return false; }
+			
+			$guild = $discord->guilds->get('id', '232691831090053120');
+			$guild->members->fetch('274805663614369793')->done(function ($member) {
+				$presence = $member->presence;
+				echo "Glitch presence: ".$presence->status."\n";
+				if ($presence->status === 'online') { return false; }
+				return true;
+			});
 
 		}
 		

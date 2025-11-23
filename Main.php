@@ -55,7 +55,7 @@
 			echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
 			
 			if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
-				if ($message->channel->id == 274828566909157377 && $utils->betaCheck()) {
+				if ($message->channel->id == 274828566909157377) {
 					$commands->execCommand($message);
 				}
 				else if (!$utils->betaCheck()) {
