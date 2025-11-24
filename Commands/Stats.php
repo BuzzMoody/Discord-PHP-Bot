@@ -43,7 +43,7 @@
 						// if (in_array($name, ['Overall', 'Clues', 'Collections'])) { continue; }
 						
 						$skillsByName[$name]->level = ($skillsByName[$name]->level <= 0) ? "NA" : $skillsByName[$name]->level;
-						$levels .= self::OSRS_SKILL_ICONS[$name].'  '.str_pad($skillsByName[$name]->level, 3);
+						$levels .= self::OSRS_SKILL_ICONS[$name].'  '.$skillsByName[$name]->level;
 						$padding = (strlen($skillsByName[$name]->level) === 1) ? '‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎      ' : '‎‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎';
 						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
 						else { $levels .= $padding; }
