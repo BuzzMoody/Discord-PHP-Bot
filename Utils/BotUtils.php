@@ -30,16 +30,22 @@
 			
 		}
 		
-		public function betaCheck(): bool {
+		public function betaCheck() {
 			
-			if (getenv('BETA') !== 'true') { return false; }
+			if (getenv('BETA') !== 'true') return false;
 			
 			$betaGuild = $this->discord->guilds->get('id', '232691831090053120');
-			$betaMember = $betaGuild->members->get('id', '274805663614369793');
-			print_r($betaMember);
-			if (!isset($betaMember->attributes['status'])) { return false; }
+			$presence = $guild->presences->get('id', '274805663614369793');
+
+			if ($presence) {
+				echo "Status: " . $presence->status;
+			} else {
+				echo "No presence information available.";
+			}
 			
-			return true;
+			if ($presence->status === 'online') return true;
+			
+			return false;
 
 		}
 		
