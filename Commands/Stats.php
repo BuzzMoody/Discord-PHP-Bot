@@ -53,17 +53,17 @@
 					$embed = $this->discord->factory(Embed::class);
 					
 					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n***Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** {$skillsByName['Overall']->rank}", true);
-					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Collections']." Collections", "**Logged:** {$output->activities['Collections Logged']->score}", true);
+					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Collections']." Collections", "**Logged:** {$output->activities[19]->score}", true);
 					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Clues']." Clues",
-						"**Beginner:** {$output->activities['Clue Scrolls (beginner)']->score}\n
-						**Easy:** {$output->activities['Clue Scrolls (easy)']->score}\n
-						**Medium:** {$output->activities['Clue Scrolls (medium)']->score}\n
-						**Hard:** {$output->activities['Clue Scrolls (hard)']->score}\n
-						**Elite:** {$output->activities['Clue Scrolls (elite)']->score}\n
-						**Master:** {$output->activities['Clue Scrolls (master)']->score}"
+						"**Beginner:** {$output->activities[8]->score}\n
+						**Easy:** {$output->activities[9]->score}\n
+						**Medium:** {$output->activities[10]->score}\n
+						**Hard:** {$output->activities[11]->score}\n
+						**Elite:** {$output->activities[12]->score}\n
+						**Master:** {$output->activities[13]->score}"
 					, true);
 			
-					$embed->setAuthor("OSRS - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$player}")
+					$embed->setAuthor("Old School RuneScape - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$player}")
 						->setColor(getenv('COLOUR'))
 						->setDescription("{$levels}");
 					
