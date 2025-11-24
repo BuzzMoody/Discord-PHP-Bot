@@ -52,14 +52,13 @@
 					
 					$embed = $this->discord->factory(Embed::class);
 					
-					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n***Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** {$skillsByName['Overall']->rank}", true);
-					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Collections']." Collections", "**Logged:** {$output->activities[19]->score}", true);
+					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n***Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** {$skillsByName['Overall']->rank}\n\n".self::OSRS_SKILL_ICONS['Collections']." Collections\n**Logged:** {$output->activities[19]->score}", true);
 					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Clues']." Clues",
-						"**Beginner:** {$output->activities[8]->score}\n
-						**Easy:** {$output->activities[9]->score}\n
-						**Medium:** {$output->activities[10]->score}\n
-						**Hard:** {$output->activities[11]->score}\n
-						**Elite:** {$output->activities[12]->score}\n
+						"**Beginner:** {$output->activities[8]->score}
+						**Easy:** {$output->activities[9]->score}
+						**Medium:** {$output->activities[10]->score}
+						**Hard:** {$output->activities[11]->score}
+						**Elite:** {$output->activities[12]->score}
 						**Master:** {$output->activities[13]->score}"
 					, true);
 			
