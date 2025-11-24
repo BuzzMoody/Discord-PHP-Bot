@@ -54,7 +54,7 @@
 					$embed = $this->discord->factory(Embed::class);
 					
 					$embed->addFieldValues(" ", " ", false);
-					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n**Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** {$skillsByName['Overall']->rank}\n\n".self::OSRS_SKILL_ICONS['Collections']." **Collections**\n**Logged:** {$output->activities[19]->score}", true);
+					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n**Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** ".number_format($skillsByName['Overall']->rank)."\n\n".self::OSRS_SKILL_ICONS['Collections']." **Collections**\n**Logged:** {$output->activities[19]->score}", true);
 					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Clues']." Clues",
 						"**Beginner:** {$output->activities[8]->score}
 						**Easy:** {$output->activities[9]->score}
