@@ -35,7 +35,7 @@
 			if (getenv('BETA') !== 'true') return false;
 			
 			$betaGuild = $this->discord->guilds->get('id', '232691831090053120');
-			$presence = $betaGuild->presences->get('id', '274805663614369793');
+			$presence = $betaGuild->presences->get('user_id', '274805663614369793');
 
 			if ($presence) {
 				echo "Status: " . $presence->status;
