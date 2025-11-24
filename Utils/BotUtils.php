@@ -30,9 +30,14 @@
 			
 		}
 		
-		public function betaCheck(): bool {
+		public function betaCheck() {
 			
-			return getenv('BETA') === 'true';
+			if (getenv('BETA') !== 'true') return false;
+			
+			$betaGuild = $this->discord->guilds->get('id', '232691831090053120');
+			$betaMember = $betaGuild->members->get('id', '274805663614369793');
+
+			return $betaMember->status !== null && $betaMember->status !== 'offline';
 
 		}
 		
