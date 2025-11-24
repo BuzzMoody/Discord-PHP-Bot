@@ -36,6 +36,7 @@
 			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
 			$member = $guild->members->get('id', '274805663614369793');
+			print_r($member->presence);
 			if ($member->presence === 'online') { return false; }
 			
 			return true;
