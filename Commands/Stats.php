@@ -43,16 +43,17 @@
 						// if (in_array($name, ['Overall', 'Clues', 'Collections'])) { continue; }
 						
 						$skillsByName[$name]->level = ($skillsByName[$name]->level <= 0) ? "NA" : $skillsByName[$name]->level;
-						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($skillsByName[$name]->level, 2);
+						$levels .= self::OSRS_SKILL_ICONS[$name].'  ‎ ‎ '.str_pad($skillsByName[$name]->level, 2);
 						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
-						else { $levels .= ' ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ '; }
+						else { $levels .= '‎ ‎ ‎ ‎ ‎  ‎ ‎ ‎  ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ '; }
 						$x++;
 						
 					}
 					
 					$embed = $this->discord->factory(Embed::class);
 					
-					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n**Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** {$skillsByName['Overall']->rank}\n\n".self::OSRS_SKILL_ICONS['Collections']." Collections\n**Logged:** {$output->activities[19]->score}", true);
+					$embed->addFieldValues(" ", " ", false);
+					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Overall']." Overall", "**Level:** ".str_pad($skillsByName['Overall']->level, 2)."\n**Exp:** ".number_format($skillsByName['Overall']->xp)."\n**Rank:** {$skillsByName['Overall']->rank}\n\n".self::OSRS_SKILL_ICONS['Collections']." **Collections**\n**Logged:** {$output->activities[19]->score}", true);
 					$embed->addFieldValues(self::OSRS_SKILL_ICONS['Clues']." Clues",
 						"**Beginner:** {$output->activities[8]->score}
 						**Easy:** {$output->activities[9]->score}
@@ -64,7 +65,7 @@
 			
 					$embed->setAuthor("Old School RuneScape - Hiscores - ".ucfirst($output->name), 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "https://secure.runescape.com/m=hiscore_oldschool/hiscorepersonal?user1={$player}")
 						->setColor(getenv('COLOUR'))
-						->setDescription("{$levels}\n\n");
+						->setDescription("{$levels}");
 					
 					$message->channel->sendEmbed($embed);
 				},
