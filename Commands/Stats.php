@@ -41,7 +41,7 @@
 					}
 					foreach (self::OSRS_SKILLS as $name) {
 						$skillsByName[$name]->level = ($skillsByName[$name]->level <= 0) ? "NA" : $skillsByName[$name]->level;
-						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($skillsByName[$name]->level, 2).'	';
+						$levels .= self::OSRS_SKILL_ICONS[$name].' '.str_pad($skillsByName[$name]->level, 2).'	-	';
 						if ($name == 'Overall' && $skillsByName[$name]->level != "NA") { $levels .= "\n\n📊 ".number_format($skillsByName[$name]->xp)."\n\n🏅 ".number_format($skillsByName[$name]->rank); }
 						if (($x + 1) % 3 === 0) { $levels .= "\n\n"; }
 						$x++;
