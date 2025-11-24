@@ -37,7 +37,7 @@
 			$betaGuild = $this->discord->guilds->get('id', '232691831090053120');
 			$betaMember = $betaGuild->members->get('id', '274805663614369793');
 			print_r($betaMember);
-			if (isset($betaMember->attributes['status'])) { return false; }
+			if (!isset($betaMember->attributes['status'])) { return false; }
 			
 			return true;
 
