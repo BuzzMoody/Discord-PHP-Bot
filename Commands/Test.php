@@ -18,7 +18,7 @@
 		
 			if ($this->utils->isAdmin($message->author->id) && $this->utils->betaCheck()) {
 
-				return;			
+				$message->reply(":df:");
 
 			}
 		
