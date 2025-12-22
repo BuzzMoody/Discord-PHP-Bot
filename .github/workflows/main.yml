@@ -1,17 +1,12 @@
-name: PHP Quality Assurance
+name: PHP Quality Check (Standalone)
 
 on:
   push:
     branches: [beta, main]
-  pull_request:
-    branches: [beta, main]
-
-permissions:
-  contents: read
 
 jobs:
-  qa:
-    name: PHP QA (8.5)
+  lint:
+    name: Check PHP Quality
     runs-on: ubuntu-latest
     
     steps:
@@ -21,26 +16,23 @@ jobs:
       - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: '8.4' # Using 8.4 for stability, swap to 8.5 if using nightly
           extensions: curl, json, mbstring
-          # This installs PHPStan & Psalm globally for the runner
-          tools: composer:v2, phpstan, psalm, phpcs
-
-      - name: Validate Composer
-        run: composer validate --strict
-
-      - name: Install Dependencies
-        run: composer install --prefer-dist --no-progress
-
-      - name: Security Audit
-        run: composer audit
+          # This installs the tools as global binaries (PHARs)
+          tools: phpstan, php-cs-fixer, psalm
 
       - name: PHP Syntax Check (Lint)
         run: |
           find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n 1 -P 4 php -l
 
-      - name: Static Analysis (PHPStan)
-        run: phpstan analyse . --level 5
+      - name: Run PHPStan (Static Analysis)
+        # Without composer, we tell PHPStan to look at the current directory
+        run: phpstan analyse . --level 5 --no-progress
 
-      - name: Coding Standard Check
-        run: phpcs --standard=PSR12 . --ignore=vendor/
+      - name: Run Psalm (Type Checking)
+        # Psalm is great for finding variable type mismatches
+        run: psalm --no-cache
+
+      - name: Check Coding Standards (Dry Run)
+        # This checks if your code follows PSR-12 without changing it
+        run: php-cs-fixer fix --dry-run --diff
