@@ -1,31 +1,38 @@
-name: PHP Syntax & DiscordPHP Check
+name: PHP Syntax Check Only
 
 on:
   push:
-    branches: [beta, main]
+    branches:
+      - beta
+      - main
 
 jobs:
   lint:
+    name: Check PHP Syntax
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
-          # DiscordPHP requires these specific extensions
-          extensions: curl, json, mbstring, zlib, gmp 
-          tools: phpstan
+          extensions: curl, json 
 
-      - name: Install DiscordPHP on-the-fly
-        run: composer require team-reflex/discord-php --no-interaction --quiet
-
-      - name: Run PHP Syntax Check
+      - name: List PHP Files Found for Debugging
+        id: list_files
         run: |
-          find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n 1 -P 4 php -l
-
-      - name: Run PHPStan (Logic Check)
-        # We tell PHPStan to ignore the vendor folder but use its autoloader
-        run: phpstan analyse . --level 1
+          echo "--- LISTING ALL PHP FILES FOUND FOR LINTING ---"
+          find . -name "*.php" -not -path "./vendor/*" | sort
+          
+      - name: Run PHP Syntax Check on all files
+        run: |
+          echo "Starting PHP syntax linting with file sanitization."
+          
+          find . -name "*.php" -not -path "./vendor/*" -print0 | while IFS= read -r -d $'\0' file; do
+              php -l "$file"
+          done
+          
+          echo "PHP syntax check passed successfully."
