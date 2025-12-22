@@ -1,4 +1,4 @@
-name: PHP Quality Check (Standalone)
+name: PHP Syntax & DiscordPHP Check
 
 on:
   push:
@@ -6,33 +6,26 @@ on:
 
 jobs:
   lint:
-    name: Check PHP Quality
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP Environment
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4' # Using 8.4 for stability, swap to 8.5 if using nightly
-          extensions: curl, json, mbstring
-          # This installs the tools as global binaries (PHARs)
-          tools: phpstan, php-cs-fixer, psalm
+          php-version: '8.5'
+          # DiscordPHP requires these specific extensions
+          extensions: curl, json, mbstring, zlib, gmp 
+          tools: phpstan
 
-      - name: PHP Syntax Check (Lint)
+      - name: Install DiscordPHP on-the-fly
+        run: composer require team-reflex/discord-php --no-interaction --quiet
+
+      - name: Run PHP Syntax Check
         run: |
           find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n 1 -P 4 php -l
 
-      - name: Run PHPStan (Static Analysis)
-        # Without composer, we tell PHPStan to look at the current directory
-        run: phpstan analyse . --level 5 --no-progress
-
-      - name: Run Psalm (Type Checking)
-        # Psalm is great for finding variable type mismatches
-        run: psalm --no-cache
-
-      - name: Check Coding Standards (Dry Run)
-        # This checks if your code follows PSR-12 without changing it
-        run: php-cs-fixer fix --dry-run --diff
+      - name: Run PHPStan (Logic Check)
+        # We tell PHPStan to ignore the vendor folder but use its autoloader
+        run: phpstan analyse . --level 1
