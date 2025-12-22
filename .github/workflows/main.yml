@@ -1,14 +1,17 @@
-name: PHP Syntax Check Only
+name: PHP Quality Assurance
 
 on:
   push:
-    branches:
-      - beta
-      - main
+    branches: [beta, main]
+  pull_request:
+    branches: [beta, main]
+
+permissions:
+  contents: read
 
 jobs:
-  lint:
-    name: Check PHP Syntax
+  qa:
+    name: PHP QA (8.5)
     runs-on: ubuntu-latest
     
     steps:
@@ -19,20 +22,25 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
-          extensions: curl, json 
+          extensions: curl, json, mbstring
+          # This installs PHPStan & Psalm globally for the runner
+          tools: composer:v2, phpstan, psalm, phpcs
 
-      - name: List PHP Files Found for Debugging
-        id: list_files
+      - name: Validate Composer
+        run: composer validate --strict
+
+      - name: Install Dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Security Audit
+        run: composer audit
+
+      - name: PHP Syntax Check (Lint)
         run: |
-          echo "--- LISTING ALL PHP FILES FOUND FOR LINTING ---"
-          find . -name "*.php" -not -path "./vendor/*" | sort
-          
-      - name: Run PHP Syntax Check on all files
-        run: |
-          echo "Starting PHP syntax linting with file sanitization."
-          
-          find . -name "*.php" -not -path "./vendor/*" -print0 | while IFS= read -r -d $'\0' file; do
-              php -l "$file"
-          done
-          
-          echo "PHP syntax check passed successfully."
+          find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n 1 -P 4 php -l
+
+      - name: Static Analysis (PHPStan)
+        run: phpstan analyse . --level 5
+
+      - name: Coding Standard Check
+        run: phpcs --standard=PSR12 . --ignore=vendor/
