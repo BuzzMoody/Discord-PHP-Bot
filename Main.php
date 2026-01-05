@@ -44,6 +44,7 @@
 		
 		$discord->getLoop()->addPeriodicTimer(120, function () use ($utils) {
 			$utils->checkDota();
+			$utils->checkNews();
 		});
 		
 		$discord->getLoop()->addPeriodicTimer(300, function () use ($utils) {
