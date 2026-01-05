@@ -83,14 +83,14 @@
 			
 			print_r($xml);
 
-			foreach ($xml->entry as $item) {
+/* 			foreach ($xml->entry as $item) {
 				$title = (string)$item->title;
 				$link = (string)$item->lin['href'];
 				if (!in_array($title, $existingNews)) {
 					$channel->sendMessage($link);
 					file_put_contents('news.txt', $title . PHP_EOL, FILE_APPEND);
 				}
-			}
+			} */
 			
 		}
 		
