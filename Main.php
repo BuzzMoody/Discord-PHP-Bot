@@ -36,6 +36,7 @@
 		
 		$services->updateActivity("Starting up...");
 		$services->checkDatabase();
+		$utils->checkNews();
 
 		$discord->getLoop()->addPeriodicTimer(15, function () use ($services, $utils) {
 			$utils->checkReminders();
