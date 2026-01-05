@@ -74,17 +74,18 @@
 		
 		public function checkNews(): void {
 
-			if ($this->betaCheck()) { return; }
-
 			$xml = simplexml_load_file('https://www.theverge.com/rss/ces/index.xml');
 			$existingNews = file_exists('news.txt') ? file('news.txt', FILE_IGNORE_NEW_LINES) : [];
 			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '1457580026655670314');
+			$channel = $guild->channels->get('id', '274828566909157377');
+			// $channel = $guild->channels->get('id', '1457580026655670314');
+			
+			print_r($xml);
 
-			foreach ($xml->channel->item as $item) {
+			foreach ($xml->entry as $item) {
 				$title = (string)$item->title;
-				$link = (string)$item->link;
+				$link = (string)$item->lin['href'];
 				if (!in_array($title, $existingNews)) {
 					$channel->sendMessage($link);
 					file_put_contents('news.txt', $title . PHP_EOL, FILE_APPEND);
