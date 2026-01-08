@@ -338,7 +338,7 @@
 					
 					list($discordID, $steamID, $name) = $user;
 					
-					$api = "https://api.opendota.com/api/players/$steamId/recentMatches";
+					$api = "https://api.opendota.com/api/players/$steamID/recentMatches";
 					$response = file_get_contents($api);
 					$matches = json_decode($response, true);
 					
