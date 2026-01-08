@@ -439,7 +439,7 @@
 				->addFile("/Media/dota.png", "dota.png");
 			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '274828566909157377');
+			$channel = $guild->channels->get('id', '232691831090053120');
 
 			$channel->sendMessage($builder);
 			
