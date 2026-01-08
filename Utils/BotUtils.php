@@ -347,7 +347,11 @@
 					$latestMatch = $matches[0];
 					$matchID = $latestMatch['match_id'];
 					
+					echo "Checking matches...\n";
+					
 					if ($this->isNewMatch($steamID, $matchID)) {
+						
+						echo "New match found...\n";
 						
 						$newMatches[$matchID][] = [
 							'name' => $name,
@@ -388,6 +392,8 @@
 		
 		private function saveMatch($steamID, $matchID): void {
 			
+			echo "Saving new match info...\n";
+			
 			$query = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
 			$query->execute([
 				'matchid' => (string)$matchID, 
@@ -397,6 +403,8 @@
 		}
 		
 		private function postToDiscord($matchID, $playersInMatch): void {
+			
+			echo "Posting new match to Discord...\n";
 			
 			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
 			// $tz->setTimestamp($start);
