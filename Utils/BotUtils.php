@@ -338,7 +338,7 @@
 					
 					list($discordID, $steamID, $name) = $user;
 					
-					$api = "https://api.opendota.com/api/players/$steamID/recentMatches";
+					$api = "https://api.opendota.com/api/players/{$steamID}/recentMatches";
 					$response = file_get_contents($api);
 					$matches = json_decode($response, true);
 					
@@ -347,13 +347,13 @@
 					$latestMatch = $matches[0];
 					$matchID = $latestMatch['match_id'];
 					
-					echo "Checking matches for {$user}. Latest match ID {$matchID}...\n";
+					echo "Checking matches for {$name}. Latest match ID {$matchID}...\n";
 					
 					// echo $this->isNewMatch($steamID, $matchID) ? 'true' : 'false';
 					
 					if ($this->isNewMatch($steamID, $matchID)) {
 						
-						echo "New match found for {$user}...\n";
+						echo "New match found for {$name}...\n";
 						
 						$newMatches[$matchID][] = [
 							'name' => $name,
