@@ -382,6 +382,8 @@
 			$query = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
 			$query->execute(['id' => (string)$steamID]);
 			$lastMatchId = $query->fetchColumn();
+			
+			echo "Last MatchID: {$lastMatchId} / Current MatchID: {$matchID}...\n";
 
 			if ($lastMatchId == 1) {
 				$this->saveMatch($steamID, $matchID);
