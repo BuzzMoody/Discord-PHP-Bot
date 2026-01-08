@@ -349,8 +349,6 @@
 					
 					echo "Checking matches for {$name}. Latest match ID {$matchID}...\n";
 					
-					// echo $this->isNewMatch($steamID, $matchID) ? 'true' : 'false';
-					
 					if ($this->isNewMatch($steamID, $matchID)) {
 						
 						echo "New match found for {$name}...\n";
@@ -411,18 +409,48 @@
 			echo "Posting new match to Discord...\n";
 			
 			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-			// $tz->setTimestamp($start);
-			
-			print_r($playersInMatch);
+			$tz->setTimestamp($playersInMatch[0]['stats']['start_time']);
+			$length = gmdate(floor(($d = $playersInMatch[0]['stats']['duration']) / 3600) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s', $d);
+			$mode = self::DOTA_GAMEMODES[$playersInMatch[0]['stats']['game_mode']];
+			$ranked = in_array($playersInMatch[0]['stats']['lobby_type'], [5, 6, 7], true) ? 'Ranked' : 'Unranked';
+			$team = ($playersInMatch[0]['stats']['player_slot'] <= 127) ? "Radiant" : "Dire";
+			$result = ($playersInMatch[0]['stats']['radiant_win'] === ($team === 'Radiant')) ? 'Won' : 'Lost';
+			$players = implode(", ", array_column($playersInMatch, 'discordID'));
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchID}")
 				->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
-				->setColor(getenv('COLOUR'));
+				->setColor(getenv('COLOUR'))
+				->addFieldValues("Start Time", $tz->format('g:i A'), true)
+				->addFieldValues("Length", $length, true)
+				->addFieldValues("Game Mode", "{$ranked} {$mode}", true)
+				->setDescription("{$players} **{$result}** their latest game playing on **{$team}**!\n");
+				
+			foreach ($playersInMatch as $player) {
+				
+				$hero = self::DOTA_HEROES[$player['stats']['hero_id']];
+				$level = $this->calcLevel($player['stats']['xp_per_min'], $player['stats']['duration']);
+				
+				$embed->addFieldValues($player['name'], "{$hero}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
+					->addFieldValues("Dmg / Heal", number_format($player['stats']['hero_damage'])." dmg\n".number_format($player['stats']['tower_damage'])." tower\n".number_format($player['stats']['hero_healing'])." heal\n", true)
+					->addFieldValues("Stats", "{$player['stats']['last_hits']} cs\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true);
+
+			}
+			
+			$builder = MessageBuilder::new()
+				->addEmbed($embed)
+				->addFile("/Media/dota.png", "dota.png");
+			
+			$guild = $this->discord->guilds->get('id', '232691831090053120');
+			$channel = $guild->channels->get('id', '274828566909157377');
+
+			$channel->sendMessage($builder);
 			
 		}
 	
-		private function getLevel($exp): int {
+		private function calcLevel($xpm, $duration): int {
+			
+			$exp = ($xpm * ($duration / 60));
 			
 			for ($level = count(self::DOTA_LEVELS) - 1; $level >= 1; $level--) {
 				if ($exp >= self::DOTA_LEVELS[$level]) {
