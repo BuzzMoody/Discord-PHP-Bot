@@ -347,13 +347,13 @@
 					$latestMatch = $matches[0];
 					$matchID = $latestMatch['match_id'];
 					
-					echo "Checking matches...\n";
+					echo "Checking matches for {$user}. Latest match ID {$matchID}...\n";
 					
-					echo $this->isNewMatch($steamID, $matchID) ? 'true' : 'false';
+					// echo $this->isNewMatch($steamID, $matchID) ? 'true' : 'false';
 					
 					if ($this->isNewMatch($steamID, $matchID)) {
 						
-						echo "New match found...\n";
+						echo "New match found for {$user}...\n";
 						
 						$newMatches[$matchID][] = [
 							'name' => $name,
