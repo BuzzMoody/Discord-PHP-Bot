@@ -347,8 +347,6 @@
 					$latestMatch = $matches[0];
 					$matchID = $latestMatch['match_id'];
 					
-					echo "Checking matches for {$name}. Latest match ID {$matchID}...\n";
-					
 					if ($this->isNewMatch($steamID, $matchID)) {
 						
 						echo "New match found for {$name}...\n";
@@ -380,8 +378,6 @@
 			$query = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
 			$query->execute(['id' => (string)$steamID]);
 			$lastMatchId = $query->fetchColumn();
-			
-			echo "Last MatchID: {$lastMatchId} / Current MatchID: {$matchID}...\n";
 
 			if ($lastMatchId == 1) {
 				$this->saveMatch($steamID, $matchID);
@@ -394,8 +390,6 @@
 		
 		private function saveMatch($steamID, $matchID): void {
 			
-			echo "Saving new match info...\n";
-			
 			$query = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
 			$query->execute([
 				'matchid' => (string)$matchID, 
@@ -406,8 +400,6 @@
 		
 		private function postToDiscord($matchID, $playersInMatch): void {
 			
-			echo "Posting new match to Discord...\n";
-			
 			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
 			$tz->setTimestamp($playersInMatch[0]['stats']['start_time']);
 			$length = gmdate(floor(($d = $playersInMatch[0]['stats']['duration']) / 3600) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s', $d);
@@ -415,7 +407,7 @@
 			$ranked = in_array($playersInMatch[0]['stats']['lobby_type'], [5, 6, 7], true) ? 'Ranked' : 'Unranked';
 			$team = ($playersInMatch[0]['stats']['player_slot'] <= 127) ? "Radiant" : "Dire";
 			$result = ($playersInMatch[0]['stats']['radiant_win'] === ($team === 'Radiant')) ? 'Won' : 'Lost';
-			$players = implode(", ", array_column($playersInMatch, 'discordID'));
+			$players = implode(", ", array_column($playersInMatch, 'discord_id'));
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchID}")
