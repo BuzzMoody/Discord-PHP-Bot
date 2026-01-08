@@ -318,116 +318,96 @@
 			
 		}
 		
-		public function checkDota(): void {
-			
-			if ($this->betaCheck()) { return; }
+		public function NewcheckDota(): void {
+	
+			if (!$this->betaCheck()) { return; }
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
-
 			if ($current_hour >= 10 || $current_hour <= 2) {
-
-				$ids = array(
-					array("232691181396426752", "54716121", "Buzz"), 
-					array("381596223435702282", "33939542", "Dan"), 
-					array("276222661515018241", "77113202", "Hassler"), 
-				);
 				
-				$games = 0;
-
-				for ($i = 0; $i < count($ids); $i++) {
-
-					$url = "https://api.opendota.com/api/players/{$ids[$i][1]}/recentMatches";
+				$ids = [
+					["<@232691181396426752>", "54716121", "Buzz"], 
+					["<@381596223435702282>", "33939542", "Dan"], 
+					["<@276222661515018241>", "77113202", "Hassler"], 
+				];
+				
+				$newMatches = [];
+				
+				foreach ($ids as $user) {
 					
-					$content = @file_get_contents($url);
+					list($discordID, $steamID, $name) = $user;
 					
-					if ($content === FALSE) { return; }
-
-					$response = json_decode($content);
-
-					$details[$i]['user'] = $ids[$i][1];
-					$details[$i]['matchid'] = '';
-
-					if ($this->checkNew($details[$i]['user'], $response[0]->match_id)) {
+					$api = "https://api.opendota.com/api/players/$steamId/recentMatches";
+					$response = file_get_contents($url);
+					$matches = json_decode($reponse, true);
+					
+					if (empty($matches)) continue;
+					
+					$latestMatch = $matches[0];
+					$matchID = $latestMatch['match_id'];
+					
+					if ($this->isNewMatch($steamID, $matchID)) {
 						
-						echo "User: {$ids[$i][2]} has a new game\n";
-
-						$keyz = array_keys(array_combine(array_keys($details), array_column($details, 'matchid')), $response[0]->match_id);	
-						$details[$i]['matchid'] = $response[0]->match_id;
+						$newMatches[$matchID][] = [
+							'name' => $name,
+							'discord_id' => $discordID,
+							'stats' => $latestMatch
+						];
 						
-						if (
-							$i == 0 || 
-							$i > 0 && @$keyz[0] == 1 && $response[0]->match_id == $details[($i-1)]['matchid'] && count($details[($i-1)]) > 2 || 
-							$i > 0 && @!$keyz[0] && $response[0]->match_id == $details[($i-1)]['matchid'] ||
-							$i > 0 && @!$keyz[0] && $details[($i-1)]['matchid'] == null
-						) {
-						
-							$details[$i]['matchid'] = $response[0]->match_id;
-							$details[$i]['new'] = true;
-							$details[$i]['discord'] = $ids[$i][0];
-							$details[$i]['name'] = $ids[$i][2];
-							$details[$i]['team'] = ($response[0]->player_slot <= 127) ? "Radiant" : "Dire";
-							$details[$i]['win'] = ($response[0]->radiant_win == true && $details[$i]['team'] == "Radiant" || $response[0]->radiant_win == false && $details[$i]['team'] == "Dire") ? "Won" : "Lost";
-							$details[$i]['hero'] = self::DOTA_HEROES[$response[0]->hero_id];
-							$details[$i]['stats'] = array("Kills" => $response[0]->kills, "Deaths" => $response[0]->deaths, "Assists" => $response[0]->assists,"HeroDMG" => number_format($response[0]->hero_damage), "TowerDMG" => number_format($response[0]->tower_damage), "XPM" => $response[0]->xp_per_min, "GPM" => number_format($response[0]->gold_per_min), "Heal" => number_format($response[0]->hero_healing));
-							$start = $response[0]->start_time;
-							$duration = $response[0]->duration;
-							$hours = floor($duration / 3600);
-							$format = ($hours > 0) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s';
-							$length = gmdate($format, $duration);
-							$mode = self::DOTA_GAMEMODES[$response[0]->game_mode];
-							@$matchid = ($response[0]->match_id == null) ? @$matchid : $response[0]->match_id;
-							$ranked = ($response[0]->lobby_type == 5 || $response[0]->lobby_type == 6 || $response[0]->lobby_type == 7) ? "Ranked" : "Unranked";
-							$games++;
-							$this->updateMatch($details[$i]['user'], $response[0]->match_id);
-							
-						}
+						$this->saveMatch($steamID, $matchID);
 						
 					}
 					
 				}
-
-				if ($games > 0) {
-					
-					$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-					$tz->setTimestamp($start);
-					
-					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchid}")
-						->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
-						->setColor(getenv('COLOUR'));
-					
-					$embed->addFieldValues("Start Time", $tz->format('g:i A'), true);
-					$embed->addFieldValues("Length", $length, true);
-					$embed->addFieldValues("Game Mode", "{$ranked} {$mode}", true);
-					
-					$desc = "";
-					
-					for ($x = 0; $x < count($details); $x++) {
-						if (@$details[$x]['new']) {
-							$id = $x;
-							$desc .= "<@{$details[$x]['discord']}> **{$details[$x]['win']}** playing as **{$details[$x]['hero']}**";
-						$embed->addFieldValues($details[$x]['name'], "{$details[$x]['hero']}\n{$details[$x]['stats']['Kills']} / {$details[$x]['stats']['Deaths']} / {$details[$x]['stats']['Assists']}\n{$details[$x]['team']}", true);
-							$embed->addFieldValues("Damage / Heal", "{$details[$x]['stats']['HeroDMG']} dmg\n{$details[$x]['stats']['TowerDMG']} tower\n{$details[$x]['stats']['Heal']} heal\n", true);
-							$embed->addFieldValues("Stats", "Lvl ".$this->getLevel(($details[$x]['stats']['XPM'] * ($duration / 60)))."\n".number_format($details[$x]['stats']['XPM'])." xpm\n{$details[$x]['stats']['GPM']} gpm", true);
-						}
-					}
-
-					$embed->setDescription($desc."\n");
-					
-					$builder = MessageBuilder::new()
-						->addEmbed($embed)
-						->addFile("/Media/dota.png", "dota.png");
-					
-					$guild = $this->discord->guilds->get('id', '232691831090053120');
-					$channel = $guild->channels->get('id', '232691831090053120');
-
-					$channel->sendMessage($builder);
 				
+				foreach ($newMatches as $matchID => $playersInMatch) {
+					
+					$this->postToDiscord($matchID, $playersInMatch);
+					
 				}
 				
 			}
+			
+		}
 		
+		private function isNewMatch($steamID, $matchID): bool {
+			
+			$query = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
+			$query->execute(['id' => (string)$steamID]);
+			$lastMatchId = $query->fetchColumn();
+
+			if ($lastMatchId == 1) {
+				$this->saveMatch($steamID, $matchID);
+				return false;
+			}
+
+			return $lastMatchId != $matchID;
+			
+		}
+		
+		private function saveMatch($steamID, $matchID): void {
+			
+			$query = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
+			$query->execute([
+				'matchid' => (string)$matchID, 
+				'id' => (string)$steamID
+			]);
+		
+		}
+		
+		private function postToDiscord($matchID, $playersInMatch): void {
+			
+			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
+			// $tz->setTimestamp($start);
+			
+			print_r($playersInMatch);
+			
+			$embed = $this->discord->factory(Embed::class);
+			$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchID}")
+				->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
+				->setColor(getenv('COLOUR'));
+			
 		}
 	
 		private function getLevel($exp): int {
@@ -439,50 +419,6 @@
 			}
 			
 			return 1;
-			
-		}
-		
-		private function updateMatch($id, $matchID): void {
-			
-			$stmt = $this->pdo->prepare("UPDATE dota2 SET matchid = :matchid WHERE id = :id");
-			$stmt->execute([
-				'matchid' => (string)$matchID, 
-				'id' => (string)$id
-			]);
-			
-		}
-		
-		private function checkNew($id, $matchID): bool {
-			
-			$stmt1 = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
-			$stmt1->execute(['id' => (string)$id]);
-			$row = $stmt1->fetch(PDO::FETCH_ASSOC);
-
-			if ($row['matchid'] == 1) {
-				$this->updateMatch($id, $matchID);
-				return false; 
-			}
-			elseif ($row['matchid'] != $matchID) {
-				return true;
-			}
-			
-			return false;
-			
-		}
-		
-		private function allMatchIDsMatch($details): bool {
-			
-			$first = $details[0]['matchid'];
-			
-			foreach ($details as $item) {
-				
-				if (!isset($item['matchid']) || $item['matchid'] !== $first) {
-					return false;
-				}
-				
-			}
-			
-			return true;
 			
 		}
 		
