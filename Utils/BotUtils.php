@@ -349,6 +349,8 @@
 					
 					echo "Checking matches...\n";
 					
+					echo "New match? {$this->isNewMatch($steamID, $matchID)}\n";
+					
 					if ($this->isNewMatch($steamID, $matchID)) {
 						
 						echo "New match found...\n";
