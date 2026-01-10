@@ -63,7 +63,7 @@
 					$api = "https://api.opendota.com/api/players/{$steamID}/recentMatches";
 
 					$promises[$steamID] = $client->get($api)->then(
-						function (ResponseInterface $response) use (array $user) {
+						function (ResponseInterface $response) use ($user) {
 							
 							return [
 								'info' => $user,
@@ -71,7 +71,7 @@
 							];
 							
 						},
-						function (Exception $e) use (array $user) {		
+						function (Exception $e) use ($user) {		
 							return null;
 						}
 					);
