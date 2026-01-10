@@ -353,14 +353,21 @@
 					
 					if ($this->isNewMatch($steamID, $matchID)) {
 						
-						echo "New match found for {$name}...\n";
-						
 						$newMatches[$matchID][] = [
 							'name' => $name,
 							'discord_id' => $discordID,
-							'stats' => $latestMatch
+							'stats' => $latestMatch,
+							'winloss' => ''
 						];
 						
+						for ($x = 0; $x < 10; $x++) {
+							
+							$latestPlayer = array_key_last($newMatches[$matchID]);
+							$team = ($matches[$x]['player_slot'] <= 127) ? 'Radiant' : 'Dire';
+							$newMatches[$matchID][$latestPlayer]['winloss'] .= ($matches[$x]['radiant_win'] === ($team === 'Radiant')) ? '🟩 ' : '🟥 ';
+							
+						}
+
 						$this->saveMatch($steamID, $matchID);
 						
 					}
@@ -409,7 +416,7 @@
 			$length = gmdate(floor(($d = $playersInMatch[0]['stats']['duration']) / 3600) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s', $d);
 			$mode = self::DOTA_GAMEMODES[$playersInMatch[0]['stats']['game_mode']];
 			$ranked = in_array($playersInMatch[0]['stats']['lobby_type'], [5, 6, 7], true) ? 'Ranked' : 'Unranked';
-			$team = ($playersInMatch[0]['stats']['player_slot'] <= 127) ? "Radiant" : "Dire";
+			$team = ($playersInMatch[0]['stats']['player_slot'] <= 127) ? 'Radiant' : 'Dire';
 			$result = ($playersInMatch[0]['stats']['radiant_win'] === ($team === 'Radiant')) ? 'Won' : 'Lost';
 			$players = implode(", ", array_column($playersInMatch, 'discord_id'));
 			
@@ -430,7 +437,8 @@
 				
 				$embed->addFieldValues($player['name'], "{$hero} {$emoji}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
 					->addFieldValues("Dmg / Heal", number_format($player['stats']['hero_damage'])." dmg\n".number_format($player['stats']['tower_damage'])." tower\n".number_format($player['stats']['hero_healing'])." heal\n", true)
-					->addFieldValues("Stats", "{$player['stats']['last_hits']} lh\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true);
+					->addFieldValues("Stats", "{$player['stats']['last_hits']} lh\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true)
+					->addFieldValues("Last 10 Games", $player['winloss'], false);
 
 			}
 			
