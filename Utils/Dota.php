@@ -3,6 +3,9 @@
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
 	use Discord\Parts\Channel\Attachment;
+	use React\Http\Browser;
+	use Psr\Http\Message\ResponseInterface;
+	use React\Promise\all;
 	
 	class Dota {
 	
@@ -36,11 +39,13 @@
 		
 		public function checkGames(): void {
 	
-			if ($this->utils->betaCheck()) { return; }
+			// if ($this->utils->betaCheck()) { return; }
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
 			if ($current_hour >= 10 || $current_hour <= 2) {
+				
+				$client = new Browser($this->discord->getLoop());
 				
 				$ids = [
 					["<@232691181396426752>", "54716121", "Buzz"], 
@@ -48,49 +53,67 @@
 					["<@276222661515018241>", "77113202", "Hassler"], 
 				];
 				
-				$newMatches = [];
+				$promises = [];
 				
 				foreach ($ids as $user) {
 					
-					list($discordID, $steamID, $name) = $user;
-					
-					$api = "https://api.opendota.com/api/players/{$steamID}/recentMatches";
-					$response = file_get_contents($api);
-					$matches = json_decode($response, true);
-					
-					if (empty($matches)) continue;
-					
-					$latestMatch = $matches[0];
-					$matchID = $latestMatch['match_id'];
-					
-					if ($this->isNewMatch($steamID, $matchID)) {
-						
-						$newMatches[$matchID][] = [
-							'name' => $name,
-							'discord_id' => $discordID,
-							'stats' => $latestMatch,
-							'winloss' => ''
-						];
-						
-						for ($x = 0; $x < 10; $x++) {
+					$api = "https://api.opendota.com/api/players/{$user[1]}/recentMatches";
+
+					$promises[$steamID] = $client->get($api)->then(
+						function (ResponseInterface $response) use ($user) {
 							
-							$latestPlayer = array_key_last($newMatches[$matchID]);
-							$team = ($matches[$x]['player_slot'] <= 127) ? 'Radiant' : 'Dire';
-							$newMatches[$matchID][$latestPlayer]['winloss'] .= ($matches[$x]['radiant_win'] === ($team === 'Radiant')) ? '🟩 ' : '🟥 ';
+							return [
+								'info' => $user,
+								'matches' => json_decode((string)$response->getBody(), true)
+							];
 							
 						}
+					);
+				}
+				
+				all($promises)->then(function (array $results) {
+				
+					$newMatches = [];
+					
+					foreach ($results as $steamID => $data) {
+						
+						if (empty($data['matches'])) continue;
+						
+						$latestMatch = $data['matches'][0];
+						$matchID = $latestMatch['match_id'];
+						
+						if ($this->isNewMatch($steamID, $matchID)) {
+							
+							list($discordID, $steamID, $name) = $data['info'];
+							
+							$newMatches[$matchID][] = [
+								'name' => $name,
+								'discord_id' => $discordID,
+								'stats' => $latestMatch,
+								'winloss' => ''
+							];
+							
+							for ($x = 0; $x < 10; $x++) {
+								
+								$latestPlayer = array_key_last($newMatches[$matchID]);
+								$team = ($matches[$x]['player_slot'] <= 127) ? 'Radiant' : 'Dire';
+								$newMatches[$matchID][$latestPlayer]['winloss'] .= ($matches[$x]['radiant_win'] === ($team === 'Radiant')) ? '🟩 ' : '🟥 ';
+								
+							}
 
-						$this->saveMatch($steamID, $matchID);
+							$this->saveMatch($steamID, $matchID);
+							
+						}
 						
 					}
 					
-				}
-				
-				foreach ($newMatches as $matchID => $playersInMatch) {
+					foreach ($newMatches as $matchID => $playersInMatch) {
 					
-					$this->postToDiscord($matchID, $playersInMatch);
+						$this->postToDiscord($matchID, $playersInMatch);
+
+					}
 					
-				}
+				});
 				
 			}
 			
@@ -143,8 +166,8 @@
 				
 			foreach ($playersInMatch as $player) {
 				
-				$hero = self::DOTA_HEROES[$player['stats']['hero_id']];
-				$emoji = self::DOTA_EMOJI[$player['stats']['hero_id']];
+				$hero = self::DOTA_HEROES[$player['stats']['hero_id']] ?? 'Unknown';
+				$emoji = self::DOTA_EMOJI[$player['stats']['hero_id']] ?? '❓';
 				$level = $this->calcLevel($player['stats']['xp_per_min'], $player['stats']['duration']);
 				
 				$embed->addFieldValues($player['name'], "{$hero} {$emoji}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
@@ -159,7 +182,8 @@
 				->addFile("/Media/dota.png", "dota.png");
 			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
-			$channel = $guild->channels->get('id', '232691831090053120');
+			// $channel = $guild->channels->get('id', '232691831090053120'); // #main
+			$channel = $guild->channels->get('id', '274828566909157377'); // #dev
 
 			$channel->sendMessage($builder);
 			
