@@ -43,6 +43,7 @@
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
+			
 			if ($current_hour >= 10 || $current_hour <= 2) {
 				
 				$client = new Browser($this->discord->getLoop());
@@ -71,6 +72,7 @@
 							
 						}
 					);
+					
 				}
 				
 				\React\Promise\all($promises)->then(function (array $results) {
@@ -112,7 +114,7 @@
 					foreach ($newMatches as $matchID => $playersInMatch) {
 					
 						$this->postToDiscord($matchID, $playersInMatch);
-
+						
 					}
 					
 				});
@@ -158,8 +160,8 @@
 			$players = implode(", ", array_column($playersInMatch, 'discord_id'));
 			
 			$embed = $this->discord->factory(Embed::class);
-			$embed->setAuthor("Dota 2 Match Information", "attachment://dota.png", "https://www.opendota.com/matches/{$matchID}")
-				->setImage("https://media.licdn.com/dms/image/C5612AQGLKrCEqkHZMw/article-cover_image-shrink_600_2000/0/1636444501645?e=2147483647&v=beta&t=Fd2nbDk9TUmsSm9c5Kt2wq9hP_bH1MxZITTa4pEx1wg")
+			$embed->setAuthor("Dota 2 Match Information", "https://img.icons8.com/?size=100&id=35611&format=png&color=000000", "https://www.opendota.com/matches/{$matchID}")
+				->setThumnail("https://img.icons8.com/?size=100&id=35611&format=png&color=000000")
 				->setColor(getenv('COLOUR'))
 				->addFieldValues("Start Time", $tz->format('g:i A'), true)
 				->addFieldValues("Length", $length, true)
@@ -172,22 +174,18 @@
 				$emoji = self::DOTA_EMOJI[$player['stats']['hero_id']] ?? '❓';
 				$level = $this->calcLevel($player['stats']['xp_per_min'], $player['stats']['duration']);
 				
-				$embed->addFieldValues($player['name'], "{$hero} {$emoji}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
+				$embed->addFieldValues($player['name'], "{$emoji} {$hero}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
 					->addFieldValues("Dmg / Heal", number_format($player['stats']['hero_damage'])." dmg\n".number_format($player['stats']['tower_damage'])." tower\n".number_format($player['stats']['hero_healing'])." heal\n", true)
 					->addFieldValues("Stats", "{$player['stats']['last_hits']} lh\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true)
 					->addFieldValues("Last 10 Games", $player['winloss'], false);
 
 			}
 			
-			$builder = MessageBuilder::new()
-				->addEmbed($embed)
-				->addFile("/Media/dota.png", "dota.png");
-			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
 			// $channel = $guild->channels->get('id', '232691831090053120'); // #main
 			$channel = $guild->channels->get('id', '274828566909157377'); // #dev
 
-			$channel->sendMessage($builder);
+			$channel->sendEmbed($embed);
 			
 		}
 	
