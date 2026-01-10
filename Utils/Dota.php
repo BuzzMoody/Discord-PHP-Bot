@@ -37,7 +37,7 @@
 		
 		public function checkGames(): void {
 	
-			// if ($this->utils->betaCheck()) { return; }
+			if ($this->utils->betaCheck()) { return; }
 			
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
@@ -68,6 +68,9 @@
 								'matches' => json_decode((string)$response->getBody(), true)
 							];
 							
+						},
+						function (Exception $e) use ($user) {		
+							return null;
 						}
 					);
 					
@@ -79,7 +82,7 @@
 					
 					foreach ($results as $steamID => $data) {
 						
-						if (empty($data['matches'])) continue;
+						if ($data === null || empty($data['matches'])) continue;
 						
 						$latestMatch = $data['matches'][0];
 						$matchID = $latestMatch['match_id'];
@@ -180,8 +183,8 @@
 			}
 			
 			$guild = $this->discord->guilds->get('id', '232691831090053120');
-			// $channel = $guild->channels->get('id', '232691831090053120'); // #main
-			$channel = $guild->channels->get('id', '274828566909157377'); // #dev
+			$channel = $guild->channels->get('id', '232691831090053120'); // #main
+			// $channel = $guild->channels->get('id', '274828566909157377'); // #dev
 
 			$channel->sendEmbed($embed);
 			
