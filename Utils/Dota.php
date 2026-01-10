@@ -1,8 +1,6 @@
 <?php
 
 	use Discord\Parts\Embed\Embed;
-	use Discord\Builders\MessageBuilder;
-	use Discord\Parts\Channel\Attachment;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 	use React\Promise\all;
@@ -161,7 +159,7 @@
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setAuthor("Dota 2 Match Information", "https://img.icons8.com/?size=100&id=35611&format=png&color=000000", "https://www.opendota.com/matches/{$matchID}")
-				->setThumnail("https://img.icons8.com/?size=100&id=35611&format=png&color=000000")
+				->setThumbnail("https://img.icons8.com/?size=100&id=35611&format=png&color=000000")
 				->setColor(getenv('COLOUR'))
 				->addFieldValues("Start Time", $tz->format('g:i A'), true)
 				->addFieldValues("Length", $length, true)
