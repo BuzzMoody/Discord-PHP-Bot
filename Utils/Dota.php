@@ -176,8 +176,8 @@
 				$level = $this->calcLevel($player['stats']['xp_per_min'], $player['stats']['duration']);
 				
 				$embed->addFieldValues($player['name'], "{$emoji} {$hero}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
-					->addFieldValues("Dmg / Heal", number_format($player['stats']['hero_damage'])." dmg\n".number_format($player['stats']['tower_damage'])." tower\n".number_format($player['stats']['hero_healing'])." heal\n", true)
-					->addFieldValues("Stats", "{$player['stats']['last_hits']} lh\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true)
+					->addFieldValues("Impact", number_format($player['stats']['hero_damage'])." to enemies\n".number_format($player['stats']['hero_healing'])." healing\n".number_format($player['stats']['tower_damage'])." to towers", true)
+					->addFieldValues("Stats", "{$player['stats']['last_hits']} creeps\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true)
 					->addFieldValues("Last 10 Games", $player['winloss'], false);
 
 			}
