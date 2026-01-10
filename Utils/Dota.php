@@ -57,7 +57,9 @@
 				
 				foreach ($ids as $user) {
 					
-					$api = "https://api.opendota.com/api/players/{$user[1]}/recentMatches";
+					list($discordID, $steamID, $name) = $user;
+					
+					$api = "https://api.opendota.com/api/players/{$steamID}/recentMatches";
 
 					$promises[$steamID] = $client->get($api)->then(
 						function (ResponseInterface $response) use ($user) {
@@ -71,7 +73,7 @@
 					);
 				}
 				
-				all($promises)->then(function (array $results) {
+				\React\Promise\all($promises)->then(function (array $results) {
 				
 					$newMatches = [];
 					
@@ -96,8 +98,8 @@
 							for ($x = 0; $x < 10; $x++) {
 								
 								$latestPlayer = array_key_last($newMatches[$matchID]);
-								$team = ($matches[$x]['player_slot'] <= 127) ? 'Radiant' : 'Dire';
-								$newMatches[$matchID][$latestPlayer]['winloss'] .= ($matches[$x]['radiant_win'] === ($team === 'Radiant')) ? '🟩 ' : '🟥 ';
+								$team = ($data['matches'][$x]['player_slot'] <= 127) ? 'Radiant' : 'Dire';
+								$newMatches[$matchID][$latestPlayer]['winloss'] .= ($data['matches'][$x]['radiant_win'] === ($team === 'Radiant')) ? '🟩 ' : '🟥 ';
 								
 							}
 
