@@ -9,6 +9,7 @@
 	include 'CommandHandler.php';
 	include 'Services.php';
 	include 'Utils/BotUtils.php';
+	include 'Utils/Dota.php';
 
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
@@ -27,10 +28,11 @@
 	]);
 
 	$utils = new BotUtils($discord, $pdo);
+	$dota = new Dota($discord, $pdo, $utils);
 	$commands = new Commands($discord, $pdo, $uptime, $utils);
 	$services = new Services($discord, $pdo, $uptime, $commands);
 	
-	$discord->on('ready', function (Discord $discord) use ($commands, $services, $utils) {
+	$discord->on('ready', function (Discord $discord) use ($commands, $services, $utils, $dota) {
 		
 		echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 		
@@ -42,8 +44,8 @@
 			$services->updateActivity();
 		});
 		
-		$discord->getLoop()->addPeriodicTimer(180, function () use ($utils) {
-			$utils->checkDota();
+		$discord->getLoop()->addPeriodicTimer(180, function () use ($dota) {
+			$dota->checkGames();
 		});
 		
 		$discord->getLoop()->addPeriodicTimer(300, function () use ($utils) {
