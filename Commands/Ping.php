@@ -28,7 +28,7 @@
 			return '/^ping$/';
 		}
 		
-		public function execute(Message $message, string $args) {
+		public function execute(Message $message, string $args): void {
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setColor(getenv('COLOUR'))
@@ -37,7 +37,7 @@
 			$builder = MessageBuilder::new()
 				->addEmbed($embed);
 
-			return $message->reply($builder);
+			$message->reply($builder);
 			
 		}
 		

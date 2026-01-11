@@ -14,7 +14,7 @@
 			return '/^test$/';
 		}
 		
-		public function execute(Message $message, string $args) {
+		public function execute(Message $message, string $args): void {
 		
 			if ($this->utils->isAdmin($message->author->id) && $this->utils->betaCheck()) {
 

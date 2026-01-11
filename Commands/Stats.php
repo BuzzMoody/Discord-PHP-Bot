@@ -24,10 +24,13 @@
 			return '/^stats$/';
 		}
 		
-		public function execute(Message $message, string $args) {
+		public function execute(Message $message, string $args): void {
 			
 			$player = str_replace(' ', '+', $args);
-			if (!$player) { return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', 'Give me a player to look up!', $message, true, 'https://oldschool.runescape.com/'); }
+			if (!$player) {
+				$this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', 'Give me a player to look up!', $message, true, 'https://oldschool.runescape.com/');
+				return;	
+			}
 		
 			$http = new Browser();
 
@@ -73,7 +76,7 @@
 					$message->channel->sendEmbed($embed);
 				},
 				function (Exception $e) use ($message, $player) {
-					return $this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "The player **".str_replace('+', ' ', $player)."** was not found on the hiscores.", $message, true, 'https://oldschool.runescape.com/');
+					$this->utils->simpleEmbed('OSRS - Hiscores', 'https://framerusercontent.com/images/uBhW5awsZ7NDMakiHaUgbgmOgg.png', "The player **".str_replace('+', ' ', $player)."** was not found on the hiscores.", $message, true, 'https://oldschool.runescape.com/');
 				}
 			);
 		

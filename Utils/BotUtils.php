@@ -38,14 +38,14 @@
 			
 		}
 		
-		public function simpleEmbed($authName, $authIMG, $text, $message, $reply = false, $authURL = null) {
+		public function simpleEmbed(string $authName, string $authIMG, string $text, Message $message, bool $reply = false, string $authURL = ''): void {
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setAuthor($authName, $authIMG, $authURL)
 				->setColor(getenv('COLOUR'))
 				->setDescription($text);
 
-			if (!$reply) { return $message->channel->sendEmbed($embed); }
+			if (!$reply) { $message->channel->sendEmbed($embed); }
 			
 			$builder = MessageBuilder::new()
 				->addEmbed($embed)
@@ -56,7 +56,7 @@
 				$builder->addFile("/Media/{$fileIMG}", $fileIMG);
 			}
 			
-			return $message->channel->sendMessage($builder);
+			$message->channel->sendMessage($builder);
 		
 		}
 		
@@ -172,7 +172,7 @@
 
 		}
 		
-		public function getMapImg($place, $eq = false, $name = ""): void {
+		public function getMapImg(string $place, bool $eq = false, string $name = ""): void {
 		
 			if ($eq) {
 				if (!file_exists("/Media/Maps/{$name}.png")) { 

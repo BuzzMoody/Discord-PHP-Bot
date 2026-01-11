@@ -14,7 +14,7 @@
 			return '/^(?:(reload)|(betarl))$/';
 		}
 		
-		public function execute(Message $message, string $args, array $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			if ($this->utils->isAdmin($message->author->id)) {
 				

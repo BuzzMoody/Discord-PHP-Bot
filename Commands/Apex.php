@@ -18,7 +18,7 @@
 			return '/^apex$/';
 		}
 		
-		public function execute(Message $message, string $args) {
+		public function execute(Message $message, string $args): void {
 			
 			$http = new Browser();
 			$http->get('https://apexlegendsstatus.com/current-map/battle_royale/pubs')->then(

@@ -17,7 +17,7 @@
 			return '/^uptime$/';
 		}
 		
-		public function execute(Message $message, string $args) {
+		public function execute(Message $message, string $args): void {
 		
 			$diff = ((int)(microtime(true) * 1000) - $this->uptime) / 1000;
 			$days = floor($diff / 86400);
@@ -35,7 +35,7 @@
 			$builder = MessageBuilder::new()
 				->addEmbed($embed);
 
-			return $message->reply($builder);
+			$message->reply($builder);
 		
 		}
 		
