@@ -1,7 +1,5 @@
 <?php
 
-	namespace app\Commands;
-
 	use Discord\Parts\Channel\Message;
 
 	abstract class AbstractCommand implements CommandInterface {
