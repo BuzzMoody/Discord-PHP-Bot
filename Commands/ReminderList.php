@@ -1,5 +1,8 @@
 <?php
 	
+	namespace app\Commands;
+
+	use Discord\Parts\Channel\Message;
 	use React\Promise\Promise;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;

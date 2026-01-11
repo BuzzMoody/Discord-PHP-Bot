@@ -1,5 +1,9 @@
 <?php
 
+	namespace app\Commands;
+
+	use Discord\Parts\Channel\Message;
+	
 	class Search extends AbstractCommand {
 		
 		public function getName(): string {

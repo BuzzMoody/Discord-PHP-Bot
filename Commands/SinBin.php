@@ -1,5 +1,8 @@
 <?php
 
+	namespace app\Commands;
+
+	use Discord\Parts\Channel\Message;
 	use Carbon\Carbon;
 	
 	class SinBin extends AbstractCommand {

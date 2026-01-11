@@ -3,6 +3,7 @@
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
+	use Discord\Parts\Channel\Message;
 	
 	class Weather extends AbstractCommand {
 		

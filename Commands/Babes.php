@@ -1,5 +1,9 @@
 <?php
 
+	namespace app\Commands;
+
+	use Discord\Parts\Channel\Message;
+	
 	class Babes extends AbstractCommand {
 		
 		public function getName(): string {

@@ -1,5 +1,9 @@
 <?php
 
+	namespace app\Commands;
+
+	use Discord\Parts\Channel\Message;
+	
 	class Reminder extends AbstractCommand {
 		
 		public function getName(): string {

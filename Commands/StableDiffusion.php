@@ -1,5 +1,8 @@
 <?php
 
+	namespace app\Commands;
+
+	use Discord\Parts\Channel\Message;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 	use Discord\Builders\MessageBuilder;
