@@ -60,7 +60,7 @@
 			
 			echo "(".date("d/m h:i:sA").") [#{$channelName}] {$username}: {$content}\n";
 			
-			if (!$message->author->bot && preg_match('/^!([a-zA-Z]{3,})(?:\s+(.*))?$/', $content, $matches)) {
+			if (!$message->author->bot && preg_match('/^!([a-zA-Z]{2,})(?:\s+(.*))?$/', $content, $matches)) {
 				if ($message->channel->id == 274828566909157377) {
 					$command = $matches[1];
 					$args = $matches[2] ?? '';
