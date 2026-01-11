@@ -27,7 +27,7 @@
 		
 			$header = json_decode(@file_get_contents("https://asx.api.markitdigital.com/asx-research/1.0/etfs/{$args}/header"));
 			if ($header === null) { 
-				simpleEmbed("ASX Ticker Data", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "The ticker was not found.", $message, true, "https://asx.com.au");
+				$this->utils->simpleEmbed("ASX Ticker Data", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "The ticker was not found.", $message, true, "https://asx.com.au");
 				return;
 			}
 			$stats = json_decode(file_get_contents("https://asx.api.markitdigital.com/asx-research/1.0/etfs/{$args}/key-statistics"));

@@ -18,7 +18,7 @@
 		
 		public function execute(Message $message, string $args, array $matches): void {
 		
-			$args2 = @explode(" ", $args);
+			$args2 = explode(" ", $args);
 		
 			if (empty($args) || !is_numeric(intval($args2[0])) || intval($args2[0]) < 1 || !preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) {
 				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "Invalid syntax used. Try *!remindme 5 mins/hours/days [message]*", $message, true, null); 
