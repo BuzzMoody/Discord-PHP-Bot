@@ -19,7 +19,7 @@
 			return '/^(afl|footy)$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args) {
 		
 			if ($message->channel->id != 1352902587837583370) { return; }
 	

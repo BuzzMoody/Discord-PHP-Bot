@@ -19,7 +19,7 @@
 			return '/^u(?:rban)?d(?:ictionary)?/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args) {
 		
 			$url = (empty($args)) ? "https://unofficialurbandictionaryapi.com/api/random?limit=1" : "https://unofficialurbandictionaryapi.com/api/search?term={$args}&limit=1";
 			

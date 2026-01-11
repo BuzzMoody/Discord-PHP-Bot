@@ -14,8 +14,8 @@
 			return '/^(kate|t(?:ay(?:lor)?|swizzle)|emma|e?liz(?:abeth)?|olympia|olivia|kim|mckayla|zach|hilary|ronan|sydney)$/';
 		}
 		
-		public function execute($message, $args, $matches) {
-		
+		public function execute(Message $message, string $args, array $matches) {
+
 			$img_dir = "/Media/Images/".preg_replace(array('/e?liz(abeth)?\b/', '/t(ay)?(lor)?(swizzle)?\b/'), array('elizabeth', 'taylor'), $matches[0]);
 			$files = (is_dir($img_dir)) ? scandir($img_dir) : null;
 			if ($files) {

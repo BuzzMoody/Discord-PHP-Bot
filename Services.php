@@ -4,10 +4,10 @@
 
 	class Services {
 
-		private $discord;
-		private $pdo;
+		private Discord\Discord $discord;
+		private PDO $pdo;
 		private $uptime;
-		private $commands;
+		private Commands $commands;
 		
 		private const PLAYFUL_INSULTS = ["Degenerates", "Scoundrels", "Rascals", "Ruffians", "Miscreants", "Reprobates", "Villains", "Knaves", "Lowlifes", "Scallywags", "Numbskulls", "Nincompoops", "Rapscallions", "Delinquents", "Ne'er-do-wells", "Wastrels", "Fools", "Buffoons", "Loons", "Cads", "Creeps", "Charlatans", "Twits", "Scamps", "Weasels", "Goons", "Clowns", "Bozos", "Doofuses", "Louts", "Boneheads", "Dingbats", "Meatheads", "Dunces", "Blockheads", "Muttonheads", "Simpletons"];
 
@@ -39,9 +39,9 @@
 			
 		}
 
-		public function updateActivity($status = null): void {
+		public function updateActivity(?string $status = null): void {
 			
-			$status = (is_null($status)) ? "{$this->getMemberCount($this->discord)} ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)] : $status;
+			$status = (is_null($status)) ? "{$this->getMemberCount()} ".self::PLAYFUL_INSULTS[array_rand(self::PLAYFUL_INSULTS)] : $status;
 			
 			$activity = $this->discord->factory(Activity::class, [
 				'name' =>  $status,

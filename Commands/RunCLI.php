@@ -14,7 +14,7 @@
 			return '/^(shell|bash|cli|cmd)/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args) {
 		
 			if ($message->author->id == 232691181396426752 && !empty($args)) {		
 				$message->channel->sendMessage("```swift\n".shell_exec($args)."\n```");		

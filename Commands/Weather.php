@@ -18,7 +18,7 @@
 			return '/^(weather|temp(?:erature)?)/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args) {
 		
 			$place = $this->utils->getLocale($args);
 			if (!$place) { return $this->utils->simpleEmbed("BOM Weather", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "Location not found. Try using a larger town/city located nearby.", $message, true, "https://bom.gov.au"); }

@@ -16,7 +16,7 @@
 			return '/^(ban|kick|sb|sinbin)/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches) {
 		
 			if ($this->utils->isAdmin($message->author->id)) {
 			

@@ -2,10 +2,10 @@
 
 abstract class AbstractCommand implements CommandInterface {
 
-	protected $discord;
-	protected $pdo;
+	protected Discord\Discord $discord;;
+	protected PDO $pdo;
 	protected $uptime;
-	protected $utils;
+	protected BotUtils $utils;;
 	protected $functions; 
 
 	public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, BotUtils $utils) {	
@@ -22,7 +22,7 @@ abstract class AbstractCommand implements CommandInterface {
 	abstract public function getName(): string;
 	abstract public function getDesc(): string;
 	abstract public function getPattern(): string;
-	abstract public function execute($message, $arg, $matches);
+	abstract public function execute(Message $message, string $args, ...$extra);
 	
 }
 

@@ -18,7 +18,7 @@
 			return '/^f(?:ormula)?1$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args) {
 		
 			$http = new Browser();
 
