@@ -5,7 +5,7 @@ abstract class AbstractCommand implements CommandInterface {
 	protected Discord\Discord $discord;;
 	protected PDO $pdo;
 	protected $uptime;
-	protected BotUtils $utils;;
+	protected BotUtils $utils;
 	protected $functions; 
 
 	public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, BotUtils $utils) {	
