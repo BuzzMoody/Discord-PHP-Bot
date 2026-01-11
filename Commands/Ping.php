@@ -3,7 +3,6 @@
 	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
-	use Discord\Parts\Channel\Message;
 
 	class Ping extends AbstractCommand {
 		
