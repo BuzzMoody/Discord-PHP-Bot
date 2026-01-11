@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
 	use Discord\Parts\Channel\Attachment;
@@ -172,7 +173,7 @@
 
 		}
 		
-		public function getMapImg(string $place, bool $eq = false, string $name = ""): void {
+		public function getMapImg(array $place, bool $eq = false, string $name = ''): void {
 		
 			if ($eq) {
 				if (!file_exists("/Media/Maps/{$name}.png")) { 
@@ -212,7 +213,7 @@
 			
 		}
 		
-		public function getLocale($locale): array {
+		public function getLocale(string $locale): array {
 		
 			$locale = (empty($locale)) ? "Highett" : str_replace(' ', '+', trim($locale));
 			$results = json_decode(@file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/autocomplete?name={$locale}&limit=1&website-sort=true&website-filter=true"));
@@ -230,7 +231,7 @@
 		
 		}
 		
-		public function SearchFunc($type, $message, $args): void {
+		public function SearchFunc(string $type, Message $message, string $args): void {
 	
 			if (empty($args)) { 
 				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null);
@@ -288,7 +289,7 @@
 		
 		}
 		
-		public function filterUsers($message): string {
+		public function filterUsers(Message $message): string {
 
 			$content = $message->content;
 			
