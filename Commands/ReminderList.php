@@ -1,6 +1,4 @@
 <?php
-	
-	namespace app\Commands;
 
 	use Discord\Parts\Channel\Message;
 	use React\Promise\Promise;

@@ -1,7 +1,5 @@
 <?php
 
-	namespace app\Commands;
-
 	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
