@@ -24,7 +24,7 @@
 			return '/^stats$/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			$player = str_replace(' ', '+', $args);
 			if (!$player) {

@@ -18,7 +18,7 @@
 			return '/^s(?:table)?d(?:iffusion)?/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			if (empty($args)) { return; }
 	

@@ -20,7 +20,7 @@
 			return '/^reminders$/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			$stmt = $this->pdo->prepare("SELECT * FROM reminders WHERE userid = :userid");
 			$stmt->execute([':userid' => $message->author->id]);

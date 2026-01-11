@@ -28,7 +28,7 @@
 			return '/^ping$/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setColor(getenv('COLOUR'))

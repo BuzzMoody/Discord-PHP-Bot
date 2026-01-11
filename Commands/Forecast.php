@@ -18,7 +18,7 @@
 			return '/^forecast$/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			$place = $this->utils->getLocale($args);
 			if (!$place) { 

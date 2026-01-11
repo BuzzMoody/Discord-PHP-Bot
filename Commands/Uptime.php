@@ -17,7 +17,7 @@
 			return '/^uptime$/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			$diff = ((int)(microtime(true) * 1000) - $this->uptime) / 1000;
 			$days = floor($diff / 86400);

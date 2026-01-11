@@ -17,7 +17,7 @@
 			return '/^(asx|share(?:s)?|stock(?:s)?|etf)/';
 		}
 		
-		public function execute(Message $message, string $args): void {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			if (empty($args) || strlen($args) > 4) {
 				$this->utils->simpleEmbed("ASX Ticker Data", "https://www2.asx.com.au/content/dam/asx/asx-logos/asx-brandmark.png", "Invalid ticker supplied. Try *!asx ETHI*.", $message, true, "https://asx.com.au");
