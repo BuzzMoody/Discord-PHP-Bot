@@ -2,7 +2,7 @@
 
 abstract class AbstractCommand implements CommandInterface {
 
-	protected Discord\Discord $discord;;
+	protected Discord\Discord $discord;
 	protected PDO $pdo;
 	protected $uptime;
 	protected BotUtils $utils;
