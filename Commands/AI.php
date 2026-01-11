@@ -16,7 +16,7 @@
 			return '/^(bard|gemini|(?:open)?ai)/';
 		}
 		
-		public function execute(Message $message, string $args) {
+		public function execute(Message $message, string $args): void {
 		
 			if (empty($args)) { return; }
 		
