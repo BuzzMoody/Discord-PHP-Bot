@@ -62,7 +62,9 @@
 			
 			if (!$message->author->bot && preg_match('/^!([a-zA-Z]{3,})(?:\s+(.*))?$/', $content, $matches)) {
 				if ($message->channel->id == 274828566909157377) {
-					$commands->execCommand($message, $matches[1], $matches[2]);
+					$command = $matches[1];
+					$args = $matches[2] ?? '';
+					$commands->execCommand($message, $command, $args);
 				}
 				else if (!$utils->betaCheck()) {
 					$commands->execCommand($message);
