@@ -177,8 +177,8 @@
 				$emoji = self::DOTA_EMOJI[$player['stats']['hero_id']] ?? '❓';
 				$level = $this->calcLevel((int) $player['stats']['xp_per_min'], (int) $player['stats']['duration']);
 				
-				$embed->addFieldValues($player['name'], "{$emoji} {$hero}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
-					->addFieldValues("Impact", number_format($player['stats']['hero_damage'])." to enemies\n".number_format($player['stats']['hero_healing'])." healing\n".number_format($player['stats']['tower_damage'])." to towers", true)
+				$embed->addFieldValues($player['name'], "{$hero} {$emoji}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
+					->addFieldValues("Impact", number_format($player['stats']['hero_damage'])." enemy dmg\n".number_format($player['stats']['hero_healing'])." healing\n".number_format($player['stats']['tower_damage'])." tower dmg", true)
 					->addFieldValues("Stats", "{$player['stats']['last_hits']} creeps\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true)
 					->addFieldValues("Last 10 Games", $player['winloss'], false);
 
