@@ -23,8 +23,6 @@
 		}
 		
 		public function execCommand(Message $message, string $command, string $args = ''): void {
-		
-			$command = strtolower($command);
 			
 			foreach ($this->functions as $pattern => $function_obj) {
 				if (preg_match($pattern, $command, $matches)) {
