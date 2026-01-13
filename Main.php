@@ -67,7 +67,7 @@
 				
 				echo "We're detecting a command phrase format...\n";
 				
-				if ($message->channel->id === 274828566909157377 || !$utils->betaCheck()) {
+				if ($message->channel->id == 274828566909157377 || !$utils->betaCheck()) {
 					echo "This is functioning...\n";
 					$commands->execCommand($message, $command, $args);
 				}
