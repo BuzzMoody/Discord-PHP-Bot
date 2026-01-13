@@ -4,19 +4,9 @@
 
 	class Commands {
 		
-		private Discord\Discord $discord;
-		private PDO $pdo;
-		private $uptime;
-		private BotUtils $utils;
-		
 		private $functions = [];
 		
-		public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, BotUtils $utils) {
-
-			$this->discord = $discord;
-			$this->pdo = $pdo;
-			$this->uptime = $uptime;
-			$this->utils = $utils;
+		public function __construct(private Discord\Discord $discord, private PDO $pdo, private $uptime, private BotUtils $utils) {
 			
 			$this->loadCommands();
 			
