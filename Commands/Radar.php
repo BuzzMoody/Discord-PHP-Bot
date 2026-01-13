@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
@@ -18,7 +19,7 @@
 			return '/^radar$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			$time = microtime(true);
 			$embed = $this->discord->factory(Embed::class);

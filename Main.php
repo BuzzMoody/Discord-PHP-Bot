@@ -54,11 +54,17 @@
 
 		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $utils) {
 			
-			echo "(".date("d/m h:i:sA").") [#{$message->channel->name}] {$message->author->username}: {$message->content}\n";
+			$channelName = $message->channel->name ?? 'DM';
+			$username = $message->author->username ?? 'Unknown';
+			$content = $message->content ?? '';
 			
-			if (@$message->content[0] == "!" && @$message->content[1] != " " && !$message->author->bot && strlen(@$message->content) >= 2) { 
+			echo "(".date("d/m h:i:sA").") [#{$channelName}] {$username}: {$content}\n";
+			
+			if (!$message->author->bot && preg_match('/^!([a-zA-Z]{2,})(?:\s+(.*))?$/', $content, $matches)) {
 				if ($message->channel->id == 274828566909157377) {
-					$commands->execCommand($message);
+					$command = strtolower($matches[1]);
+					$args = $matches[2] ?? '';
+					$commands->execCommand($message, $command, $args);
 				}
 				else if (!$utils->betaCheck()) {
 					$commands->execCommand($message);

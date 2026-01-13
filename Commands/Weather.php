@@ -3,6 +3,7 @@
 	use Discord\Parts\Embed\Embed;
 	use Discord\Parts\Channel\Attachment;
 	use Discord\Builders\MessageBuilder;
+	use Discord\Parts\Channel\Message;
 	
 	class Weather extends AbstractCommand {
 		
@@ -18,12 +19,18 @@
 			return '/^(weather|temp(?:erature)?)/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			$place = $this->utils->getLocale($args);
-			if (!$place) { return $this->utils->simpleEmbed("BOM Weather", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "Location not found. Try using a larger town/city located nearby.", $message, true, "https://bom.gov.au"); }
+			if (!$place) { 
+				$this->utils->simpleEmbed("BOM Weather", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "Location not found. Try using a larger town/city located nearby.", $message, true, "https://bom.gov.au");
+				return;
+			}
 			$location = json_decode(file_get_contents("https://api.beta.bom.gov.au/apikey/v1/locations/places/details/{$place['type']}/{$place['id']}?filter=nearby_type:bom_stn"));	
-			if (empty($location->place->location_hierarchy->nearest->id)) { return $this->utils->simpleEmbed("BOM Weather", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "Location not found. Try using a larger town/city located nearby.", $message, true, "https://bom.gov.au"); }	
+			if (empty($location->place->location_hierarchy->nearest->id)) { 
+				$this->utils->simpleEmbed("BOM Weather", "https://beta.bom.gov.au/themes/custom/bom_theme/images/icons/favicon-32.png", "Location not found. Try using a larger town/city located nearby.", $message, true, "https://bom.gov.au");
+				return;
+			}
 			$place += array (
 				"district" 	=> $location->place->location_hierarchy->public_district->description,
 				"state" 	=> $location->place->location_hierarchy->region[1]->description,
@@ -76,7 +83,7 @@
 				->addEmbed($embed)
 				->addFile("/Media/Maps/{$place['filename']}.png", "map-of-{$place['filename']}.png");
 			
-			return $message->channel->sendMessage($builder);
+			$message->channel->sendMessage($builder);
 		
 		}
 		

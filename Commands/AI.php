@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	
 	class AI extends AbstractCommand {
@@ -16,7 +17,7 @@
 			return '/^(bard|gemini|(?:open)?ai)/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			if (empty($args)) { return; }
 		
@@ -72,11 +73,13 @@
 			
 			if (@$response->error->message || @$response->blockReason) { 
 				$reason = ($response->error->message) ? $response->error->message : $response->blockReason;
-				return $this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true, null);
+				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true, null);
+				return;
 			}
 			
 			if (@$response->candidates[0]->finishReason == "MAX_TOKENS") {
-				return $this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Maximum token limit hit for this request. Try something simpler.", $message, true, null);
+				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Maximum token limit hit for this request. Try something simpler.", $message, true, null);
+				return;
 			}
 
 			$string = $response->candidates[0]->content->parts[0]->text;

@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
 	use React\Http\Browser;
@@ -19,7 +20,7 @@
 			return '/^(afl|footy)$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			if ($message->channel->id != 1352902587837583370) { return; }
 	

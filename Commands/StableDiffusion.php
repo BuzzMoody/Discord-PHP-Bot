@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
 	use Discord\Builders\MessageBuilder;
@@ -18,7 +19,7 @@
 			return '/^s(?:table)?d(?:iffusion)?/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			if (empty($args)) { return; }
 	

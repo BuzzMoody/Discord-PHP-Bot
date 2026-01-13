@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
 
@@ -17,7 +18,7 @@
 			return '/^uptime$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			$diff = ((int)(microtime(true) * 1000) - $this->uptime) / 1000;
 			$days = floor($diff / 86400);
@@ -35,7 +36,7 @@
 			$builder = MessageBuilder::new()
 				->addEmbed($embed);
 
-			return $message->reply($builder);
+			$message->reply($builder);
 		
 		}
 		

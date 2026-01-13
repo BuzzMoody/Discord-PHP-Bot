@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use Discord\Builders\MessageBuilder;
 
@@ -28,7 +29,7 @@
 			return '/^ping$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setColor(getenv('COLOUR'))
@@ -37,7 +38,7 @@
 			$builder = MessageBuilder::new()
 				->addEmbed($embed);
 
-			return $message->reply($builder);
+			$message->reply($builder);
 			
 		}
 		

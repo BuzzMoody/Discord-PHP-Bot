@@ -1,5 +1,7 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
+	
 	class Search extends AbstractCommand {
 		
 		public function getName(): string {
@@ -14,7 +16,7 @@
 			return '/^(?:(search|google|bing|find|siri)|(image|img|photo|pic))/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 		
 			if (!empty($matches[1])) {
 				$this->utils->SearchFunc('google', $message, $args);

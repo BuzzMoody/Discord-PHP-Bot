@@ -1,5 +1,6 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
 	use Discord\Parts\Embed\Embed;
 	use React\Http\Browser;
 	use Psr\Http\Message\ResponseInterface;
@@ -18,7 +19,7 @@
 			return '/^apex$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			$http = new Browser();
 			$http->get('https://apexlegendsstatus.com/current-map/battle_royale/pubs')->then(

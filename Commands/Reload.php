@@ -1,5 +1,7 @@
 <?php
 
+	use Discord\Parts\Channel\Message;
+	
 	class Reload extends AbstractCommand {
 		
 		public function getName(): string {
@@ -14,7 +16,7 @@
 			return '/^(?:(reload)|(betarl))$/';
 		}
 		
-		public function execute($message, $args, $matches) {
+		public function execute(Message $message, string $args, array $matches): void {
 			
 			if ($this->utils->isAdmin($message->author->id)) {
 				
