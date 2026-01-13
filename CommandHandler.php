@@ -17,7 +17,7 @@
 			foreach ($this->functions as $pattern => $function_obj) {
 				if (preg_match($pattern, $command, $matches)) {
 					$function_obj->execute($message, $args, $matches);
-					return;
+					break;
 				}
 			}
 			
