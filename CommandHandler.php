@@ -6,7 +6,7 @@
 		
 		private $functions = [];
 		
-		public function __construct(private Discord\Discord $discord, private PDO $pdo, private $uptime, private BotUtils $utils) {
+		public function __construct(private Discord\Discord $discord, private PDO $pdo, private int $uptime, private BotUtils $utils) {
 			
 			$this->loadCommands();
 			
@@ -17,7 +17,7 @@
 			foreach ($this->functions as $pattern => $function_obj) {
 				if (preg_match($pattern, $command, $matches)) {
 					$function_obj->execute($message, $args, $matches);
-					break;
+					return;
 				}
 			}
 			
