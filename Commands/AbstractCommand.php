@@ -6,7 +6,7 @@
 
 		protected array $functions = []; 
 
-		public function __construct(private Discord\Discord $discord, private PDO $pdo, private int $uptime, private BotUtils $utils) {	}
+		public function __construct(protected Discord\Discord $discord, protected PDO $pdo, protected int $uptime, protected BotUtils $utils) {	}
 
 		public function setFunctions(array $functions): void {
 			$this->functions = $functions;
