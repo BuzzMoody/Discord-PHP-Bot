@@ -8,16 +8,8 @@
 	use Psr\Http\Message\ResponseInterface;
 	
 	class BotUtils {
-	
-		private $discord;
-		private $pdo;
 		
-		public function __construct(Discord\Discord $discord, PDO $pdo) {
-			
-			$this->discord = $discord;
-			$this->pdo = $pdo;
-			
-		}
+		public function __construct(private Discord\Discord $discord, private PDO $pdo) { }
 		
 		public function betaCheck() {
 			

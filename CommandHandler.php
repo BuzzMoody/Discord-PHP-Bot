@@ -4,19 +4,9 @@
 
 	class Commands {
 		
-		private Discord\Discord $discord;
-		private PDO $pdo;
-		private $uptime;
-		private BotUtils $utils;
-		
 		private $functions = [];
 		
-		public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, BotUtils $utils) {
-
-			$this->discord = $discord;
-			$this->pdo = $pdo;
-			$this->uptime = $uptime;
-			$this->utils = $utils;
+		public function __construct(protected Discord\Discord $discord, protected PDO $pdo, protected int $uptime, protected BotUtils $utils) {
 			
 			$this->loadCommands();
 			
@@ -27,7 +17,7 @@
 			foreach ($this->functions as $pattern => $function_obj) {
 				if (preg_match($pattern, $command, $matches)) {
 					$function_obj->execute($message, $args, $matches);
-					break;
+					return;
 				}
 			}
 			
