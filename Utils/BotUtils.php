@@ -11,7 +11,7 @@
 		
 		public function __construct(private Discord\Discord $discord, private PDO $pdo) { }
 		
-		public function betaCheck() {
+		public function betaCheck(): bool {
 			
 			if (getenv('BETA') !== 'true') return false;
 			
@@ -226,7 +226,7 @@
 		public function SearchFunc(string $type, Message $message, string $args): void {
 	
 			if (empty($args)) { 
-				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true, null);
+				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "Invalid syntax used. Please provide search terms.", $message, true);
 				return;
 			}
 			
@@ -242,7 +242,7 @@
 			}
 			
 			if ($return->searchInformation->totalResults == 0) { 
-				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "No results found for *{$args}*.", $message, true, null);
+				$this->simpleEmbed("Google Search", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png", "No results found for *{$args}*.", $message, true);
 				return;
 			}
 			
