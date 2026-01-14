@@ -165,7 +165,7 @@
 
 		}
 		
-		public function getMapImg(array $place, bool $eq = false, string $name = ''): void {
+		public function getMapImg(array|string $place, bool $eq = false, string $name = ''): void {
 		
 			if ($eq) {
 				if (!file_exists("/Media/Maps/{$name}.png")) { 
