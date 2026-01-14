@@ -127,7 +127,7 @@
 					
 					$this->getMapImg($quakes->geometry->coordinates[1].",".$quakes->geometry->coordinates[0], true, $quakeID);
 					
-					$epiTime = (new DateTimeImmutable($quake->properties->origin_time, new DateTimeZone('UTC')))
+					$epiTime = (new DateTimeImmutable($quakes->properties->origin_time, new DateTimeZone('UTC')))
         ->setTimezone(new DateTimeZone('Australia/Melbourne'));
 					
 					$embed = $this->discord->factory(Embed::class);
