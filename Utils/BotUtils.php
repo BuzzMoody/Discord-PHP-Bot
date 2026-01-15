@@ -38,7 +38,10 @@
 				->setColor(getenv('COLOUR'))
 				->setDescription($text);
 
-			if (!$reply) { $message->channel->sendEmbed($embed); }
+			if (!$reply) { 
+				$message->channel->sendEmbed($embed); 
+				return;
+			}
 			
 			$builder = MessageBuilder::new()
 				->addEmbed($embed)
