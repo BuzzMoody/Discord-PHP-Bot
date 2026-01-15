@@ -10,12 +10,20 @@
 	include 'Services.php';
 	include 'Utils/BotUtils.php';
 	include 'Utils/Dota.php';
+	include 'Utils/Logger.php';
 
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
 	use Discord\WebSockets\Event;
 	use Discord\Parts\Channel\Message;
-
+	use Monolog\Logger;
+	use Monolog\ErrorHandler;
+	
+	$logger = new Logger('New logger');
+	$webhookUrl = getenv('ERROR_WEBHOOK');
+	$logger->pushHandler(new DiscordWebhookHandler($webhookUrl));
+	ErrorHandler::register($logger);
+	
 	$pdo = new PDO('sqlite:/Media/discord.db');
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$uptime = (int)(microtime(true) * 1000);
@@ -23,7 +31,7 @@
 	$discord = new Discord([
 		'token' => getenv('DISCORD_API_KEY'),
 		'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT | Intents::GUILD_MEMBERS | Intents::GUILD_PRESENCES,
-		'logger' => new \Monolog\Logger('New logger'),
+		'logger' => $logger,
 		'loadAllMembers' => true,
 	]);
 
