@@ -21,14 +21,14 @@
 			$args2 = explode(" ", $args);
 		
 			if (empty($args) || !is_numeric(intval($args2[0])) || intval($args2[0]) < 1 || !preg_match('/(min(?:ute)?|hour|day|week|month)s?/',$args2[1])) {
-				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "Invalid syntax used. Try *!remindme 5 mins/hours/days [message]*", $message, true, null); 
+				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "Invalid syntax used. Try *!remindme 5 mins/hours/days [message]*", $message, true); 
 				return;
 			}
 
 			$time = time() + (intval($args2[0]) * intval(preg_replace(array('/min(?:ute)?s?/', '/hours?/', '/days?/', '/weeks?/', '/months?/'), array('60', '3600', '86400', '604800', '2592000'), $args2[1])));
 			
 			if ($time > (time() + 2592000*12)) { 
-				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "The time period provided is too far into the future. Limit it to under a year.", $message, true, null); 	
+				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "The time period provided is too far into the future. Limit it to under a year.", $message, true); 	
 				return;
 			}
 			
@@ -37,7 +37,7 @@
 			$reminderCount = $checkStmt->fetchColumn();
 			
 			if ($reminderCount > 4) {
-				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "Cannot set a new reminder for you as you already have 5 set.", $message, true, null); 
+				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "Cannot set a new reminder for you as you already have 5 set.", $message, true); 
 				return;
 			}
 			
