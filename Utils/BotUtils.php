@@ -31,7 +31,7 @@
 			
 		}
 		
-		public function simpleEmbed(string $authName, string $authIMG, string $text, Message $message, bool $reply = false, string $authURL = ''): void {
+		public function simpleEmbed(string $authName, string $authIMG, string $text, Message $message, bool $reply = false, string|bool $authURL = null): void {
 			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setAuthor($authName, $authIMG, $authURL)
