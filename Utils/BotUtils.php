@@ -33,12 +33,17 @@
 		
 		public function simpleEmbed(string $authName, string $authIMG, string $text, Message $message, bool $reply = false, string $authURL = ''): void {
 			
+			$authURL = ($authURL == '') ? null : $authURL;
+			
 			$embed = $this->discord->factory(Embed::class);
 			$embed->setAuthor($authName, $authIMG, $authURL)
 				->setColor(getenv('COLOUR'))
 				->setDescription($text);
 
-			if (!$reply) { $message->channel->sendEmbed($embed); }
+			if (!$reply) { 
+				$message->channel->sendEmbed($embed); 
+				return;
+			}
 			
 			$builder = MessageBuilder::new()
 				->addEmbed($embed)
