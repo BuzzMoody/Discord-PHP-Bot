@@ -274,7 +274,7 @@
 					$guild = $this->discord->guilds->get('id', '232691831090053120');
 					$channel = $guild->channels->get('id', $row['channelid']);
 					$channel->messages->fetch($row['messageid'])->then(function ($message) use ($row) {
-						$this->simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $message, true, null); 
+						$this->simpleEmbed("Chat Reminders", "attachment://bot.webp", "<@{$row['userid']}> Here is your reminder: https://discord.com/channels/232691831090053120/{$row['channelid']}/{$row['messageid']}", $message, true); 
 					});
 					$deleteStmt->execute([':time' => $row['time']]);
 				

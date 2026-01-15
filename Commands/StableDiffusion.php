@@ -49,7 +49,10 @@
 			$browser->post($url, $headers, $postDataEnc)->then(
 				function (ResponseInterface $response) use ($message) {
 					$responseData = json_decode($response->getBody());
-					if (!isset($responseData->predictions[0]->bytesBase64Encoded)) { return $this->utils->simpleEmbed("Imagen AI", "attachment://gemini.png", "No image could be generated.", $message, true, null); }
+					if (!isset($responseData->predictions[0]->bytesBase64Encoded)) { 
+						$this->utils->simpleEmbed("Imagen AI", "attachment://gemini.png", "No image could be generated.", $message, true);
+						return;
+					}
 					$base64 = $responseData->predictions[0]->bytesBase64Encoded;
 					$mimeType = $responseData->predictions[0]->mimeType;
 					$bin = base64_decode($base64);

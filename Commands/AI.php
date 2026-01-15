@@ -73,12 +73,12 @@
 			
 			if (@$response->error->message || @$response->blockReason) { 
 				$reason = ($response->error->message) ? $response->error->message : $response->blockReason;
-				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true, null);
+				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true);
 				return;
 			}
 			
 			if (@$response->candidates[0]->finishReason == "MAX_TOKENS") {
-				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Maximum token limit hit for this request. Try something simpler.", $message, true, null);
+				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Maximum token limit hit for this request. Try something simpler.", $message, true);
 				return;
 			}
 

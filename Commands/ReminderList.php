@@ -61,7 +61,7 @@
 				});
 			} 
 			else {
-				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "You currently have no reminders set. To set one use the command *!remindme 5 mins/hours/days [message]*", $message, true, null); 
+				$this->utils->simpleEmbed("Chat Reminders", "attachment://bot.webp", "You currently have no reminders set. To set one use the command *!remindme 5 mins/hours/days [message]*", $message, true); 
 			}
 		
 		}
