@@ -21,7 +21,7 @@
 	
 	$logger = new Logger('New logger');
 	$webhookUrl = getenv('ERROR_WEBHOOK');
-	$logger->pushHandler(new DiscordWebhookHandler($webhookUrl, \Monolog\Logger::WARNING));
+	$logger->pushHandler(new DiscordWebhookHandler($webhookUrl, \Monolog\Logger::DEBUG));
 	ErrorHandler::register($logger);
 	
 	$pdo = new PDO('sqlite:/Media/discord.db');
