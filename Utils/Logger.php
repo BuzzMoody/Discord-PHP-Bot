@@ -26,10 +26,9 @@
 			
 			$pattern = '/(TypeError|Rejection|Exception|Error)/i';
 			
-			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::WARNING) {
+			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::ERROR) {
 				
-				$content = "## 🚨 Error Caught\n";
-				$content .= "Level: **" . $record->level->name . "**\n";
+				$content = "🚨 Level: **" . $record->level->name . "**\n";
 				$content .= "```php\n" . substr($message, 0, 1800) . "```";
 
 				$data = json_encode([
