@@ -4,17 +4,12 @@
 	use Monolog\LogRecord;
 
 	class DiscordWebhookHandler extends AbstractProcessingHandler {
-		
-		private $webhookUrl;
 
-		public function __construct($webhookUrl, $level = \Monolog\Logger::ERROR) {
+		public function __construct(private string $webhookUrl, $level = \Monolog\Logger::ERROR) {
 			parent::__construct($level);
-			$this->webhookUrl = $webhookUrl;
 		}
 
 		protected function write(LogRecord $record): void {
-
-			echo "DEBUG: Monolog is attempting to send an error to Discord..." . PHP_EOL;
 			
 			$message = $record->message;
 			

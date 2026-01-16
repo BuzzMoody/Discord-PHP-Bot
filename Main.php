@@ -85,7 +85,7 @@
 			
 			catch (\Throwable $e) {
 				
-				$logger->error("Command Error: " . $e->getMessage(), [
+				$logger->error("Command Error: ". $e->getMessage(), [
 					'file' => $e->getFile(),
 					'line' => $e->getLine(),
 					'trace' => $e->getTraceAsString()
