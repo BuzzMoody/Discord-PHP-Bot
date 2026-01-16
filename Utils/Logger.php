@@ -17,7 +17,14 @@
 			echo "DEBUG: Monolog is attempting to send an error to Discord..." . PHP_EOL;
 			
 			$message = $record->message;
-			$pattern = '/(TypeError|ParseError|ValueError|ArithmeticError|DivisionByZeroError|ArgumentCountError|UnhandledMatchError|Exception|Unhandled promise rejection)/i';
+			
+			if (isset($record->context['exception'])) {
+				$e = $record->context['exception'];
+				$message .= "\nFile: " . $e->getFile() . ":" . $e->getLine();
+				$message .= "\nStack Trace:\n" . substr($e->getTraceAsString(), 0, 500);
+			}
+			
+			$pattern = '/(TypeError|Rejection|Exception|Error)/i';
 			
 			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::WARNING) {
 				
