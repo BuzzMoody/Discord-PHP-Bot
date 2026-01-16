@@ -20,7 +20,11 @@
 		
 			if ($this->utils->isAdmin($message->author->id) && $this->utils->betaCheck()) {
 
-				$message->reply("<:df:1442312817393799286>");
+				$testFunction = function (string $mustBeString) {
+					return $mustBeString;
+				};
+
+				$testFunction(null);
 
 			}
 		
