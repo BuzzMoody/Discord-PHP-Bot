@@ -6,11 +6,11 @@
 	date_default_timezone_set('Australia/Melbourne');
 
 	include __DIR__.'/vendor/autoload.php';
-	include 'CommandHandler.php';
-	include 'Services.php';
-	include 'Utils/BotUtils.php';
-	include 'Utils/Dota.php';
-	include 'Utils/Logger.php';
+	require_once 'CommandHandler.php';
+	require_once 'Services.php';
+	require_once 'Utils/BotUtils.php';
+	require_once 'Utils/Dota.php';
+	require_once 'Utils/Logger.php';
 
 	use Discord\Discord;
 	use Discord\WebSockets\Intents;
@@ -62,6 +62,8 @@
 
 		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $utils, $logger) {
 			
+			if ($message->author->bot) return;
+			
 			try {
 			
 				$channelName = $message->channel->name ?? 'DM';
@@ -70,7 +72,7 @@
 				
 				echo "(".date("d/m h:i:sA").") [#{$channelName}] {$username}: {$content}\n";
 				
-				if (!$message->author->bot && preg_match('/^!([a-zA-Z]{2,})(?:\s+(.*))?$/', $content, $matches)) {
+				if (preg_match('/^!([a-zA-Z]{2,})(?:\s+(.*))?$/', $content, $matches)) {
 					
 					$command = strtolower($matches[1]);
 					$args = $matches[2] ?? '';
