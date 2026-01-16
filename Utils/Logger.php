@@ -24,7 +24,7 @@
 			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::ERROR) {
 				
 				$content = "🚨 Level: **".$record->level->name."**\n";
-				$content .= "```php\n".substr($message, 0, 1800)."```";
+				$content .= "```php\n".substr($message, 0, 1800)."\n```";
 
 				$data = json_encode([
 					"content" => $content,
