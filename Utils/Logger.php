@@ -19,7 +19,7 @@
 			$message = $record->message;
 			$pattern = '/(TypeError|ParseError|ValueError|ArithmeticError|DivisionByZeroError|ArgumentCountError|UnhandledMatchError|Exception|Unhandled promise rejection)/i';
 			
-			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::DEBUG) {
+			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::WARNING) {
 				
 				$content = "## 🚨 Error Caught\n";
 				$content .= "Level: **" . $record->level->name . "**\n";
