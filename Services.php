@@ -4,21 +4,9 @@
 
 	class Services {
 
-		private Discord\Discord $discord;
-		private PDO $pdo;
-		private $uptime;
-		private Commands $commands;
-		
 		private const PLAYFUL_INSULTS = ["Degenerates", "Scoundrels", "Rascals", "Ruffians", "Miscreants", "Reprobates", "Villains", "Knaves", "Lowlifes", "Scallywags", "Numbskulls", "Nincompoops", "Rapscallions", "Delinquents", "Ne'er-do-wells", "Wastrels", "Fools", "Buffoons", "Loons", "Cads", "Creeps", "Charlatans", "Twits", "Scamps", "Weasels", "Goons", "Clowns", "Bozos", "Doofuses", "Louts", "Boneheads", "Dingbats", "Meatheads", "Dunces", "Blockheads", "Muttonheads", "Simpletons"];
 
-		public function __construct(Discord\Discord $discord, PDO $pdo, $uptime, Commands $commands) {
-			
-			$this->discord = $discord;
-			$this->pdo = $pdo;
-			$this->uptime = $uptime;
-			$this->commands = $commands;
-			
-		}
+		public function __construct(protected Discord\Discord $discord, protected PDO $pdo) { }
 
 		public function checkDatabase(): void {
 			

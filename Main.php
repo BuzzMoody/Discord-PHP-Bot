@@ -38,7 +38,7 @@
 	$utils = new BotUtils($discord, $pdo);
 	$dota = new Dota($discord, $pdo, $utils);
 	$commands = new Commands($discord, $pdo, $uptime, $utils);
-	$services = new Services($discord, $pdo, $uptime, $commands);
+	$services = new Services($discord, $pdo);
 	
 	$discord->on('ready', function (Discord $discord) use ($commands, $services, $utils, $dota, $logger) {
 		
