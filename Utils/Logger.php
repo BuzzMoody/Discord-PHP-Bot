@@ -13,8 +13,11 @@
 		}
 
 		protected function write(LogRecord $record): void {
-			// Sanity check: Print to console so we know Monolog triggered this
+
 			echo "DEBUG: Monolog is attempting to send an error to Discord..." . PHP_EOL;
+			
+			$message = $record->message;
+			$pattern = '/(TypeError|ParseError|ValueError|ArithmeticError|DivisionByZeroError|ArgumentCountError|UnhandledMatchError|Exception|Unhandled promise rejection)/i';
 			
 			if (preg_match($pattern, $message) || $record->level->value >= \Monolog\Logger::DEBUG) {
 				
