@@ -15,8 +15,8 @@
 			
 			if (isset($record->context['exception'])) {
 				$e = $record->context['exception'];
-				$message .= "\nFile: " . $e->getFile() . ":" . $e->getLine();
-				$message .= "\nStack Trace:\n" . substr($e->getTraceAsString(), 0, 500);
+				$message .= "\nFile: ".$e->getFile().": ".$e->getLine();
+				$message .= "\nStack Trace:\n".substr($e->getTraceAsString(), 0, 500);
 			}
 			
 			$pattern = '/(TypeError|Rejection|Exception|Error)/i';
@@ -38,13 +38,6 @@
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				
 				$response = curl_exec($ch);
-
-				// Check for CURL errors
-				if (curl_errno($ch)) {
-					echo 'DEBUG: Curl error: ' . curl_error($ch) . PHP_EOL;
-				} else {
-					echo 'DEBUG: Webhook response: ' . $response . PHP_EOL;
-				}
 
 				curl_close($ch);
 				
