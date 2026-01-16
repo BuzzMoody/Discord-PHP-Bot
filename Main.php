@@ -40,7 +40,7 @@
 	$commands = new Commands($discord, $pdo, $uptime, $utils);
 	$services = new Services($discord, $pdo, $uptime, $commands);
 	
-	$discord->on('ready', function (Discord $discord) use ($commands, $services, $utils, $dota) {
+	$discord->on('ready', function (Discord $discord) use ($commands, $services, $utils, $dota, $logger) {
 		
 		echo "(".date("d/m h:i:sA").") Bot is ready!\n";
 		
@@ -60,23 +60,37 @@
 			$utils->checkEarthquakes();
 		});
 
-		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $utils) {
+		$discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $utils, $logger) {
 			
-			$channelName = $message->channel->name ?? 'DM';
-			$username = $message->author->username ?? 'Unknown';
-			$content = $message->content ?? '';
+			try {
 			
-			echo "(".date("d/m h:i:sA").") [#{$channelName}] {$username}: {$content}\n";
-			
-			if (!$message->author->bot && preg_match('/^!([a-zA-Z]{2,})(?:\s+(.*))?$/', $content, $matches)) {
+				$channelName = $message->channel->name ?? 'DM';
+				$username = $message->author->username ?? 'Unknown';
+				$content = $message->content ?? '';
 				
-				$command = strtolower($matches[1]);
-				$args = $matches[2] ?? '';
+				echo "(".date("d/m h:i:sA").") [#{$channelName}] {$username}: {$content}\n";
 				
-				if ($message->channel->id == 274828566909157377 || !$utils->betaCheck()) {
-					$commands->execCommand($message, $command, $args);
+				if (!$message->author->bot && preg_match('/^!([a-zA-Z]{2,})(?:\s+(.*))?$/', $content, $matches)) {
+					
+					$command = strtolower($matches[1]);
+					$args = $matches[2] ?? '';
+					
+					if ($message->channel->id == 274828566909157377 || !$utils->betaCheck()) {
+						$commands->execCommand($message, $command, $args);
+					}
+					
 				}
 				
+			} 
+			
+			catch (\Throwable $e) {
+				
+				$logger->error("Command Error: " . $e->getMessage(), [
+					'file' => $e->getFile(),
+					'line' => $e->getLine(),
+					'trace' => $e->getTraceAsString()
+				]);
+			
 			}
 			
 		});
