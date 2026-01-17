@@ -17,6 +17,10 @@
 			1 => 'Herald', 'Guardian', 'Crusader', 'Archon', 'Legend', 'Ancient', 'Divine', 'Immortal'
 		];
 		
+		private const DOTA_RANK_EMOJI = [
+			"<:herald:1461897402771308678>", "<:guardian:1461897400590536826>", "<:crusader:1461897398514094292>", "<:archon:1461897396689834067>", "<:legend:1461897394638553221>", "<:ancient:1461897392411508959>", "<:divine:1461897390377144544>", "<:immortal:1461897444043264222>"
+		];
+		
 		private const DOTA_HEROES = [
 			1 => "Anti-Mage", 2 => "Axe", 3 => "Bane", 4 => "Bloodseeker", 5 => "Crystal Maiden", 6 => "Drow Ranger", 7 => "Earthshaker", 8 => "Juggernaut", 9 => "Mirana", 11 => "Shadow Fiend", 10 => "Morphling", 12 => "Phantom Lancer", 13 => "Puck", 14 => "Pudge", 15 => "Razor", 16 => "Sand King", 17 => "Storm Spirit", 18 => "Sven", 19 => "Tiny", 20 => "Vengeful Spirit", 21 => "Windranger", 22 => "Zeus", 23 => "Kunkka", 25 => "Lina", 31 => "Lich", 26 => "Lion", 27 => "Shadow Shaman", 28 => "Slardar", 29 => "Tidehunter", 30 => "Witch Doctor", 32 => "Riki", 33 => "Enigma", 34 => "Tinker", 35 => "Sniper", 36 => "Necrophos", 37 => "Warlock", 38 => "Beastmaster", 39 => "Queen of Pain", 40 => "Venomancer", 41 => "Faceless Void", 42 => "Skeleton King", 43 => "Death Prophet", 44 => "Phantom Assassin", 45 => "Pugna", 46 => "Templar Assassin", 47 => "Viper", 48 => "Luna", 49 => "Dragon Knight", 50 => "Dazzle", 51 => "Clockwerk", 52 => "Leshrac", 53 => "Nature's Prophet", 54 => "Lifestealer", 55 => "Dark Seer", 56 => "Clinkz", 57 => "Omniknight", 58 => "Enchantress", 59 => "Huskar", 60 => "Night Stalker", 61 => "Broodmother", 62 => "Bounty Hunter", 63 => "Weaver", 64 => "Jakiro", 65 => "Batrider", 66 => "Chen", 67 => "Spectre", 69 => "Doom", 68 => "Ancient Apparition", 70 => "Ursa", 71 => "Spirit Breaker", 72 => "Gyrocopter", 73 => "Alchemist", 74 => "Invoker", 75 => "Silencer", 76 => "Outworld Devourer", 77 => "Lycan", 78 => "Brewmaster", 79 => "Shadow Demon", 80 => "Lone Druid", 81 => "Chaos Knight", 82 => "Meepo", 83 => "Treant Protector", 84 => "Ogre Magi", 85 => "Undying", 86 => "Rubick", 87 => "Disruptor", 88 => "Nyx Assassin", 89 => "Naga Siren", 90 => "Keeper of the Light", 91 => "IO", 92 => "Visage", 93 => "Slark", 94 => "Medusa", 95 => "Troll Warlord", 96 => "Centaur Warrunner", 97 => "Magnus", 98 => "Timbersaw", 99 => "Bristleback", 100 => "Tusk", 101 => "Skywrath Mage", 102 => "Abaddon", 103 => "Elder Titan", 104 => "Legion Commander", 106 => "Ember Spirit", 107 => "Earth Spirit", 108 => "Underlord", 109 => "Terrorblade", 110 => "Phoenix", 105 => "Techies", 111 => "Oracle", 112 => "Winter Wyvern", 113 => "Arc Warden", 114 => "Monkey King", 119 => "Dark Willow", 120 => "Pangolier", 121 => "Grimstroke", 123 => "Hoodwink", 126 => "Void Spirit", 128 => "Snapfire", 129 => "Mars", 131 => "Ringmaster", 135 => "Dawnbreaker", 136 => "Marci", 137 => "Primal Beast", 138 => "Muerta", 145 => "Kez", 155 => "Largo"
 		];
@@ -152,7 +156,9 @@
 			$length = gmdate(floor(($d = $playersInMatch[0]['stats']['duration']) / 3600) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s', $d);
 			$mode = self::DOTA_GAMEMODES[$playersInMatch[0]['stats']['game_mode']];
 			$ranked = in_array($playersInMatch[0]['stats']['lobby_type'], [5, 6, 7], true) ? 'Ranked' : 'Unranked';
-			$rank = self::DOTA_RANKS[(int)($playersInMatch[0]['stats']['average_rank'] / 10)] ?? 'Unknown';
+			$rankCalc = (int)($playersInMatch[0]['stats']['average_rank'] / 10);
+			$rank = self::DOTA_RANKS[$rankCalc] ?? 'Unknown';
+			$rankEmoji = self::DOTA_RANK_EMOJI[($rankCalc - 1)] ?? '❓';
 			$team = ($playersInMatch[0]['stats']['player_slot'] <= 127) ? 'Radiant' : 'Dire';
 			$result = ($playersInMatch[0]['stats']['radiant_win'] === ($team === 'Radiant')) ? 'Won' : 'Lost';
 			$players = implode(", ", array_column($playersInMatch, 'discord_id'));
@@ -161,18 +167,18 @@
 			$embed->setAuthor("Dota 2 Match Information", "https://img.icons8.com/?size=100&id=35611&format=png&color=000000", "https://www.opendota.com/matches/{$matchID}")
 				->setThumbnail("https://img.icons8.com/?size=100&id=35611&format=png&color=000000")
 				->setColor(getenv('COLOUR'))
-				->addFieldValues("Start Time", $tz->format('g:i A'), true)
-				->addFieldValues("Length", $length, true)
+				->addFieldValues("Game Time", "{$length} ({$tz->format('g:i A')})" , true)
 				->addFieldValues("Game Mode", "{$ranked} {$mode}", true)
+				->addFieldValues("Game Rank", "{$rank} {$rankEmoji}", true)
 				->setDescription("{$players} **{$result}** their latest game playing on **{$team}**!\n");
 				
 			foreach ($playersInMatch as $player) {
 				
 				$hero = self::DOTA_HEROES[$player['stats']['hero_id']] ?? 'Unknown';
-				$emoji = self::DOTA_EMOJI[$player['stats']['hero_id']] ?? '❓';
+				$heroEmoji = self::DOTA_EMOJI[$player['stats']['hero_id']] ?? '❓';
 				$level = $this->calcLevel((int) $player['stats']['xp_per_min'], (int) $player['stats']['duration']);
 				
-				$embed->addFieldValues($player['name'], "{$hero} {$emoji}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
+				$embed->addFieldValues($player['name'], "{$hero} {$heroEmoji}\n{$player['stats']['kills']} / {$player['stats']['deaths']} / {$player['stats']['assists']}\nLvl {$level}", true)
 					->addFieldValues("Impact", number_format($player['stats']['hero_damage'])." enemy dmg\n".number_format($player['stats']['hero_healing'])." healing\n".number_format($player['stats']['tower_damage'])." tower dmg", true)
 					->addFieldValues("Stats", "{$player['stats']['last_hits']} creeps\n".number_format($player['stats']['xp_per_min'])." xpm\n{$player['stats']['gold_per_min']} gpm", true)
 					->addFieldValues("Last 10 Games", $player['winloss'], false);
