@@ -151,8 +151,6 @@
 		
 		private function postToDiscord(int $matchID, array $playersInMatch): void {
 			
-			$tz = new DateTime("now", new DateTimeZone('Australia/Melbourne'));
-			$tz->setTimestamp($playersInMatch[0]['stats']['start_time']);
 			$length = gmdate(floor(($d = $playersInMatch[0]['stats']['duration']) / 3600) ? 'g \h\o\u\r\s i \m\i\n\s' : 'i \m\i\n\s', $d);
 			$mode = self::DOTA_GAMEMODES[$playersInMatch[0]['stats']['game_mode']];
 			$ranked = in_array($playersInMatch[0]['stats']['lobby_type'], [5, 6, 7], true) ? 'Ranked' : 'Unranked';
@@ -167,7 +165,7 @@
 			$embed->setAuthor("Dota 2 Match Information", "https://img.icons8.com/?size=100&id=35611&format=png&color=000000", "https://www.opendota.com/matches/{$matchID}")
 				->setThumbnail("https://img.icons8.com/?size=100&id=35611&format=png&color=000000")
 				->setColor(getenv('COLOUR'))
-				->addFieldValues("Game Time", "{$length} ({$tz->format('g:i A')})" , true)
+				->addFieldValues("Game Time", $length, true)
 				->addFieldValues("Game Mode", "{$ranked} {$mode}", true)
 				->addFieldValues("Game Rank", "{$rank} {$rankEmoji}", true)
 				->setDescription("{$players} **{$result}** their latest game playing on **{$team}**!\n");
