@@ -52,7 +52,7 @@
 			$services->updateActivity();
 		});
 		
-		$discord->getLoop()->addPeriodicTimer(180, function () use ($dota) {
+		$discord->getLoop()->addPeriodicTimer(120, function () use ($dota) {
 			$dota->checkGames();
 		});
 		
