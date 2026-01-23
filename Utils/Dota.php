@@ -48,7 +48,8 @@
 				
 				$ids = [
 				//	["<@232691181396426752>", "54716121", "Buzz"], 
-				//	["<@381596223435702282>", "33939542", "Dan"], 
+				//	["<@381596223435702282>", "33939542", "Dan"],
+					["<@283380262799147008>", "135480441", "Skippy1331"],
 					["<@276222661515018241>", "77113202", "Hassler"]
 				];
 				
@@ -87,7 +88,7 @@
 						$latestMatch = $data['matches'][0];
 						$matchID = $latestMatch['match_id'];
 						
-						if ($this->isNewMatch((int) $steamID, (int) $matchID)) {
+						if ($this->isNewMatch((int) $steamID, (int) $matchID, (string) $data['info'][2])) {
 							
 							list($discordID, $steamID, $name) = $data['info'];
 							
@@ -124,14 +125,24 @@
 			
 		}
 		
-		private function isNewMatch(int $steamID, int $matchID): bool {
+		private function isNewMatch(int $steamID, int $matchID, string $user): bool {
 			
-			$query = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id");
-			$query->execute(['id' => (int) $steamID]);
+			$query = $this->pdo->prepare("SELECT matchid FROM dota2 WHERE id = :id LIMIT 1");
+			$query->execute(['id' => $steamID]);
 			$lastMatchId = $query->fetchColumn();
+			
+			if ($lastMatchId === false) {
+				$insert = $this->pdo->prepare("INSERT INTO dota2 (id, user, matchid) VALUES (:id, :user, :matchid)");
+				$insert->execute([
+					'id'      => $steamID,
+					'user'    => $user,
+					'matchid' => $matchID
+				]);
+				return true; 
+			}
 
 			if ($lastMatchId == 1) {
-				$this->saveMatch((int) $steamID, (int) $matchID);
+				$this->saveMatch($steamID, $matchID);
 				return false;
 			}
 
