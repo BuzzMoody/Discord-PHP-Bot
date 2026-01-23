@@ -44,6 +44,8 @@
 			
 			if ($current_hour >= 8 || $current_hour <= 1) {
 				
+				echo "Checking for new games...\n";
+				
 				$client = new Browser($this->discord->getLoop());
 				
 				$ids = [
