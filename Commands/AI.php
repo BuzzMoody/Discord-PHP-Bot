@@ -14,7 +14,7 @@
 		}
 		
 		public function getPattern(): string {
-			return '/^(bard|gemini|(?:open)?ai)/';
+			return '/^(bard|gemini|(?:open)?ai|grok)/';
 		}
 		
 		public function execute(Message $message, string $args, array $matches): void {
@@ -46,14 +46,18 @@
 				"systemInstruction" => [
 					"role" => "system",
 					"parts" => [
-						"text" => "Try to make your response fit within 500 characters."
+						"text" => "Act as a helpful, human-like Discord assistant. Don't greet the user unless specifically greeted." .
+							"Formatting: Use Discord Markdown (### headers, **bold**, lists, ``` codeblocks) and occasional emojis. " .
+							"Constraints: Keep responses concise and strictly under 2,000 characters to fit Discord limits. " .
+							"Tone: Conversational and direct; avoid robotic filler like 'As an AI...'. Do not ask to continue the conversation." .
+							"Accuracy: Prioritize facts and admit uncertainty if unsure."
 					]
 				],
 			];
 
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
-				CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=".getenv('GEMINI_API_KEY'),
+				CURLOPT_URL => "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=".getenv('GEMINI_API_KEY'),
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING => '',
 				CURLOPT_MAXREDIRS => 10,
@@ -71,7 +75,7 @@
 
 			curl_close($curl);
 			
-			if (@$response->error->message || @$response->blockReason) { 
+			if (@$response->error->message || @$response->blockReason || is_null($response->candidates[0]->content->parts[0]->text)) { 
 				$reason = ($response->error->message) ? $response->error->message : $response->blockReason;
 				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true);
 				return;
