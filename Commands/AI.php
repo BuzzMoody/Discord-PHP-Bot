@@ -71,7 +71,7 @@
 
 			curl_close($curl);
 			
-			if (@$response->error->message || @$response->blockReason) { 
+			if (@$response->error->message || @$response->blockReason || is_null($response->candidates[0]->content->parts[0]->text)) { 
 				$reason = ($response->error->message) ? $response->error->message : $response->blockReason;
 				$this->utils->simpleEmbed("Gemini AI", "attachment://gemini.png", "Gemini API Error: *{$reason}*", $message, true);
 				return;
