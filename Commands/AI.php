@@ -14,7 +14,7 @@
 		}
 		
 		public function getPattern(): string {
-			return '/^(bard|gemini|(?:open)?ai)/';
+			return '/^(bard|gemini|(?:open)?ai|grok)/';
 		}
 		
 		public function execute(Message $message, string $args, array $matches): void {
