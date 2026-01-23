@@ -42,7 +42,7 @@
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
 			
-			if ($current_hour >= 8 || $current_hour <= 1) {
+			if ($current_hour >= 7 || $current_hour <= 1) {
 				
 				$client = new Browser($this->discord->getLoop());
 				
@@ -88,11 +88,7 @@
 						$latestMatch = $data['matches'][0];
 						$matchID = $latestMatch['match_id'];
 						
-						print_r($data['info']);
-						
 						if ($this->isNewMatch((int) $steamID, (int) $matchID, (string) $data['info'][2])) {
-							
-							echo "New match found for {$data['info'][2]}...\n";
 							
 							list($discordID, $steamID, $name) = $data['info'];
 							
