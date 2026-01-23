@@ -42,7 +42,7 @@
 			$date = new DateTime('now');
 			$current_hour = (int)$date->format('G');
 			
-			if ($current_hour >= 10 || $current_hour <= 2) {
+			if ($current_hour >= 8 || $current_hour <= 1) {
 				
 				$client = new Browser($this->discord->getLoop());
 				
