@@ -34,6 +34,7 @@
 					$embed->setAuthor('Fungbunger (@parsfarce)', 'https://fungbunger.au/images/fung_profile.jpg', $url)
 						->setColor(getenv('COLOUR'))
 						->setDescription($output->tweets[0]->content)
+						->setThumbnail("https://fungbunger.au/images/fung_profile.jpg")
 						->setFooter($formattedDate);
 					$message->channel->sendEmbed($embed);
 				},
