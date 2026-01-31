@@ -25,7 +25,7 @@
 		
 			$http = new Browser();
 
-			$http->get($url, $headers)->then(
+			$http->get($url)->then(
 				function (ResponseInterface $response) use ($message, $url) {
 					$output = json_decode($response->getBody());
 					$date = new DateTime($output->tweets[0]->timestamp);
