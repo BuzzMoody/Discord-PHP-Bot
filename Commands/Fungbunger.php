@@ -31,7 +31,7 @@
 					$date = new DateTime($output->tweets[0]->timestamp);
 					$formattedDate = $date->format('g:i A \• M j, Y');
 					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor('Fungbunger (@parsfarce)', 'https://fungbunger.au/images/fung_profile.jpg', "https://fungbunger.au/api.php?id=".$output->id)
+					$embed->setAuthor('Fungbunger (@parsfarce)', 'https://fungbunger.au/images/fung_profile.jpg', "https://fungbunger.au/?id=".$output->id)
 						->setColor(getenv('COLOUR'))
 						->setDescription($output->tweets[0]->content)
 						->setThumbnail("https://fungbunger.au/images/fung_profile.jpg")
