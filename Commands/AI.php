@@ -42,6 +42,9 @@
 					"temperature" => 1,
 					"maxOutputTokens" => $tokens,
 					"topP" => 0.95,
+					"thinkingConfig" => [
+						"thinkingLevel" => "MEDIUM"
+					],
 				],
 				"systemInstruction" => [
 					"role" => "system",
