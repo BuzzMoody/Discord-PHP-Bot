@@ -26,12 +26,12 @@
 			$http = new Browser();
 
 			$http->get($url)->then(
-				function (ResponseInterface $response) use ($message, $url) {
+				function (ResponseInterface $response) use ($message) {
 					$output = json_decode($response->getBody());
 					$date = new DateTime($output->tweets[0]->timestamp);
 					$formattedDate = $date->format('g:i A \• M j, Y');
 					$embed = $this->discord->factory(Embed::class);
-					$embed->setAuthor('Fungbunger (@parsfarce)', 'https://fungbunger.au/images/fung_profile.jpg', $url)
+					$embed->setAuthor('Fungbunger (@parsfarce)', 'https://fungbunger.au/images/fung_profile.jpg', "https://fungbunger.au/api.php?id=".$output->id)
 						->setColor(getenv('COLOUR'))
 						->setDescription($output->tweets[0]->content)
 						->setThumbnail("https://fungbunger.au/images/fung_profile.jpg")
