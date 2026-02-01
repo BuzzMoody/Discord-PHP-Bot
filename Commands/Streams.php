@@ -29,14 +29,14 @@
 			
 			$sport = (empty($args)) ? "AFL" : $args;
 			
-			if (sportsCheck($sport)) {
+			if ($this->sportsCheck($sport)) {
 				$this->utils->simpleEmbed("Sports Streams", "https://v2.streameast.ga/icons/favicon-48x48.png", "Sport not found. Options are AFL, NBA, NFL.", $message, true);
 				return;
 			}
 			
 			echo "VALID SPORT FOUND\n";
 			
-			$url = "https://streamed.pk/api/matches/".sportsID($sport);
+			$url = "https://streamed.pk/api/matches/".$this->sportsID($sport);
 		
 			$http = new Browser();
 
