@@ -21,7 +21,11 @@
 		
 		public function execute(Message $message, string $args, array $matches): void {
 			
+			echo "FIRING\n";
+			
 			if ($message->channel->id !== 274828566909157377) { return; }
+			
+			echo "WORKING\n";
 			
 			$sport = (empty($args)) ? "AFL" : $args;
 			
@@ -29,6 +33,8 @@
 				$this->utils->simpleEmbed("Sports Streams", "https://v2.streameast.ga/icons/favicon-48x48.png", "Sport not found. Options are AFL, NBA, NFL.", $message, true);
 				return;
 			}
+			
+			echo "VALID SPORT FOUND\n";
 			
 			$url = "https://streamed.pk/api/matches/".sportsID($sport);
 		
