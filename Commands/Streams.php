@@ -23,7 +23,7 @@
 			
 			echo "FIRING\n";
 			
-			if ($message->channel->id !== 274828566909157377) { return; }
+			if ($message->channel->id != 274828566909157377) { return; }
 			
 			echo "WORKING\n";
 			
