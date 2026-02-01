@@ -73,7 +73,7 @@
 						
 					}
 					
-					return all($promises)->then(function(array $responses) use ($streams, $sourceMap) {
+					return \React\Promise\all($promises)->then(function(array $responses) use ($streams, $sourceMap) {
 						foreach ($responses as $index => $res) {
 							$data = json_decode((string) $res->getBody());
 							$map = $sourceMap[$index];
