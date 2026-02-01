@@ -16,7 +16,7 @@
 		}
 		
 		public function getPattern(): string {
-			return '/\b(?:sport|stream)s?\b/';
+			return '/(?:sport|stream)s?/';
 		}
 		
 		public function execute(Message $message, string $args, array $matches): void {
