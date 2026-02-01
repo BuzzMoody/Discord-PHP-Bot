@@ -37,6 +37,8 @@
 			echo "VALID SPORT FOUND\n";
 			
 			$url = "https://streamed.pk/api/matches/".$this->sportsID($sport);
+			
+			echo $url."\n";
 		
 			$http = new Browser();
 
