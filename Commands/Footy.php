@@ -35,7 +35,7 @@
 					$responseBody = $response->getBody();
 					preg_match("/data-round-number=\"(\d+)\"/", $responseBody, $round);
 					
-					$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=73&pageSize=10&roundNumber='.$round[1])->then(
+					$client->get('https://aflapi.afl.com.au/afl/v2/matches?competitionId=1&compSeasonId=85&pageSize=10&roundNumber='.$round[1])->then(
 						function (ResponseInterface $response) use ($message, $embed) {
 							
 							$responseBody = $response->getBody();
