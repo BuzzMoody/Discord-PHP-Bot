@@ -9,7 +9,6 @@
 
 		// ── constants ──────────────────────────────────────────────────────────
 
-		private const EMBED_COLOUR  = 0x003087;
 		private const AFL_LOGO_URL  = 'https://www.afl.com.au/resources/v5.45.13/i/elements/afl-logo.png';
 		private const MATCHES_BASE  = 'https://aflapi.afl.com.au/afl/v2/matches';
 		private const WAGERING_URL  = 'https://api.afl.com.au/cfs/afl/wagering?application=Web';
@@ -265,7 +264,7 @@
 
 			// ── assemble embed ─────────────────────────────────────────────────
 			$embed = new Embed($this->discord);
-			$embed->setColor(self::EMBED_COLOUR);
+			$embed->setColor(getenv('COLOUR'))
 			$embed->setThumbnail(self::AFL_LOGO_URL);
 			$roundLabel = $roundNum !== null ? "Round {$roundNum}" : 'Fixture';
 			$embed->setAuthor("AFL {$roundLabel} - Summary", self::AFL_LOGO_URL);
