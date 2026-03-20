@@ -264,7 +264,7 @@
 
 			// ── assemble embed ─────────────────────────────────────────────────
 			$embed = new Embed($this->discord);
-			$embed->setColor(getenv('COLOUR'))
+			$embed->setColor(getenv('COLOUR'));
 			$embed->setThumbnail(self::AFL_LOGO_URL);
 			$roundLabel = $roundNum !== null ? "Round {$roundNum}" : 'Fixture';
 			$embed->setAuthor("AFL {$roundLabel} - Summary", self::AFL_LOGO_URL);
