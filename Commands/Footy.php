@@ -16,7 +16,7 @@
 
 		// Status strings returned by the matches API
 		private const STATUS_CONCLUDED  = 'CONCLUDED';
-		private const STATUS_LIVE       = 'IN_PROGRESS'; // anticipated; handled defensively
+		private const STATUS_LIVE       = 'LIVE';
 
 		// Set to true to send a wagering debug report alongside the fixture embed
 		private const WAGERING_DEBUG    = false;
