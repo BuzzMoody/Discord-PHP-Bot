@@ -320,6 +320,30 @@
 			}
 			unset($dayMatches);
 
+			// ── score worm (live filter only) ──────────────────────────────────
+			// Generate a quickchart.io stepped line chart URL for the first live
+			// match that has scoring event data. The image is attached to the embed.
+			$wormUrl = null;
+			if ($filter === self::FILTER_LIVE) {
+				foreach ($byDay as $dayMatches) {
+					foreach ($dayMatches as $entry) {
+						$m   = $entry['match'];
+						$pid = $m['providerId'] ?? null;
+						if ($pid === null || !isset($liveScores[$pid])) {
+							continue;
+						}
+						$wormUrl = $this->generateScoreWormUrl(
+							$liveScores[$pid],
+							$m['home']['team']['name'] ?? 'Home',
+							$m['away']['team']['name'] ?? 'Away'
+						);
+						if ($wormUrl !== null) {
+							break 2;
+						}
+					}
+				}
+			}
+
 			// ── assemble embed ─────────────────────────────────────────────────
 			$embed = new Embed($this->discord);
 			$embed->setColor(getenv('COLOUR'));
@@ -372,6 +396,10 @@
 			if (!empty($byeTeams)) {
 				sort($byeTeams);
 				$embed->addFieldValues('🛋️ Bye This Week', implode(', ', $byeTeams), false);
+			}
+
+			if ($wormUrl !== null) {
+				$embed->setImage($wormUrl);
 			}
 
 			$embed->setFooter('Data: afl.com.au  •  ' . $now->format('D jS M Y, g:ia') . ' AEST');
@@ -606,7 +634,85 @@
 		}
 
 		/**
-		 * Returns midnight on the most recent Thursday in Melbourne time.
+		 * Builds a quickchart.io stepped line chart URL representing the score worm.
+		 *
+		 * Data source: $liveData['score']['scoreWorm']['scoringEvents'][]
+		 *   $event['aggregateHomeScore'] — cumulative home score after this event
+		 *   $event['aggregateAwayScore'] — cumulative away score after this event
+		 *
+		 * Both series start at 0 (before the first scoring event) and step up
+		 * with each event. The x-axis is suppressed; only the score trajectory matters.
+		 *
+		 * Returns null if there are no scoring events yet.
+		 */
+		private function generateScoreWormUrl(array $liveData, string $homeTeam, string $awayTeam): ?string {
+
+			$events = $liveData['score']['scoreWorm']['scoringEvents'] ?? [];
+			if (empty($events)) {
+				return null;
+			}
+
+			// Seed both series at 0-0 before the first event
+			$homeData = [0];
+			$awayData = [0];
+			$labels   = [0];
+
+			foreach ($events as $i => $event) {
+				$homeData[] = (int) ($event['aggregateHomeScore'] ?? 0);
+				$awayData[] = (int) ($event['aggregateAwayScore'] ?? 0);
+				$labels[]   = $i + 1;
+			}
+
+			$config = [
+				'type' => 'line',
+				'data' => [
+					'labels'   => $labels,
+					'datasets' => [
+						[
+							'label'           => $homeTeam,
+							'data'            => $homeData,
+							'borderColor'     => '#1a73e8',
+							'backgroundColor' => 'transparent',
+							'stepped'         => 'before',
+							'pointRadius'     => 0,
+							'borderWidth'     => 2,
+						],
+						[
+							'label'           => $awayTeam,
+							'data'            => $awayData,
+							'borderColor'     => '#e53935',
+							'backgroundColor' => 'transparent',
+							'stepped'         => 'before',
+							'pointRadius'     => 0,
+							'borderWidth'     => 2,
+						],
+					],
+				],
+				'options' => [
+					'legend' => [
+						'labels' => ['fontColor' => '#ffffff'],
+					],
+					'scales' => [
+						'xAxes' => [[
+							'display' => false,
+						]],
+						'yAxes' => [[
+							'ticks' => [
+								'beginAtZero' => true,
+								'fontColor'   => '#ffffff',
+							],
+							'gridLines' => [
+								'color' => 'rgba(255,255,255,0.15)',
+							],
+						]],
+					],
+				],
+			];
+
+			return 'https://quickchart.io/chart?c=' . urlencode(json_encode($config)) . '&w=500&h=200&bkg=%2336393f';
+		}
+
+		/**
 		 * If today is Thursday, today's midnight is returned.
 		 */
 		private function getPreviousThursday(): \DateTime {
