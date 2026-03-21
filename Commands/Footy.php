@@ -18,6 +18,12 @@
 		private const STATUS_CONCLUDED  = 'CONCLUDED';
 		private const STATUS_LIVE       = 'LIVE';
 
+		// Filter modes driven by command arguments
+		private const FILTER_ALL        = 'all';
+		private const FILTER_CONCLUDED  = 'concluded';
+		private const FILTER_LIVE       = 'live';
+		private const FILTER_UPCOMING   = 'upcoming';
+
 		// Set to true to send a wagering debug report alongside the fixture embed
 		private const WAGERING_DEBUG    = false;
 
@@ -47,6 +53,7 @@
 			
 			if ($message->channel->id != 1352902587837583370) { return; }
 
+			$filter    = $this->parseFilter($args);
 			$thursday  = $this->getPreviousThursday();
 			$wednesday = (clone $thursday)->modify('+6 days');
 
@@ -80,7 +87,7 @@
 			$browser
 				->post(self::TOKEN_URL, $corsHeaders, '')
 				->then(
-					function ($r) use ($browser, $corsHeaders, $matchesUrl, $message, $thursday): void {
+					function ($r) use ($browser, $corsHeaders, $matchesUrl, $message, $thursday, $filter): void {
 
 						$tokenData = json_decode((string) $r->getBody(), true);
 						$token     = $tokenData['token'] ?? null;
@@ -131,7 +138,7 @@
 
 						// ── Step 3: fetch live scores, then build embed ───────────
 						\React\Promise\all([$matchesPromise, $wageringPromise])->then(
-							function (array $results) use ($message, $thursday, $browser, $corsHeaders, $token): void {
+							function (array $results) use ($message, $thursday, $browser, $corsHeaders, $token, $filter): void {
 
 								[$matchesData, $wageringResult] = $results;
 
@@ -181,35 +188,38 @@
 								// ── Step 4: fetch live match detail for any LIVE games ─
 								// The main matches API does not include scores for live games;
 								// we must hit matchItem/{providerId} individually for each.
+								// Skip entirely if the current filter excludes live matches.
 								$livePromises = [];
-								foreach ($matchesData['matches'] as $match) {
-									if (($match['status'] ?? '') !== self::STATUS_LIVE) {
-										continue;
+								if ($filter === self::FILTER_ALL || $filter === self::FILTER_LIVE) {
+									foreach ($matchesData['matches'] as $match) {
+										if (($match['status'] ?? '') !== self::STATUS_LIVE) {
+											continue;
+										}
+										$pid = $match['providerId'] ?? null;
+										if ($pid === null) {
+											continue;
+										}
+										$livePromises[$pid] = $browser
+											->get(self::MATCH_ITEM_BASE . $pid, array_merge($corsHeaders, [
+												'x-media-mis-token' => $token,
+											]))
+											->then(
+												fn ($r) => json_decode((string) $r->getBody(), true),
+												fn ($e) => null   // live score failure is non-fatal
+											);
 									}
-									$pid = $match['providerId'] ?? null;
-									if ($pid === null) {
-										continue;
-									}
-									$livePromises[$pid] = $browser
-										->get(self::MATCH_ITEM_BASE . $pid, array_merge($corsHeaders, [
-											'x-media-mis-token' => $token,
-										]))
-										->then(
-											fn ($r) => json_decode((string) $r->getBody(), true),
-											fn ($e) => null   // live score failure is non-fatal
-										);
 								}
 
-								// If no live games, build the embed immediately
+								// If no live games to fetch, build the embed immediately
 								if (empty($livePromises)) {
-									$embed = $this->buildEmbed($matchesData, $wageringData, $thursday, []);
+									$embed = $this->buildEmbed($matchesData, $wageringData, $thursday, [], $filter);
 									$message->channel->sendMessage(MessageBuilder::new()->addEmbed($embed));
 									return;
 								}
 
 								\React\Promise\all($livePromises)->then(
-									function (array $liveScores) use ($message, $thursday, $matchesData, $wageringData): void {
-										$embed = $this->buildEmbed($matchesData, $wageringData, $thursday, $liveScores);
+									function (array $liveScores) use ($message, $thursday, $matchesData, $wageringData, $filter): void {
+										$embed = $this->buildEmbed($matchesData, $wageringData, $thursday, $liveScores, $filter);
 										$message->channel->sendMessage(MessageBuilder::new()->addEmbed($embed));
 									},
 									function (\Throwable $e) use ($message): void {
@@ -230,7 +240,7 @@
 
 		// ── embed builder ──────────────────────────────────────────────────────
 
-		private function buildEmbed(array $matchesData, ?array $wageringData, \DateTime $thursday, array $liveScores): Embed {
+		private function buildEmbed(array $matchesData, ?array $wageringData, \DateTime $thursday, array $liveScores, string $filter): Embed {
 
 			$tz  = new \DateTimeZone(self::TZ_MELBOURNE);
 			$now = new \DateTime('now', $tz);
@@ -256,6 +266,18 @@
 
 				// Constrain to the Thursday–Wednesday window
 				if ($matchTime < $thursday || $matchTime > $wednesday) {
+					continue;
+				}
+
+				// Apply status filter
+				$status = $match['status'] ?? '';
+				$include = match ($filter) {
+					self::FILTER_CONCLUDED => $status === self::STATUS_CONCLUDED,
+					self::FILTER_LIVE      => $status === self::STATUS_LIVE,
+					self::FILTER_UPCOMING  => !in_array($status, [self::STATUS_CONCLUDED, self::STATUS_LIVE], true),
+					default                => true, // FILTER_ALL
+				};
+				if (!$include) {
 					continue;
 				}
 
@@ -303,7 +325,13 @@
 			$embed->setColor(getenv('COLOUR'));
 			$embed->setThumbnail(self::AFL_LOGO_URL);
 			$roundLabel = $roundNum !== null ? "Round {$roundNum}" : 'Fixture';
-			$embed->setAuthor("AFL {$roundLabel} - Summary", self::AFL_LOGO_URL);
+			$filterLabel = match ($filter) {
+				self::FILTER_CONCLUDED => 'Finished',
+				self::FILTER_LIVE      => 'Live',
+				self::FILTER_UPCOMING  => 'Upcoming',
+				default                => 'Summary',
+			};
+			$embed->setAuthor("AFL {$roundLabel} - {$filterLabel}", self::AFL_LOGO_URL);
 
 			$thursday->setTime(0, 0, 0);
 			$weekEnd   = (clone $thursday)->modify('+6 days');
@@ -544,6 +572,40 @@
 		// ── helpers ────────────────────────────────────────────────────────────
 
 		/**
+		 * Parses the argument string from the command into a filter constant.
+		 *
+		 * Accepted values (case-insensitive):
+		 *   (none)                              → FILTER_ALL
+		 *   f, fi, fin, fini, finis, finish,
+		 *   finishe, finished                   → FILTER_CONCLUDED
+		 *   live                                → FILTER_LIVE
+		 *   upcoming, next                      → FILTER_UPCOMING
+		 */
+		private function parseFilter(string $args): string {
+
+			$arg = strtolower(trim($args));
+
+			if ($arg === '') {
+				return self::FILTER_ALL;
+			}
+
+			if (preg_match('/^f(i(n(i(s(h(e(d)?)?)?)?)?)?)?$/', $arg)) {
+				return self::FILTER_CONCLUDED;
+			}
+
+			if ($arg === 'live') {
+				return self::FILTER_LIVE;
+			}
+
+			if ($arg === 'upcoming' || $arg === 'next') {
+				return self::FILTER_UPCOMING;
+			}
+
+			// Unrecognised argument – fall back to showing all
+			return self::FILTER_ALL;
+		}
+
+		/**
 		 * Returns midnight on the most recent Thursday in Melbourne time.
 		 * If today is Thursday, today's midnight is returned.
 		 */
@@ -620,5 +682,3 @@
 		}
 
 	}
-	
-?>
