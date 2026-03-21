@@ -24,6 +24,9 @@
 		// Token endpoint – POST with no body to receive a short-lived x-media-mis-token
 		private const TOKEN_URL         = 'https://api.afl.com.au/cfs/afl/WMCTok';
 
+		// Live match detail endpoint – append providerId (e.g. CD_M20260140203)
+		private const MATCH_ITEM_BASE   = 'https://api.afl.com.au/cfs/afl/matchItem/';
+
 		// ── AbstractCommand implementation ─────────────────────────────────────
 
 		public function getName(): string {
@@ -126,9 +129,9 @@
 								}
 							);
 
-						// ── Step 3: build and send the embed ──────────────────────
+						// ── Step 3: fetch live scores, then build embed ───────────
 						\React\Promise\all([$matchesPromise, $wageringPromise])->then(
-							function (array $results) use ($message, $thursday): void {
+							function (array $results) use ($message, $thursday, $browser, $corsHeaders, $token): void {
 
 								[$matchesData, $wageringResult] = $results;
 
@@ -175,10 +178,43 @@
 									return;
 								}
 
-								$embed = $this->buildEmbed($matchesData, $wageringData, $thursday);
+								// ── Step 4: fetch live match detail for any LIVE games ─
+								// The main matches API does not include scores for live games;
+								// we must hit matchItem/{providerId} individually for each.
+								$livePromises = [];
+								foreach ($matchesData['matches'] as $match) {
+									if (($match['status'] ?? '') !== self::STATUS_LIVE) {
+										continue;
+									}
+									$pid = $match['providerId'] ?? null;
+									if ($pid === null) {
+										continue;
+									}
+									$livePromises[$pid] = $browser
+										->get(self::MATCH_ITEM_BASE . $pid, array_merge($corsHeaders, [
+											'x-media-mis-token' => $token,
+										]))
+										->then(
+											fn ($r) => json_decode((string) $r->getBody(), true),
+											fn ($e) => null   // live score failure is non-fatal
+										);
+								}
 
-								$message->channel->sendMessage(
-									MessageBuilder::new()->addEmbed($embed)
+								// If no live games, build the embed immediately
+								if (empty($livePromises)) {
+									$embed = $this->buildEmbed($matchesData, $wageringData, $thursday, []);
+									$message->channel->sendMessage(MessageBuilder::new()->addEmbed($embed));
+									return;
+								}
+
+								\React\Promise\all($livePromises)->then(
+									function (array $liveScores) use ($message, $thursday, $matchesData, $wageringData): void {
+										$embed = $this->buildEmbed($matchesData, $wageringData, $thursday, $liveScores);
+										$message->channel->sendMessage(MessageBuilder::new()->addEmbed($embed));
+									},
+									function (\Throwable $e) use ($message): void {
+										$message->reply('❌ Failed to fetch live match scores: ' . $e->getMessage());
+									}
 								);
 							},
 							function (\Throwable $e) use ($message): void {
@@ -194,7 +230,7 @@
 
 		// ── embed builder ──────────────────────────────────────────────────────
 
-		private function buildEmbed(array $matchesData, ?array $wageringData, \DateTime $thursday): Embed {
+		private function buildEmbed(array $matchesData, ?array $wageringData, \DateTime $thursday, array $liveScores): Embed {
 
 			$tz  = new \DateTimeZone(self::TZ_MELBOURNE);
 			$now = new \DateTime('now', $tz);
@@ -282,7 +318,7 @@
 				$lines    = [];
 
 				foreach ($dayMatches as $entry) {
-					$matchLines = $this->renderMatch($entry['match'], $entry['time'], $wagering);
+					$matchLines = $this->renderMatch($entry['match'], $entry['time'], $wagering, $liveScores);
 					array_push($lines, ...$matchLines);
 					$lines[] = '';
 				}
@@ -338,7 +374,7 @@
 		 * @param  array<string, array>  $wagering   Keyed by match providerId
 		 * @return string[]
 		 */
-		private function renderMatch(array $match, \DateTime $matchTime, array $wagering): array {
+		private function renderMatch(array $match, \DateTime $matchTime, array $wagering, array $liveScores): array {
 
 			$homeTeam     = $match['home']['team']['name']       ?? 'Home';
 			$awayTeam     = $match['away']['team']['name']       ?? 'Away';
@@ -360,11 +396,43 @@
 				$lines[] = "🏁 ||{$hScore} – {$aScore}||  ·  📍 *{$venueStr}*";
 
 			} elseif ($status === self::STATUS_LIVE) {
-				// Live – spoilered live score on the left, venue on the right
-				$hScore  = $this->formatScore($match['home']['score'] ?? []);
-				$aScore  = $this->formatScore($match['away']['score'] ?? []);
-				$quarter = $match['periodNumber'] ?? $match['period'] ?? '';
-				$qStr    = $quarter ? " Q{$quarter}" : '';
+				// Live – fetch scores and clock from the matchItem endpoint.
+				// $liveScores is keyed by match providerId.
+				$liveData = $liveScores[$providerId] ?? null;
+
+				if ($liveData !== null) {
+					$hMatchScore = $liveData['score']['homeTeamScore']['matchScore'] ?? [];
+					$aMatchScore = $liveData['score']['awayTeamScore']['matchScore'] ?? [];
+					$hScore      = $this->formatScore($hMatchScore);
+					$aScore      = $this->formatScore($aMatchScore);
+
+					// Find the currently active period (periodCompleted === false)
+					$periods       = $liveData['score']['matchClock']['periods'] ?? [];
+					$activePeriod  = null;
+					foreach ($periods as $period) {
+						if (($period['periodCompleted'] ?? true) === false) {
+							$activePeriod = $period;
+							break;
+						}
+					}
+
+					$quarter = $activePeriod['periodNumber'] ?? null;
+					$secs    = $activePeriod !== null ? (int) $activePeriod['periodSeconds'] : null;
+					$mins    = $secs !== null ? (int) floor($secs / 60) : null;
+					$secPart = $secs !== null ? str_pad($secs % 60, 2, '0', STR_PAD_LEFT) : null;
+					$qStr    = '';
+					if ($quarter !== null && $mins !== null) {
+						$qStr = " (Q{$quarter} {$mins}:{$secPart})";
+					} elseif ($quarter !== null) {
+						$qStr = " (Q{$quarter})";
+					}
+
+				} else {
+					// matchItem fetch failed – show live indicator without score
+					$hScore = $aScore = '?';
+					$qStr   = '';
+				}
+
 				$lines[] = "🔴 **LIVE{$qStr}**  ||{$hScore} – {$aScore}||  ·  📍 *{$venueStr}*";
 
 			} else {
@@ -552,3 +620,5 @@
 		}
 
 	}
+	
+?>
